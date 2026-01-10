@@ -565,7 +565,18 @@
           return;
         }
 
-        projectsData = data;
+        // Sort projects by last-updated date (most recent first)
+        const sortedProjects = [...data.projects].sort((a, b) => {
+          const dateA = a['last-updated'] || '';
+          const dateB = b['last-updated'] || '';
+          // Compare dates in YYYY-MM-DD format
+          if (dateB > dateA) return 1;
+          if (dateB < dateA) return -1;
+          return 0;
+        });
+
+        // Update projectsData with sorted projects
+        projectsData = { projects: sortedProjects };
         const tableContainer = document.getElementById('projects-table-container');
         tableContainer.innerHTML = '';
 
@@ -587,7 +598,7 @@
 
         // Create body
         const tbody = document.createElement('tbody');
-        data.projects.forEach((project, index) => {
+        sortedProjects.forEach((project, index) => {
           const row = document.createElement('tr');
           row.dataset.projectIndex = index;
           row.addEventListener('click', () => showProject(index));

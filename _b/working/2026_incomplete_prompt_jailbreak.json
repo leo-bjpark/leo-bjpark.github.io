@@ -1,12 +1,18 @@
 {
     "title": "Incomplete Prompt Jailbreak",
-    "research-question": "Are Open-Weight LLMs robust to completion dilemma? (Neurath’s boat)",
-    "main-contributions": [
-        "IPJ 현상에 대한 정의와 오픈 모델 LLM의 취약성에 대한 실험적 연구",
-        "파라미터 튜닝 등 일반적인 형태의 모델 경향성 변경시, OOD에 대한 취약성 증가 현상 관찰",
-        "생성물에 대한 빠른 중단 / 중단을 금지하는 뉴런 발견을 통한, LLM 생성 세부 조절 가능성 제시"
+    "memos":[
+        "ACL 2026 제출,  ARR Cycle (March 9, 2026)"
     ],
-    "impact": "오픈 모델들의 본질적인 취약성과 언어적 딜레마 상황을 통하여, 오픈 모델이 지니는 불안정성을 보여줌.",
+    "impact": "본 연구는 문장 완성 기반의 안전 취약점이라는 기존에 충분히 정식화되지 않았던 문제를 체계적으로 규명함으로써, LLM 안전성 연구의 분석 단위를 프롬프트 전체가 아닌 생성 과정 내부로 확장한다. 특히 뉴런 수준의 기능 분해를 통해, 기존의 파라미터 튜닝 중심 안전 기법이 갖는 한계를 드러내고 보다 정밀하고 일반화 가능한 방어 전략의 가능성을 제시한다.",
+    "research-question": "불완전한 유해 프롬프트가 주어졌을 때, 대형 언어 모델은 어떤 내부 생성 메커니즘에 의해 거절을 지연하고 유해한 문장 완성을 수행하는가? 또한 이러한 현상은 파라미터 학습만으로 제어 가능한가, 아니면 문장 종료 및 이어쓰기와 관련된 기능적 뉴런 수준의 개입이 필요한가?",
+    "main-contributions": [
+        "We formalize sentence-completion vulnerabilities under incomplete harmful prompts as a new threat model, termed Incomplete Prompt Jailbreaks (IPJ).",
+        "We provide a systematic empirical characterization of when and how incomplete prompts trigger harmful continuations across models.",
+        "We identify and categorize diverse attractor types that drive incomplete sentence continuation, revealing a consistent tendency of LLMs to delay refusal until sentence termination.",
+        "We show that parameter-level tuning to refuse incomplete harmful prompts fails to generalize across content domains and attractor types.",
+        "We identify two functional neuron types—termination neurons and continuation neurons—and demonstrate their distinct roles in sentence completion.",
+        "We highlight neuron-level intervention as a fine-grained and robust mechanism for defending against IPJ, beyond conventional training-based safeguards."
+        ],
     "highly-related-work": [
         {
             "type": "paper",
@@ -31,12 +37,16 @@
             "type": "Leo-Memo",
             "label": "Leo-Memo",
             "url": "/contents/paper/incomplete_prompt_jailbreak"
+        },
+        {
+            "type": "OpenReview",
+            "label": "OpenReview",
+            "url": "https://openreview.net/forum?id=ST02d7E7ao&referrer=%5BAuthor%20Console%5D(%2Fgroup%3Fid%3Daclweb.org%2FACL%2FARR%2F2026%2FJanuary%2FAuthors%23your-submissions)"
         }
-
     ],
     "status": "in-progress",
     "start-date": "2025-01-02",
-    "last-updated": "2026-01-02",
+    "last-updated": "2026-01-10",
     "highlight-color": "#aa0000",
     "progress": 75
 }
