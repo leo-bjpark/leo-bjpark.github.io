@@ -20,7 +20,7 @@ _styles: >
   <div>
     <img src="/assets/img/bumjini.png" width="40%" height="auto" class="styled-image"/>
     <p>
-      <strong style="padding-top:30px;">Bumjin Park (call me Leo)</strong>
+      <strong style="padding-top:30px;">(Leo) Bumjin Park</strong>
     </p>
   </div>
   <div class="intro-text">

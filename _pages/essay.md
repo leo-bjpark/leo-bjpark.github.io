@@ -12,9 +12,9 @@ description:
   
   <div class="posts-content">
     <div class="language-filter-container">
-      <button class="language-btn active" data-language="English">English</button>
+      <button class="language-btn active" data-language="English">English Essay & Study </button>
       <span class="language-separator"> | </span>
-      <button class="language-btn" data-language="Korean">Korean</button>
+      <button class="language-btn" data-language="Korean">Korean Essay</button>
     </div>
     <table class="posts-table">
       <thead>
