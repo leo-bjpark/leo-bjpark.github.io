@@ -55,8 +55,8 @@ _styles: >
 
 | Repo | Date  | 
 | -----| -----| 
-| [LLM Korean Neuron Eval](https://github.com/leo-bpark/llm-korean-neuron-attribution) | 25.12
-| [Graph Evaluation by Prompting](https://github.com/leo-bpark/apps/tree/main/musique)| <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/Musique_dataset2.webp" width="100%" height="auto" /> | 
-| [Graph Evaluation by Prompting](https://github.com/leo-bpark/apps/tree/main/deduction_memorization_test) | <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/graph_eval.webp" width="100%" height="auto" /> | 
-| [Counterfact-Dataset-App](https://github.com/leo-bpark/Counterfact-Dataset-App) | <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/counterfact_explore.webp" width="100%" height="auto" /> |
+| [LLM Korean Neuron Eval](https://github.com/leo-bjpark/llm-korean-neuron-attribution) | 25.12
+| [Graph Evaluation by Prompting](https://github.com/leo-bjpark/apps/tree/main/musique)| <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/Musique_dataset2.webp" width="100%" height="auto" /> | 
+| [Graph Evaluation by Prompting](https://github.com/leo-bjpark/apps/tree/main/deduction_memorization_test) | <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/graph_eval.webp" width="100%" height="auto" /> | 
+| [Counterfact-Dataset-App](https://github.com/leo-bjpark/Counterfact-Dataset-App) | <img src="https://d2acbkrrljl37x.cloudfront.net/research/thesis/counterfact_explore.webp" width="100%" height="auto" /> |
 

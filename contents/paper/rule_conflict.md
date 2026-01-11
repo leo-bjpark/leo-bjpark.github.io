@@ -48,7 +48,6 @@ _styles: >
     }
 ---
 
-
 - **General Conflict** 
 - **Knowledge Conflict** 
 - **Proposition Interpretation Confclit** 
@@ -251,7 +250,6 @@ $\mathbf{KB}$:
 반면, Kleene 논리나 Belnap 논리처럼 명제에 대해 다중 진리값을 허용하는 경우에는, **충돌 상태 자체가 자연스러운 중간 상태**로 받아들여질 수 있다. 물론 이 경우에도 최종적인 진리값을 결정하는 문제는 여전히 어려운 과제로 남는다.
 
 
-
 --- 
 
 
@@ -367,3 +365,9 @@ $\mathbf{KB}$:
   }
 }
 ```
+
+---
+
+## Rule Types 
+
+1. A-> B / B-> C / C-> D

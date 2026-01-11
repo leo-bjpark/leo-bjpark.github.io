@@ -18,6 +18,10 @@
 
   <!-- Work-in-Progress page styles -->
   <style type="text/css">
+    body {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
     .work-in-progress-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -44,7 +48,7 @@
     }
 
     .projects-table-container {
-      margin-bottom: 3rem;
+      margin-bottom: 0rem;
       overflow-x: auto;
       width: 100%;
       -webkit-overflow-scrolling: touch;
@@ -53,42 +57,32 @@
     .projects-table {
       width: 100%;
       border-collapse: collapse;
-      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      background: var(--global-card-bg-color);
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       table-layout: auto;
-      border: 1px solid #000;
     }
 
     .projects-table thead {
-      background: rgba(0, 0, 0, 0.05);
+      background: var(--global-card-bg-color);
     }
 
     .projects-table th {
-      padding: 1rem;
+      padding: 0.5rem;
       text-align: left;
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       color: #333;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 2px solid #000;
-      border-right: 1px solid #000;
-    }
-    
-    .projects-table th:last-child {
-      border-right: none;
+      border-bottom: 1px solid var(--global-divider-color);
     }
 
     .projects-table td {
-      padding: 1rem;
-      border-bottom: 1px solid #000;
-      border-right: 1px solid #000;
+      font-size: 1rem;
+      padding: 0.3rem;
+      border-bottom: 1px solid var(--global-divider-color);
       vertical-align: middle;
-    }
-    
-    .projects-table td:last-child {
-      border-right: none;
     }
 
     .projects-table tbody tr {
@@ -104,11 +98,21 @@
       background: rgba(212, 175, 55, 0.1);
     }
 
+    .projects-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
     .project-id-cell {
       font-weight: 600;
       font-size: 0.9rem;
       color: #666;
       min-width: 80px;
+    }
+
+    .project-title{
+      background-color: var(--global-bg-highlight-color);
+      padding: 1.0rem 1rem 1rem 1rem;
+  
     }
 
     .project-title-cell {
@@ -120,26 +124,39 @@
       overflow-wrap: break-word;
       white-space: normal;
       min-width: 200px;
-      max-width: 35%;
+      max-width: 50%;
     }
 
-    .project-rq-cell {
-      font-size: 0.9rem;
+    .project-tag-cell {
+      font-size: 1rem;
       color: #000;
       word-wrap: break-word;
       word-break: break-word;
       white-space: normal;
       line-height: 1.5;
-      min-width: 300px;
+      min-width: 200px;
+    }
+
+    .project-tag-cell .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
+      margin-right: 0.4rem;
+      margin-bottom: 0.2rem;
     }
 
     .project-progress-cell {
       width: 120px;
       min-width: 120px;
       max-width: 120px;
-      text-align: right;
-      padding-right: 1rem;
+      text-align: left;
       flex-shrink: 0;
+      font-size: 1.6rem;
     }
 
     .table-progress-bar {
@@ -158,14 +175,19 @@
     }
 
     .project-detail-container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
-      padding: 3rem 2rem;
-      background: var(--global-card-bg-color, rgb(255, 222, 190));
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 0;
       min-height: 500px;
       animation: fadeIn 0.5s ease;
+    }
+
+    .project-links-header {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 1rem 1rem 0.5rem 1rem;
+      font-size: 1.2rem;
+      color: var(--global-text-color);
     }
 
     @keyframes fadeIn {
@@ -180,9 +202,12 @@
     }
 
     .project-card {
-      background: transparent;
-      border: none;
-      padding: 0;
+      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      border-radius: 0px;
+      border-left: 4px solid var(--global-divider-color);
+      padding: 1rem 1rem;
+      margin: 0 auto;
+      max-width: 1000px;
     }
 
     .project-header {
@@ -229,12 +254,12 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 1rem 0 2rem 0;
+      margin:0rem 0 2rem 0;
       gap: 2rem;
     }
 
     .project-title {
-      font-size: 2.2rem;
+      font-size: 1.6rem;
       font-weight: 600;
       margin: 0;
       color: #222;
@@ -252,7 +277,7 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 0.75rem;
-      font-size: 1rem;
+      font-size: 1.6rem;
       color: #666;
       font-weight: 500;
     }
@@ -273,22 +298,22 @@
     }
 
     .project-section {
-      margin-top: 2rem;
-      padding-top: 2rem;
-      border-top: 1px solid #000000;
+      margin-top: 1.0rem;
+      padding-top: 0.5rem;
+      border-top: 0px solid var(--global-divider-color);
     }
 
     .project-section-title {
       font-size: 1.3rem;
       font-weight: 700;
-      color: var(--highlight-color, #000000);
+      color: var(--global-text-color);
       letter-spacing: 0.5px;
       margin-bottom: 1rem;
     }
 
     .project-section-content {
       font-size: 1.2rem;
-      font-weight: 600;
+      font-weight: 500;
       line-height: 1.8;
       color: #444;
     }
@@ -300,10 +325,12 @@
     }
 
     .contribution-list li {
-      padding: 0.5rem 0;
+      padding: 0.1rem 0;
       padding-left: 1.5rem;
       position: relative;
       line-height: 1.8;
+      font-size: 1.2rem;
+      font-weight: 500;
     }
 
     .contribution-list li::before {
@@ -325,6 +352,8 @@
       padding: 0;
       margin: 0;
     }
+
+
 
     .related-work-item {
       padding: 0.5rem 0;
@@ -366,30 +395,12 @@
       display: inline-flex;
       align-items: center;
       padding: 0.5rem 1rem;
-      background: #f5f5f5;
-      border: 1px solid #e0e0e0;
+      background: var(--global-bg-highlight-color);
+      border: 1px solid var(--global-bg-highlight-color);
       border-radius: 6px;
-      color: #333;
+      color: var(--global-text-color);
       text-decoration: none;
       font-size: 0.9rem;
-      transition: all 0.2s ease;
-    }
-
-    .link-button:hover {
-      background: var(--highlight-color, #d4af37);
-      color: #fff;
-      border-color: var(--highlight-color, #d4af37);
-      transform: translateY(-2px);
-    }
-
-    .link-button.github {
-      background: #24292e;
-      color: #fff;
-      border-color: #24292e;
-    }
-
-    .link-button.github:hover {
-      background: #2f363d;
     }
 
     .tags-list {
@@ -587,7 +598,7 @@
         // Create header
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
-        const headers = ['Research', 'RQ', 'Progress']; 
+        const headers = ['Research', 'Tags', 'Progress']; 
         headers.forEach(headerText => {
           const th = document.createElement('th');
           th.textContent = headerText;
@@ -609,27 +620,26 @@
           titleCell.textContent = project.title || 'Untitled Project';
           row.appendChild(titleCell);
 
-          // RQ cell
-          const rqCell = document.createElement('td');
-          rqCell.className = 'project-rq-cell';
-          const rqText = project['research-question'] || 'N/A';
-          rqCell.textContent = rqText;
-          row.appendChild(rqCell);
+          // Tag cell
+          const tagCell = document.createElement('td');
+          tagCell.className = 'project-tag-cell';
+          if (project.tags && Array.isArray(project.tags) && project.tags.length > 0) {
+            project.tags.forEach(tag => {
+              const tagSpan = document.createElement('span');
+              tagSpan.className = 'tag';
+              tagSpan.textContent = tag;
+              tagCell.appendChild(tagSpan);
+            });
+          } else {
+            tagCell.textContent = 'N/A';
+          }
+          row.appendChild(tagCell);
 
           // Progress cell
           const progressCell = document.createElement('td');
           progressCell.className = 'project-progress-cell';
-          const progressBar = document.createElement('div');
-          progressBar.className = 'table-progress-bar';
-          const progressFill = document.createElement('div');
-          progressFill.className = 'table-progress-fill';
           const progress = project.progress || 0;
-          const highlightColor = project['highlight-color'] || '#d4af37';
-          const lighterColor = lightenColor(highlightColor, 20);
-          progressFill.style.width = progress + '%';
-          progressFill.style.background = `linear-gradient(90deg, ${highlightColor} 0%, ${lighterColor} 100%)`;
-          progressBar.appendChild(progressFill);
-          progressCell.appendChild(progressBar);
+          progressCell.textContent = progress;
           row.appendChild(progressCell);
 
           tbody.appendChild(row);
@@ -646,10 +656,33 @@
 
         const project = projectsData.projects[index];
         const detailContainer = document.getElementById('project-detail-container');
+        detailContainer.innerHTML = '';
+        
+        // Create links header (outside card)
+        if (project.links && Array.isArray(project.links) && project.links.length > 0) {
+          const linksHeader = document.createElement('div');
+          linksHeader.className = 'project-links-header';
+          
+          const linksText = [' | '];
+          project.links.forEach((link, idx) => {
+            const linkText = link.label || link.type || 'Link';
+            if (link.url && link.url !== '#') {
+              linksText.push(`<a href="${link.url}" style="color: var(--global-text-color);">${linkText}</a>`);
+            } else {
+              linksText.push(`<span style="opacity: 0.5;">${linkText}</span>`);
+            }
+            if (idx < project.links.length - 1) {
+              linksText.push('  |  ');
+            }
+          });
+          linksText.push('  |  ');
+          
+          linksHeader.innerHTML = linksText.join('');
+          detailContainer.appendChild(linksHeader);
+        }
         
         // Create project card
         const card = createProjectCard(project);
-        detailContainer.innerHTML = '';
         detailContainer.appendChild(card);
         
         // Show detail container
@@ -673,36 +706,6 @@
         const highlightColor = project['highlight-color'] || '#d4af37';
         card.style.setProperty('--highlight-color', highlightColor);
 
-        // Header with tags and status
-        const header = document.createElement('div');
-        header.className = 'project-header';
-        
-        // Tags in place of ID
-        if (project.tags && Array.isArray(project.tags) && project.tags.length > 0) {
-          const tagsList = document.createElement('ul');
-          tagsList.className = 'tags-list';
-          
-          project.tags.forEach(tag => {
-            const tagItem = document.createElement('li');
-            tagItem.className = 'tag';
-            tagItem.textContent = tag;
-            tagsList.appendChild(tagItem);
-          });
-          header.appendChild(tagsList);
-        }
-
-        const status = document.createElement('span');
-        status.className = 'project-status ' + (project.status || 'in-progress').replace(/-/g, '-');
-        status.textContent = project.status || 'in-progress';
-        // Apply highlight color to status
-        const lighterColor = lightenColor(highlightColor, 80);
-        status.style.background = lighterColor;
-        status.style.color = highlightColor;
-        status.style.border = `1px solid ${highlightColor}`;
-        header.appendChild(status);
-
-        card.appendChild(header);
-
         // Title and Progress in same line
         const titleProgressContainer = document.createElement('div');
         titleProgressContainer.className = 'title-progress-container';
@@ -713,81 +716,22 @@
         title.textContent = project.title || 'Untitled Project';
         titleProgressContainer.appendChild(title);
 
-        // Progress bar
+        // Progress text
         if (project.progress !== undefined) {
           const progressContainer = document.createElement('div');
           progressContainer.className = 'progress-bar-container';
-          
-          const progressLabel = document.createElement('div');
-          progressLabel.className = 'progress-bar-label';
-          progressLabel.innerHTML = `<span>Progress</span><span>${project.progress}%</span>`;
-          progressContainer.appendChild(progressLabel);
-
-          const progressBar = document.createElement('div');
-          progressBar.className = 'progress-bar';
-          const progressFill = document.createElement('div');
-          progressFill.className = 'progress-bar-fill';
-          progressFill.style.width = project.progress + '%';
-          // Create gradient with highlight color
-          const lighterColor = lightenColor(highlightColor, 20);
-          progressFill.style.background = `linear-gradient(90deg, ${highlightColor} 0%, ${lighterColor} 100%)`;
-          progressBar.appendChild(progressFill);
-          progressContainer.appendChild(progressBar);
-
-          titleProgressContainer.appendChild(progressContainer);
+          progressContainer.textContent = `Progress: ${project.progress}`;
+          progressContainer.style.fontSize = '1.6rem';
+          progressContainer.style.color = '#666';
+          progressContainer.style.fontWeight = '500';
+          // titleProgressContainer.appendChild(progressContainer);
         }
         
         card.appendChild(titleProgressContainer);
 
-        // Links (1st)
-        if (project.links && Array.isArray(project.links) && project.links.length > 0) {
-          const section = document.createElement('div');
-          section.className = 'project-section';
-          
-          const sectionTitle = document.createElement('div');
-          sectionTitle.className = 'project-section-title';
-          sectionTitle.textContent = capitalizeFirst('Links');
-          sectionTitle.style.color = highlightColor;
-          section.appendChild(sectionTitle);
-
-          const linksList = document.createElement('ul');
-          linksList.className = 'links-list';
-          
-          project.links.forEach(link => {
-            const item = document.createElement('li');
-            item.className = 'link-item';
-            const linkButton = document.createElement('a');
-            linkButton.href = link.url || '#';
-            linkButton.textContent = link.label || link.type || 'Link';
-            linkButton.className = 'link-button ' + (link.type || '');
-            // Apply highlight color on hover (only for non-github links)
-            if (link.type !== 'github') {
-              linkButton.style.setProperty('--highlight-color', highlightColor);
-              linkButton.addEventListener('mouseenter', function() {
-                this.style.background = highlightColor;
-                this.style.borderColor = highlightColor;
-              });
-              linkButton.addEventListener('mouseleave', function() {
-                this.style.background = '#f5f5f5';
-                this.style.borderColor = '#e0e0e0';
-              });
-            }
-            if (!link.url || link.url === '#') {
-              linkButton.style.pointerEvents = 'none';
-              linkButton.style.opacity = '0.5';
-            }
-            item.appendChild(linkButton);
-            linksList.appendChild(item);
-          });
-
-          section.appendChild(linksList);
-          card.appendChild(section);
-        }
-
-
         // Research Question (3rd)
         if (project['research-question']) {
-          const section = createSection('Research Question', project['research-question'], highlightColor);
+          const section = createSection('Research Question', project['research-question']);
           card.appendChild(section);
         }
 
@@ -800,7 +744,6 @@
           const sectionTitle = document.createElement('div');
           sectionTitle.className = 'project-section-title';
           sectionTitle.textContent = capitalizeFirst('Main Contribution' + (Array.isArray(mainContribution) && mainContribution.length > 1 ? 's' : ''));
-          sectionTitle.style.color = highlightColor;
           section.appendChild(sectionTitle);
 
           const sectionContent = document.createElement('div');
@@ -830,7 +773,7 @@
 
         // Impact (5th)
         if (project.impact) {
-          const section = createSection('Impact', project.impact, highlightColor);
+          const section = createSection('Impact', project.impact);
           card.appendChild(section);
         }
 
@@ -843,7 +786,6 @@
           const sectionTitle = document.createElement('div');
           sectionTitle.className = 'project-section-title';
           sectionTitle.textContent = capitalizeFirst(Array.isArray(memos) && memos.length > 1 ? 'Memos' : 'Memo');
-          sectionTitle.style.color = highlightColor;
           section.appendChild(sectionTitle);
 
           const sectionContent = document.createElement('div');
@@ -854,12 +796,12 @@
             list.className = 'contribution-list';
             memos.forEach(memo => {
               const listItem = document.createElement('li');
-              listItem.textContent = memo;
+              listItem.innerHTML = memo;
               list.appendChild(listItem);
             });
             sectionContent.appendChild(list);
           } else {
-            sectionContent.textContent = memos;
+            sectionContent.innerHTML = memos;
           }
           
           section.appendChild(sectionContent);
@@ -874,7 +816,6 @@
           const sectionTitle = document.createElement('div');
           sectionTitle.className = 'project-section-title';
           sectionTitle.textContent = capitalizeFirst('Related Work');
-          sectionTitle.style.color = highlightColor;
           section.appendChild(sectionTitle);
 
           const workList = document.createElement('ul');
@@ -926,10 +867,12 @@
                   if (idx > 0) {
                     memoDiv.appendChild(document.createElement('br'));
                   }
-                  memoDiv.appendChild(document.createTextNode(memo));
+                  const memoSpan = document.createElement('span');
+                  memoSpan.innerHTML = memo;
+                  memoDiv.appendChild(memoSpan);
                 });
               } else {
-                memoDiv.textContent = workMemos;
+                memoDiv.innerHTML = workMemos;
               }
               item.appendChild(memoDiv);
             }
@@ -960,21 +903,18 @@
       }
 
       // Create section helper
-      function createSection(title, content, highlightColor) {
+      function createSection(title, content) {
         const section = document.createElement('div');
         section.className = 'project-section';
         
         const sectionTitle = document.createElement('div');
         sectionTitle.className = 'project-section-title';
         sectionTitle.textContent = capitalizeFirst(title);
-        if (highlightColor) {
-          sectionTitle.style.color = highlightColor;
-        }
         section.appendChild(sectionTitle);
 
         const sectionContent = document.createElement('div');
         sectionContent.className = 'project-section-content';
-        sectionContent.textContent = content;
+        sectionContent.innerHTML = content;
         section.appendChild(sectionContent);
 
         return section;

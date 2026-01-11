@@ -8,7 +8,7 @@ featured: true
 img: assets/img/feigenbaum.png
 title: 'Work-in-Porgress'
 category: 'AI'
-description: 'Last Updated: 25/12/27'
+description: ''
 _styles: >
     table {
         padding-top: 200px;

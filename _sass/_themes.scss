@@ -3,9 +3,9 @@
  ******************************************************************************/
  
 :root {
-  --global-bg-color: rgb(255, 233, 213);
+  --global-bg-color: #F2EEE6;
   --global-code-bg-color: #dfdfdf5a;
-  --global-text-color: #{$black-color};
+  --global-text-color: #2B2622;
   --global-text-size: 1.10rem;
   --global-text-color-light: #{$grey-color};
   --global-theme-color: #505090;;
@@ -14,8 +14,9 @@
   --global-footer-text-color: #{$grey-color-light};
   --global-footer-link-color: #{$white-color};
   --global-distill-app-color: #{$grey-color};
-  --global-divider-color: rgba(0,0,0,.1);
-  --global-card-bg-color: rgb(255, 245, 236);
+  --global-divider-color: rgb(154, 118, 116);
+  --global-card-bg-color: #F6F1E8;
+  --global-bg-highlight-color: #f2e7df;
 
   .fa-sun {
     display : none;

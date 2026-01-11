@@ -88,22 +88,18 @@ description:
 
 /* Override body and container backgrounds to theme color */
 body {
-  background-color: var(--theme-bg-color) !important;
   font-family: 'AritaBuriKR', sans-serif !important;
 }
 
 .container {
-  background-color: var(--theme-bg-color) !important;
   font-family: 'AritaBuriKR', sans-serif !important;
 }
 
 /* Navbar background to theme color */
 .navbar {
-  background-color: var(--theme-bg-color) !important;
 }
 
 header {
-  background-color: var(--theme-bg-color) !important;
 }
 
 .posts-container {
@@ -112,17 +108,14 @@ header {
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   padding: 0;
-  background-color: var(--theme-bg-color) !important;
 }
 
 .posts-header {
-  background-color: var(--theme-bg-color);
   padding: 2em 0;
   margin-bottom: 0;
 }
 
 .posts-content {
-  background-color: var(--theme-bg-color);
   padding: 2em 0;
   min-height: 60vh;
   position: relative;

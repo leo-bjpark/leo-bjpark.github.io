@@ -28,7 +28,7 @@ description: 'Deontological Keyword Bias: The Impact of Modal Expressions on Nor
     <h2>The Impact of Modal Expressions on Normative Judgments of Language Models</h2>
     <p><strong>ACL 2025 Main Conference</strong></p>
     <p>
-      <a href="https://leo-bpark.github.io">Bumjin Park</a>, 
+      <a href="https://leo-bjpark.github.io">Bumjin Park</a>, 
       Jinsil Lee, 
       Jaesik Choi<br/>
       KAIST AI, INEEJI<br/>

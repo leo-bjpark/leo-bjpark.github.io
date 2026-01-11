@@ -196,10 +196,7 @@ th, td {
 }
 th {
   font-weight: bold;
-  background: rgba(226, 141, 23, 0.136);
-}
-tr:hover {
-  background: rgba(226, 141, 23, 0.136);
+  background-color: var(--global-bg-highlight-color);
 }
 
 table td {

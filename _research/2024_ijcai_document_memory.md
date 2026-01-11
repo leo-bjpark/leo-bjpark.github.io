@@ -24,7 +24,7 @@ description: 'A novel document-wise memory architecture and guidance loss for tr
   <h2>Memorizing Documents with Guidance in Large Language Models </h2>
   <p><strong>IJCAI 2024 Main Conference</strong></p>
   <p>
-    <a href="https://leo-bpark.github.io">Bumjin Park</a>, 
+    <a href="https://leo-bjpark.github.io">Bumjin Park</a>, 
     Jaesik Choi<br/>
     KAIST AI, INEEJI<br/>
     <a href="mailto:bumjin@kaist.ac.kr">bumjin@kaist.ac.kr</a>

@@ -1,15 +1,18 @@
 {
-    "title": "Knowledge Conflict in LLMs",
-    "research-question": "아직 광범위 하기에 정확한 연구 질문을 찾지 못하였음. ",
+    "title": "Logical Rule Conflicts and Internal Resolution in Large Language Models",
+    "research-question": "Can large language models recognize logical rule conflicts internally and be corrected to ensure accurate rule execution?",
     "memos":[
         "기존의 언어모델은 ",
         "기존의 언어모델은 "
     ],
     "main-contributions": [
-        "Novel approach to understanding prompt injection vulnerabilities",
-        "Novel approach to understanding prompt injection vulnerabilities"
-    ],
-    "impact": "High - addresses critical security concerns in LLM deployment",
+        "<strong>[Framework]</strong> We introduce a reasoning framework that constructs rules with explicit positive and negative propositions and infers whether given propositions satisfy a belief base under these rules.",
+        "<strong>[Conflict Taxonomy]</strong> We formalize a taxonomy of logical conflict classes, including simple conflict, support conflict, reasoning conflict, and multi-path conflict, to systematically characterize different sources of inconsistency.",
+        "<strong>[Evaluation]</strong> We conduct a comprehensive evaluation of large language models, assessing their ability to follow rules and satisfy constraints across different classes of logical conflict.",
+        "<strong>[Neuron Level Analysis]</strong> We analyze the internal behavior of large language models at the neuron level during the execution of conflict-inducing rules, identifying neurons that are sensitive to logical inconsistency.",
+        "<strong>[Neuron Level Control]</strong> We propose a neuron-level control method that intervenes on conflict-sensitive neurons, enabling large language models to better adhere to given rules under logical conflict."
+      ],
+        "impact": "Large language models are expected to execute rules and derive conclusions under diverse and potentially conflicting contexts. When decision-making becomes unstable in the presence of logical conflicts, reliable rule execution and intended responses are undermined. Addressing this instability is essential for controlled and dependable use of rules in LLMs.<br><br>This work advances the understanding of how logical conflicts affect rule execution in LLMs and shows that internal correction mechanisms can improve rule-following behavior under conflict. >By systematically analyzing model performance across different classes of logical conflict, we clarify when and why models fail to commit to rule-based decisions.<br><br>These insights are particularly important for retrieval-augmented generation (RAG) systems, where large amounts of retrieved information may introduce mutually conflicting rules or constraints. Understanding model behavior under such conflicts enables safer and more controllable generation through more precise symbolic control.",
     "highly-related-work": [
         {
             "type": "paper",
@@ -27,18 +30,18 @@
     "links": [
         {
             "type": "github",
-            "label": "GitHub Repository",
-            "url": "https://github.com/yourusername/project"
+            "label": "GitHub",
+            "url": "https://github.com/leo-bjpark/logical-rule-conflicts-in-llms"
         },
         {
             "type": "overleaf",
-            "label": "Overleaf Document",
-            "url": "https://www.overleaf.com/project/yourproject"
+            "label": "Overleaf",
+            "url": "https://www.overleaf.com/project/6963424132fadc21e593c7b2"
         }
     ],
     "status": "in-progress",
     "start-date": "2025-12-28",
-    "last-updated": "2025-12-28",
-    "highlight-color": "#00aa00",
-    "progress": 60
+    "last-updated": "2026-01-12",
+    "highlight-color": "#0011aa",
+    "progress": "Experiment"
 }
