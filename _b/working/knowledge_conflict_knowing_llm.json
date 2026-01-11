@@ -2,8 +2,10 @@
     "title": "Logical Rule Conflicts and Internal Resolution in Large Language Models",
     "research-question": "Can large language models recognize logical rule conflicts internally and be corrected to ensure accurate rule execution?",
     "memos":[
-        "기존의 언어모델은 ",
-        "기존의 언어모델은 "
+        "[Done] 데이터셋 구성",
+        "[Done] LLM 평가 진행 및 성능 확인",
+        "[Done] 튜닝 기반 성능 향상",
+        "[Done] 레이어 탐지 및 Effective 뉴런 검증"
     ],
     "main-contributions": [
         "<strong>[Framework]</strong> We introduce a reasoning framework that constructs rules with explicit positive and negative propositions and infers whether given propositions satisfy a belief base under these rules.",
