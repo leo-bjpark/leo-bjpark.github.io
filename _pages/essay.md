@@ -111,12 +111,13 @@ header {
 }
 
 .posts-header {
-  padding: 2em 0;
+  padding: 0em 0;
   margin-bottom: 0;
+  text-align: center;
 }
 
 .posts-content {
-  padding: 2em 0;
+  padding: 0em 0;
   min-height: 60vh;
   position: relative;
 }
@@ -124,7 +125,8 @@ header {
 .language-filter-container {
   max-width: 1200px;
   margin: 0 auto 0 auto;
-  text-align: right;
+  text-align: center;
+  font-size:1.4rem;
   padding: 0 0;
 }
 
@@ -143,13 +145,11 @@ header {
 
 .language-btn:hover {
   color: #000;
-  text-decoration: underline;
 }
 
 .language-btn.active {
   font-weight: bold;
   color: #000;
-  text-decoration: underline;
 }
 
 .language-separator {
@@ -172,7 +172,7 @@ header {
 }
 
 .posts-table thead {
-  border-bottom: 2px solid #000;
+  border-bottom: 1px solid #000;
   background-color: transparent !important;
 }
 
