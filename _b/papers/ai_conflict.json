@@ -1,5 +1,13 @@
 [
     {
+        "title": "Can LLMs Predict Their Own Failures? Self-Awareness via Internal Circuits",
+        "authors": "Amirhosein Ghasemabadi, Di Niu",
+        "year": 2025,
+        "venue": "NA",
+        "save_date": "2026-01-12",
+        "hover_memo": "논문에서는 Gnosis라는 메커니즘을 제안한다. Gnosis는 대규모 언어 모델이 생성 과정에서 드러내는 내부 은닉 상태(hidden states)와 어텐션 패턴을 읽어(read-out), 해당 응답이 정확한지 혹은 실패할 가능성이 높은지를 스스로 예측하도록 설계된 자기 인식(self-awareness) 모듈이다. 이때 기존 언어 모델의 파라미터는 고정(frozen)된 채 유지되며, Gnosis는 별도의 소규모 네트워크로서 내부 표현의 통계적 요약을 입력으로 받아 실패 여부를 판별하는 역할만 수행한다. 중요한 점은 Gnosis가 텍스트 생성이나 디코딩 경로에 직접 개입하지 않고, 생성 분포를 변경하지도 않는다는 것이다. 대신 생성 중 또는 생성 직후의 내부 상태를 관찰함으로써, 모델이 이미 오류로 향하는 내부 동역학에 진입했는지를 조기에 감지한다. 이를 통해 Gnosis는 외부 평가자나 추가 샘플링 없이도, 모델이 자신의 예측 실패 가능성을 내부 신호만으로 추정할 수 있음을 보여주며, LLM의 신뢰성 평가를 generation 이후가 아닌 generation 과정 내부로 끌어들인다는 점에서 의미 있는 기여를 한다."
+    },
+    {
         "title": "Taming Knowledge Conflicts in Language Models",
         "authors": "Gaotang Li, Yuzhong Chen, Hanghang Tong",
         "year": 2025,
