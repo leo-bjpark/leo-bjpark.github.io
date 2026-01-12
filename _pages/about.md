@@ -18,7 +18,7 @@ _styles: >
 ---
 <div class="profile-container">
   <div>
-    <img src="/assets/img/bumjini.png" width="40%" height="auto" class="styled-image"/>
+    <img src="/assets/img/bumjini2.png" width="40%" height="auto" class="styled-image"/>
     <p>
       <strong style="padding-top:30px;">(Leo) Bumjin Park</strong>
     </p>
