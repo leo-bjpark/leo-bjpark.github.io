@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+
+  <!-- Head -->
+  <head>
+  {% include scripts/jquery.html %}
+  {% include scripts/mathjax.html %}
+  {%- if page.redirect -%}
+    <meta http-equiv="refresh" content="3; url={{ site.baseurl | prepend: site.url }}/" />
+  {%- endif -%}
+  {% include head.html %}
+  <!-- Page/Post style -->
+  {% if page._styles %}
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+  {%- endif %}
+
+  <!-- Daily page styles -->
+  <style type="text/css">
+    body {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    .daily-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      overflow: visible;
+    }
+
+    .daily-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .daily-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    .daily-header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .daily-table-container {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      overflow-y: visible;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .daily-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--global-card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      table-layout: auto;
+    }
+
+    .daily-table thead {
+      background: var(--global-card-bg-color);
+    }
+
+    .daily-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--global-divider-color);
+    }
+
+    .daily-table td {
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--global-divider-color);
+      vertical-align: top;
+    }
+
+    .daily-table tbody tr {
+      position: relative;
+    }
+
+    .daily-table tbody tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .daily-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hover-memo-tooltip {
+      position: fixed;
+      z-index: 10000;
+      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      border: 1px solid var(--global-divider-color);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
+      line-height: 1.6;
+      max-width: 400px;
+      word-wrap: break-word;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      margin: 0;
+    }
+
+    .hover-memo-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: var(--arrow-left, 1rem);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+      margin-top: 0;
+    }
+
+    .hover-memo-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: calc(var(--arrow-left, 1rem) - 1px);
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 9px solid var(--global-divider-color);
+      margin-top: 0;
+      z-index: -1;
+    }
+
+    .hover-memo-tooltip.tooltip-below::after {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+    }
+
+    .hover-memo-tooltip.tooltip-below::before {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 9px solid var(--global-divider-color);
+    }
+
+    .daily-table tbody tr:hover .hover-memo-tooltip,
+    .daily-table tbody tr.touch-active .hover-memo-tooltip {
+      opacity: 1;
+    }
+
+    .daily-date-cell {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .daily-summary-cell {
+      font-weight: 500;
+      font-size: 1rem;
+      color: #222;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      min-width: 300px;
+      position: relative;
+    }
+
+    .memo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .memo-list li {
+      padding: 0.25rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .memo-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--highlight-color, #d4af37);
+      font-weight: bold;
+    }
+
+    .no-daily-message {
+      text-align: center;
+      color: #999;
+      padding: 3rem;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .hover-memo-tooltip {
+        max-width: 300px;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .daily-header h1 {
+        font-size: 2rem;
+      }
+      
+      .daily-table {
+        font-size: 0.9rem;
+      }
+      
+      .daily-table th,
+      .daily-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+
+  </head>
+
+  <!-- Body -->
+  <body style="padding-top:0px" class="{%- if site.navbar_fixed -%}fixed-top-nav{%- endif -%} {%- unless site.footer_fixed -%}sticky-bottom-footer{%- endunless -%}"> 
+
+    {%- include header.html %}
+
+    <div class="daily-container">
+      <div class="daily-header">
+        <h1>{{ page.title | default: "Daily" }}</h1>
+        {% if page.description %}
+        <p>{{ page.description }}</p>
+        {% endif %}
+      </div>
+
+      <div id="daily-table-container" class="daily-table-container"></div>
+    </div>
+
+    <!-- Footer -->
+    <!-- {%- include footer.html %} -->
+
+    <!-- JavaScripts -->
+    {% include scripts/jquery.html %}
+    {% include scripts/bootstrap.html %}
+    {% include scripts/masonry.html %}
+    {% include scripts/misc.html %}
+    {% include scripts/mathjax.html %}
+    {% include scripts/analytics.html %}
+
+    <script>
+      const jsonFile = 'daily.json';
+      const baseUrl = '{{ site.baseurl }}/b/json_files/';
+      let dailyData = [];
+
+      // Helper function to format date as YY/MM/DD
+      function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        try {
+          // Parse YYYY-MM-DD format
+          const parts = dateString.split('-');
+          if (parts.length === 3) {
+            const year = parts[0].slice(-2); // Last 2 digits of year
+            const month = parts[1].padStart(2, '0');
+            const day = parts[2].padStart(2, '0');
+            return `${year}/${month}/${day}`;
+          }
+          return dateString; // Return as-is if format is unexpected
+        } catch (error) {
+          return dateString; // Return as-is if parsing fails
+        }
+      }
+
+      // Load JSON file
+      async function loadDailyData() {
+        try {
+          const response = await fetch(baseUrl + jsonFile);
+          if (response.ok) {
+            const data = await response.json();
+            // Sort by date (most recent first)
+            dailyData = [...data].sort((a, b) => {
+              const dateA = a.date || '';
+              const dateB = b.date || '';
+              if (dateB > dateA) return 1;
+              if (dateB < dateA) return -1;
+              return 0;
+            });
+          } else {
+            console.warn(`Failed to load ${jsonFile}: ${response.status}`);
+            dailyData = [];
+          }
+        } catch (error) {
+          console.error(`Error loading ${jsonFile}:`, error);
+          dailyData = [];
+        }
+      }
+
+      // Render daily table
+      function renderDailyTable() {
+        const tableContainer = document.getElementById('daily-table-container');
+        tableContainer.innerHTML = '';
+
+        if (!dailyData || dailyData.length === 0) {
+          tableContainer.innerHTML = '<div class="no-daily-message">No daily entries found.</div>';
+          return;
+        }
+
+        // Create table
+        const table = document.createElement('table');
+        table.className = 'daily-table';
+
+        // Create header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headers = ['Date', 'Summary'];
+        headers.forEach(headerText => {
+          const th = document.createElement('th');
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        dailyData.forEach(entry => {
+          const row = document.createElement('tr');
+
+          // Date cell
+          const dateCell = document.createElement('td');
+          dateCell.className = 'daily-date-cell';
+          dateCell.textContent = formatDate(entry.date);
+          row.appendChild(dateCell);
+
+          // Summary cell
+          const summaryCell = document.createElement('td');
+          summaryCell.className = 'daily-summary-cell';
+          summaryCell.textContent = entry.summary || 'N/A';
+          row.appendChild(summaryCell);
+
+          // Add hover memo tooltip if available
+          if (entry.memos && Array.isArray(entry.memos) && entry.memos.length > 0) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'hover-memo-tooltip';
+            
+            // Create memo list
+            const memoList = document.createElement('ul');
+            memoList.className = 'memo-list';
+            entry.memos.forEach(memo => {
+              const listItem = document.createElement('li');
+              listItem.textContent = memo;
+              memoList.appendChild(listItem);
+            });
+            tooltip.appendChild(memoList);
+            
+            // Append to body instead of cell to avoid overflow issues
+            document.body.appendChild(tooltip);
+
+            // Adjust tooltip position to prevent overflow
+            function adjustTooltipPosition() {
+              const cellRect = summaryCell.getBoundingClientRect();
+              const tooltipRect = tooltip.getBoundingClientRect();
+              const viewportWidth = window.innerWidth;
+              const viewportHeight = window.innerHeight;
+              const padding = 10;
+              
+              // Reset classes
+              tooltip.classList.remove('tooltip-below');
+              
+              // Calculate initial position (above the cell)
+              let top = cellRect.top - tooltipRect.height - 16; // 16px for arrow + spacing
+              let left = cellRect.left;
+              
+              // Check if tooltip goes off the top edge
+              if (top < padding) {
+                // Position below instead
+                top = cellRect.bottom + 16;
+                tooltip.classList.add('tooltip-below');
+              }
+              
+              // Check if tooltip goes off the right edge
+              if (left + tooltipRect.width > viewportWidth - padding) {
+                left = viewportWidth - tooltipRect.width - padding;
+              }
+              
+              // Check if tooltip goes off the left edge
+              if (left < padding) {
+                left = padding;
+              }
+              
+              // Calculate arrow position relative to cell
+              const arrowLeft = cellRect.left - left + 16; // 16px offset from cell left
+              tooltip.style.setProperty('--arrow-left', arrowLeft + 'px');
+              
+              // Apply position
+              tooltip.style.top = top + 'px';
+              tooltip.style.left = left + 'px';
+              tooltip.style.bottom = 'auto';
+              tooltip.style.right = 'auto';
+            }
+
+            // Handle mouseenter
+            row.addEventListener('mouseenter', function() {
+              tooltip.style.opacity = '1';
+              adjustTooltipPosition();
+            });
+
+            // Handle mouseleave
+            row.addEventListener('mouseleave', function() {
+              tooltip.style.opacity = '0';
+            });
+
+            // Handle window resize and scroll
+            function handleResizeScroll() {
+              if (tooltip.style.opacity === '1') {
+                adjustTooltipPosition();
+              }
+            }
+            window.addEventListener('resize', handleResizeScroll);
+            window.addEventListener('scroll', handleResizeScroll, true);
+
+            // Handle touch events for mobile
+            let touchTimeout;
+            row.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              clearTimeout(touchTimeout);
+              tooltip.style.opacity = '1';
+              setTimeout(adjustTooltipPosition, 10);
+            });
+            row.addEventListener('touchend', function() {
+              touchTimeout = setTimeout(() => {
+                tooltip.style.opacity = '0';
+              }, 2000); // Hide after 2 seconds
+            });
+          }
+
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', async function() {
+        try {
+          await loadDailyData();
+          renderDailyTable();
+        } catch (error) {
+          console.error('Error initializing daily page:', error);
+          document.getElementById('daily-table-container').innerHTML = 
+            '<div class="no-daily-message">Error loading daily data.</div>';
+        }
+      });
+    </script>
+  </body>
+</html>
