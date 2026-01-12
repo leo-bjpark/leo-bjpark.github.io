@@ -333,6 +333,24 @@
           .join(' ');
       }
 
+      // Helper function to format date as YY/MM/DD
+      function formatSaveDate(dateString) {
+        if (!dateString) return 'N/A';
+        try {
+          // Parse YYYY-MM-DD format
+          const parts = dateString.split('-');
+          if (parts.length === 3) {
+            const year = parts[0].slice(-2); // Last 2 digits of year
+            const month = parts[1].padStart(2, '0');
+            const day = parts[2].padStart(2, '0');
+            return `${year}/${month}/${day}`;
+          }
+          return dateString; // Return as-is if format is unexpected
+        } catch (error) {
+          return dateString; // Return as-is if parsing fails
+        }
+      }
+
       // Load all JSON files
       async function loadAllPapers() {
         for (const { file, name } of jsonFiles) {
@@ -558,7 +576,7 @@
           // Save date cell
           const dateCell = document.createElement('td');
           dateCell.className = 'paper-date-cell';
-          dateCell.textContent = paper.save_date || 'N/A';
+          dateCell.textContent = formatSaveDate(paper.save_date);
           row.appendChild(dateCell);
 
           tbody.appendChild(row);
