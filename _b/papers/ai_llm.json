@@ -6,5 +6,13 @@
     "venue": "NA",
     "save_date": "2026-01-12",
     "hover_memo": "의미없더라도 반복적인 토큰을 넣으면 성능이 향상한다. 계산을 더 많이 해주니까 그렇다."
+},
+{
+    "title": "Recursive Language Models",
+    "authors": "Alex L. Zhang, Tim Kraska, Omar Khattab",
+    "year": 2025,
+    "venue": "NA",
+    "save_date": "2026-01-12",
+    "hover_memo": "긴 입력을 한 번에 처리하지 않고, 필요한 부분을 골라 같은 추론 방식을 반복 적용한다. 모델은 스스로를 다시 호출해 하위 문제를 풀고, 그 결과를 모아 전체 문제를 해결한다."
 }
 ]
