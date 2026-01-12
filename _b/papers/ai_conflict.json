@@ -6,5 +6,14 @@
         "venue": "NA",
         "save_date": "2026-01-12",
         "hover_memo": "인간이 인공지능에게 더 친절해야 하는 이유를 제공"
+    },
+    {
+        "title" : "Conjectures and Refutations",
+        "url": "https://padron.entretemas.com.ve/documentos/Popper-Conjectures-Rwefutations-GrowthOfKnowledge.pdf",
+        "authors": "Karl Popper",
+        "year": 1934,
+        "venue": "NA",
+        "save_date": "2025-12-31",
+        "hover_memo": "추론의 오류를 발견하고 수정하는 방법을 제시한다."
     }
 ]

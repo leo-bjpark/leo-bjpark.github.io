@@ -524,7 +524,27 @@
           // Year cell
           const yearCell = document.createElement('td');
           yearCell.className = 'paper-year-cell';
-          yearCell.textContent = paper.year || 'N/A';
+          if (paper.url) {
+            const yearLink = document.createElement('a');
+            yearLink.href = paper.url;
+            yearLink.target = '_blank';
+            yearLink.rel = 'noopener noreferrer';
+            yearLink.textContent = paper.year || 'N/A';
+            yearLink.style.color = '#666';
+            yearLink.style.textDecoration = 'none';
+            yearLink.style.cursor = 'pointer';
+            yearLink.addEventListener('mouseenter', function() {
+              yearLink.style.textDecoration = 'underline';
+              yearLink.style.color = '#444';
+            });
+            yearLink.addEventListener('mouseleave', function() {
+              yearLink.style.textDecoration = 'none';
+              yearLink.style.color = '#666';
+            });
+            yearCell.appendChild(yearLink);
+          } else {
+            yearCell.textContent = paper.year || 'N/A';
+          }
           row.appendChild(yearCell);
 
           // Venue cell
