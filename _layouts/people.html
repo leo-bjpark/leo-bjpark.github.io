@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+
+  <!-- Head -->
+  <head>
+  {% include scripts/jquery.html %}
+  {% include scripts/mathjax.html %}
+  {%- if page.redirect -%}
+    <meta http-equiv="refresh" content="3; url={{ site.baseurl | prepend: site.url }}/" />
+  {%- endif -%}
+  {% include head.html %}
+  <!-- Page/Post style -->
+  {% if page._styles %}
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+  {%- endif %}
+
+  <!-- People page styles -->
+  <style type="text/css">
+    body {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    .people-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      overflow: visible;
+    }
+
+    .people-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .people-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    .people-header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .people-table-container {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      overflow-y: visible;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .people-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--global-card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      table-layout: auto;
+    }
+
+    .people-table thead {
+      background: var(--global-card-bg-color);
+    }
+
+    .people-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--global-divider-color);
+    }
+
+    .people-table td {
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--global-divider-color);
+      vertical-align: top;
+    }
+
+    .people-table tbody tr {
+      position: relative;
+    }
+
+    .people-table tbody tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .people-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hover-memo-tooltip {
+      position: fixed;
+      z-index: 10000;
+      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      border: 1px solid var(--global-divider-color);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
+      line-height: 1.6;
+      max-width: 400px;
+      word-wrap: break-word;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      margin: 0;
+    }
+
+    .hover-memo-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: var(--arrow-left, 1rem);
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+      margin-top: 0;
+    }
+
+    .hover-memo-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: calc(var(--arrow-left, 1rem) - 1px);
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 9px solid var(--global-divider-color);
+      margin-top: 0;
+      z-index: -1;
+    }
+
+    .hover-memo-tooltip.tooltip-below::after {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+    }
+
+    .hover-memo-tooltip.tooltip-below::before {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 9px solid var(--global-divider-color);
+    }
+
+    .people-table tbody tr:hover .hover-memo-tooltip,
+    .people-table tbody tr.touch-active .hover-memo-tooltip {
+      opacity: 1;
+    }
+
+    .person-name-cell {
+      position: relative;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #222;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      min-width: 200px;
+    }
+
+    .person-affiliation-cell {
+      font-size: 1rem;
+      color: #444;
+      word-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+      min-width: 300px;
+    }
+
+    .person-url-cell {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .person-date-cell {
+      font-size: 0.9rem;
+      color: #999;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .no-people-message {
+      text-align: center;
+      color: #999;
+      padding: 3rem;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .hover-memo-tooltip {
+        max-width: 300px;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .people-header h1 {
+        font-size: 2rem;
+      }
+      
+      .people-table {
+        font-size: 0.9rem;
+      }
+      
+      .people-table th,
+      .people-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+
+  </head>
+
+  <!-- Body -->
+  <body style="padding-top:0px" class="{%- if site.navbar_fixed -%}fixed-top-nav{%- endif -%} {%- unless site.footer_fixed -%}sticky-bottom-footer{%- endunless -%}"> 
+
+    {%- include header.html %}
+
+    <div class="people-container">
+      <div class="people-header">
+        <h1>{{ page.title | default: "People" }}</h1>
+        {% if page.description %}
+        <p>{{ page.description }}</p>
+        {% endif %}
+      </div>
+      
+      <div id="people-table-container" class="people-table-container"></div>
+    </div>
+
+    <!-- Footer -->
+    <!-- {%- include footer.html %} -->
+
+    <!-- JavaScripts -->
+    {% include scripts/jquery.html %}
+    {% include scripts/bootstrap.html %}
+    {% include scripts/masonry.html %}
+    {% include scripts/misc.html %}
+    {% include scripts/mathjax.html %}
+    {% include scripts/analytics.html %}
+
+    <script>
+      const jsonFile = 'people.json';
+      const baseUrl = '{{ site.baseurl }}/b/json_files/';
+      let peopleData = [];
+
+      // Load JSON file
+      async function loadPeople() {
+        try {
+          const response = await fetch(baseUrl + jsonFile);
+          if (response.ok) {
+            const people = await response.json();
+            // Sort by save_date (most recent first), then by name
+            peopleData = [...people].sort((a, b) => {
+              const dateA = a.save_date || '';
+              const dateB = b.save_date || '';
+              if (dateB > dateA) return 1;
+              if (dateB < dateA) return -1;
+              const nameA = a.name || '';
+              const nameB = b.name || '';
+              return nameA.localeCompare(nameB);
+            });
+          } else {
+            console.warn(`Failed to load ${jsonFile}: ${response.status}`);
+            peopleData = [];
+          }
+        } catch (error) {
+          console.error(`Error loading ${jsonFile}:`, error);
+          peopleData = [];
+        }
+      }
+
+      // Render people table
+      function renderPeopleTable() {
+        const tableContainer = document.getElementById('people-table-container');
+        tableContainer.innerHTML = '';
+
+        if (!peopleData || peopleData.length === 0) {
+          tableContainer.innerHTML = '<div class="no-people-message">No people found.</div>';
+          return;
+        }
+
+        // Create table
+        const table = document.createElement('table');
+        table.className = 'people-table';
+
+        // Create header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headers = ['Name', 'Affiliation', 'URL', 'Save Date'];
+        headers.forEach(headerText => {
+          const th = document.createElement('th');
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        peopleData.forEach(person => {
+          const row = document.createElement('tr');
+
+          // Name cell
+          const nameCell = document.createElement('td');
+          nameCell.className = 'person-name-cell';
+          if (person.url) {
+            const nameLink = document.createElement('a');
+            nameLink.href = person.url;
+            nameLink.target = '_blank';
+            nameLink.rel = 'noopener noreferrer';
+            nameLink.textContent = person.name || 'N/A';
+            nameLink.style.color = '#222';
+            nameLink.style.textDecoration = 'none';
+            nameLink.style.cursor = 'pointer';
+            nameLink.addEventListener('mouseenter', function() {
+              nameLink.style.textDecoration = 'underline';
+              nameLink.style.color = '#444';
+            });
+            nameLink.addEventListener('mouseleave', function() {
+              nameLink.style.textDecoration = 'none';
+              nameLink.style.color = '#222';
+            });
+            nameCell.appendChild(nameLink);
+          } else {
+            nameCell.textContent = person.name || 'N/A';
+          }
+
+          // Add hover memo tooltip if available
+          if (person.memo) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'hover-memo-tooltip';
+            tooltip.textContent = person.memo;
+            document.body.appendChild(tooltip);
+
+            // Adjust tooltip position to prevent overflow
+            function adjustTooltipPosition() {
+              const cellRect = nameCell.getBoundingClientRect();
+              const tooltipRect = tooltip.getBoundingClientRect();
+              const viewportWidth = window.innerWidth;
+              const viewportHeight = window.innerHeight;
+              const padding = 10;
+              
+              // Reset classes
+              tooltip.classList.remove('tooltip-below');
+              
+              // Calculate initial position (above the cell)
+              let top = cellRect.top - tooltipRect.height - 16;
+              let left = cellRect.left;
+              
+              // Check if tooltip goes off the top edge
+              if (top < padding) {
+                top = cellRect.bottom + 16;
+                tooltip.classList.add('tooltip-below');
+              }
+              
+              // Check if tooltip goes off the right edge
+              if (left + tooltipRect.width > viewportWidth - padding) {
+                left = viewportWidth - tooltipRect.width - padding;
+              }
+              
+              // Check if tooltip goes off the left edge
+              if (left < padding) {
+                left = padding;
+              }
+              
+              // Calculate arrow position relative to cell
+              const arrowLeft = cellRect.left - left + 16;
+              tooltip.style.setProperty('--arrow-left', arrowLeft + 'px');
+              
+              // Apply position
+              tooltip.style.top = top + 'px';
+              tooltip.style.left = left + 'px';
+              tooltip.style.bottom = 'auto';
+              tooltip.style.right = 'auto';
+            }
+
+            // Handle mouseenter
+            row.addEventListener('mouseenter', function() {
+              tooltip.style.opacity = '1';
+              adjustTooltipPosition();
+            });
+
+            // Handle mouseleave
+            row.addEventListener('mouseleave', function() {
+              tooltip.style.opacity = '0';
+            });
+
+            // Handle window resize and scroll
+            function handleResizeScroll() {
+              if (tooltip.style.opacity === '1') {
+                adjustTooltipPosition();
+              }
+            }
+            window.addEventListener('resize', handleResizeScroll);
+            window.addEventListener('scroll', handleResizeScroll, true);
+
+            // Handle touch events for mobile
+            let touchTimeout;
+            row.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              clearTimeout(touchTimeout);
+              tooltip.style.opacity = '1';
+              setTimeout(adjustTooltipPosition, 10);
+            });
+            row.addEventListener('touchend', function() {
+              touchTimeout = setTimeout(() => {
+                tooltip.style.opacity = '0';
+              }, 2000);
+            });
+          }
+
+          row.appendChild(nameCell);
+
+          // Affiliation cell
+          const affiliationCell = document.createElement('td');
+          affiliationCell.className = 'person-affiliation-cell';
+          affiliationCell.textContent = person.affiliation || 'N/A';
+          row.appendChild(affiliationCell);
+
+          // URL cell
+          const urlCell = document.createElement('td');
+          urlCell.className = 'person-url-cell';
+          if (person.url) {
+            const urlLink = document.createElement('a');
+            urlLink.href = person.url;
+            urlLink.target = '_blank';
+            urlLink.rel = 'noopener noreferrer';
+            urlLink.textContent = 'Link';
+            urlLink.style.color = '#666';
+            urlLink.style.textDecoration = 'none';
+            urlLink.style.cursor = 'pointer';
+            urlLink.addEventListener('mouseenter', function() {
+              urlLink.style.textDecoration = 'underline';
+              urlLink.style.color = '#444';
+            });
+            urlLink.addEventListener('mouseleave', function() {
+              urlLink.style.textDecoration = 'none';
+              urlLink.style.color = '#666';
+            });
+            urlCell.appendChild(urlLink);
+          } else {
+            urlCell.textContent = '-';
+          }
+          row.appendChild(urlCell);
+
+          // Save date cell
+          const dateCell = document.createElement('td');
+          dateCell.className = 'person-date-cell';
+          dateCell.textContent = person.save_date || 'N/A';
+          row.appendChild(dateCell);
+
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', async function() {
+        try {
+          await loadPeople();
+          renderPeopleTable();
+        } catch (error) {
+          console.error('Error initializing people page:', error);
+          document.getElementById('people-table-container').innerHTML = 
+            '<div class="no-people-message">Error loading people data.</div>';
+        }
+      });
+    </script>
+  </body>
+</html>

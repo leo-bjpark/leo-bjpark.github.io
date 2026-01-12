@@ -1,0 +1,110 @@
+[
+    {
+        "name": "백재일 Baek, Jaeil",
+        "affiliation": "KAIST, Prof",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "한인수 (Han, Insu)",
+        "affiliation": "KAIST, Prof",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "Tal Linzen",
+        "affiliation": "NYU Prof",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "Michael Picheny",
+        "affiliation": "NYU Prof, Audio",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "조경현",
+        "affiliation": "NYU Prof",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "Michael Hu",
+        "affiliation": "NYU Student",
+        "url": "https://cds.nyu.edu/team/michael-hu/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "유하늘",
+        "affiliation": "NYU, 오혜연 Lab",
+        "url": "https://haneul-yoo.github.io/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "유시헌",
+        "affiliation": "NYU, 신진우 Lab",
+        "url": "https://sihyun.me/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "차성민",
+        "affiliation": "NYU, Faculty Fellow NYU",
+        "url": "https://sites.google.com/view/sungmin-cha/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "이하연",
+        "affiliation": "NYU",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "박진영",
+        "affiliation": "SKK, 오혜연 교수님 연구실 출신 04 학번",
+        "url": "https://nosyu.kr/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "김지우",
+        "affiliation": "NYU, SKK",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "김동균",
+        "affiliation": "NYU, KAIST",
+        "url": "https://sites.google.com/view/donggyun-kim/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "김진우",
+        "affiliation": "NYU, KAIST",
+        "url": "https://jw9730.github.io/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "홍승훈",
+        "affiliation": "KAIST 교수",
+        "url": "https://maga33.github.io/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "한보형",
+        "affiliation": "SNU 교수",
+        "url": "https://scholar.google.com/citations?user=9aaeCToAAAAJ&hl=en",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "황정연",
+        "affiliation": "Postech",
+        "url": "https://www.linkedin.com/in/jeong-yeon-hwang-608a502b9/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "권순재",
+        "affiliation": "UMass",
+        "url": "https://www.linkedin.com/in/sunjae-kwon-1a065b157/",
+        "save_date": "2025-12-14"
+    },
+    {
+        "name": "Gaotang Li",
+        "affiliation": "KAIST",
+        "url": "https://gaotangli.github.io/",
+        "memo": "Taming Knowledge Conflicts in Language Models",
+        "save_date": "2026-01-12"
+    }
+]
