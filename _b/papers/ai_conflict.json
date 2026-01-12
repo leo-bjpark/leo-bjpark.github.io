@@ -1,11 +1,11 @@
 [
     {
-        "title": "How Human is AI? Examining the Impact of Emotional Prompts on Artificial and Human and Responsiveness",
-        "authors": "Florence Bernays, Marco Henriques Pereira, Jochen Menges",
-        "year": 2026,
-        "venue": "NA",
+        "title": "Taming Knowledge Conflicts in Language Models",
+        "authors": "Gaotang Li, Yuzhong Chen, Hanghang Tong",
+        "year": 2025,
+        "venue": "ICML",
         "save_date": "2026-01-12",
-        "hover_memo": "인간이 인공지능에게 더 친절해야 하는 이유를 제공"
+        "hover_memo": "언어 모델의 지식 충돌이 어텐션 헤드에서의 메모리–컨텍스트 중첩(superposition)에서 비롯됨을 밝히고, 파인튜닝 없이 이를 분리·조정하는 테스트타임 기법 JuICE를 제안한다."
     },
     {
         "title" : "Conjectures and Refutations",
