@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+
+  <!-- Head -->
+  <head>
+  {% include scripts/jquery.html %}
+  {% include scripts/mathjax.html %}
+  {%- if page.redirect -%}
+    <meta http-equiv="refresh" content="3; url={{ site.baseurl | prepend: site.url }}/" />
+  {%- endif -%}
+  {% include head.html %}
+  <!-- Page/Post style -->
+  {% if page._styles %}
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+  {%- endif %}
+
+  <!-- Papers page styles -->
+  <style type="text/css">
+    body {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    .papers-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .papers-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .papers-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    .papers-header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+    }
+
+    .category-button {
+      padding: 0.75rem 1.5rem;
+      background: var(--global-bg-highlight-color);
+      border: 1px solid var(--global-bg-highlight-color);
+      border-radius: 6px;
+      color: var(--global-text-color);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: capitalize;
+    }
+
+    .category-button:hover {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .category-button.active {
+      background: rgba(212, 175, 55, 0.3);
+      border-color: rgba(212, 175, 55, 0.6);
+      font-weight: 600;
+    }
+
+    .papers-table-container {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .papers-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--global-card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      table-layout: auto;
+    }
+
+    .papers-table thead {
+      background: var(--global-card-bg-color);
+    }
+
+    .papers-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--global-divider-color);
+    }
+
+    .papers-table td {
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--global-divider-color);
+      vertical-align: top;
+    }
+
+    .papers-table tbody tr {
+      position: relative;
+    }
+
+    .papers-table tbody tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .papers-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hover-memo-tooltip {
+      position: absolute;
+      z-index: 1000;
+      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      border: 1px solid var(--global-divider-color);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
+      line-height: 1.6;
+      max-width: 400px;
+      word-wrap: break-word;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      bottom: calc(100% + 1rem);
+      left: 0;
+      margin-bottom: 0;
+    }
+
+    .hover-memo-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 1rem;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+      margin-top: 0;
+    }
+
+    .hover-memo-tooltip::before {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: calc(1rem - 1px);
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 9px solid var(--global-divider-color);
+      margin-top: 0;
+      z-index: -1;
+    }
+
+    .papers-table tbody tr:hover .hover-memo-tooltip,
+    .papers-table tbody tr.touch-active .hover-memo-tooltip {
+      opacity: 1;
+    }
+
+    .paper-title-cell {
+      position: relative;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #222;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      min-width: 300px;
+    }
+
+    .paper-authors-cell {
+      font-size: 1rem;
+      color: #444;
+      word-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+      min-width: 200px;
+    }
+
+    .paper-year-cell {
+      font-size: 1rem;
+      color: #666;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .paper-venue-cell {
+      font-size: 1rem;
+      color: #666;
+      min-width: 100px;
+    }
+
+    .paper-date-cell {
+      font-size: 0.9rem;
+      color: #999;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .no-papers-message {
+      text-align: center;
+      color: #999;
+      padding: 3rem;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .hover-memo-tooltip {
+        max-width: 300px;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .papers-header h1 {
+        font-size: 2rem;
+      }
+      
+      .category-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .category-button {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .papers-table {
+        font-size: 0.9rem;
+      }
+      
+      .papers-table th,
+      .papers-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+
+  </head>
+
+  <!-- Body -->
+  <body style="padding-top:0px" class="{%- if site.navbar_fixed -%}fixed-top-nav{%- endif -%} {%- unless site.footer_fixed -%}sticky-bottom-footer{%- endunless -%}"> 
+
+    {%- include header.html %}
+
+    <div class="papers-container">
+      <div class="papers-header">
+        <h1>{{ page.title | default: "Papers" }}</h1>
+        {% if page.description %}
+        <p>{{ page.description }}</p>
+        {% endif %}
+      </div>
+
+      <div class="category-buttons" id="category-buttons"></div>
+      
+      <div id="papers-table-container" class="papers-table-container"></div>
+    </div>
+
+    <!-- Footer -->
+    <!-- {%- include footer.html %} -->
+
+    <!-- JavaScripts -->
+    {% include scripts/jquery.html %}
+    {% include scripts/bootstrap.html %}
+    {% include scripts/masonry.html %}
+    {% include scripts/misc.html %}
+    {% include scripts/mathjax.html %}
+    {% include scripts/analytics.html %}
+
+    <script>
+      // List of JSON files in _b/papers/ directory
+      const jsonFiles = [
+        { file: 'ai_conflict.json', name: 'AI Conflict' },
+        { file: 'ai_impact.json', name: 'AI Impact' }
+      ];
+      
+      const baseUrl = '{{ site.baseurl }}/b/papers/';
+      let papersData = {}; // Store papers by category
+      let currentCategory = null;
+
+      // Helper function to format category name
+      function formatCategoryName(fileName) {
+        // Remove .json extension and replace underscores with spaces
+        return fileName.replace('.json', '').replace(/_/g, ' ').split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ');
+      }
+
+      // Load all JSON files
+      async function loadAllPapers() {
+        for (const { file, name } of jsonFiles) {
+          try {
+            const response = await fetch(baseUrl + file);
+            if (response.ok) {
+              const papers = await response.json();
+              // Sort by save_date (most recent first)
+              const sortedPapers = [...papers].sort((a, b) => {
+                const dateA = a.save_date || '';
+                const dateB = b.save_date || '';
+                if (dateB > dateA) return 1;
+                if (dateB < dateA) return -1;
+                return 0;
+              });
+              papersData[name] = sortedPapers;
+            } else {
+              console.warn(`Failed to load ${file}: ${response.status}`);
+              papersData[name] = [];
+            }
+          } catch (error) {
+            console.error(`Error loading ${file}:`, error);
+            papersData[name] = [];
+          }
+        }
+      }
+
+      // Render category buttons
+      function renderCategoryButtons() {
+        const buttonsContainer = document.getElementById('category-buttons');
+        buttonsContainer.innerHTML = '';
+        
+        jsonFiles.forEach(({ name }) => {
+          const button = document.createElement('button');
+          button.className = 'category-button';
+          button.textContent = name;
+          button.addEventListener('click', () => showCategory(name));
+          buttonsContainer.appendChild(button);
+        });
+      }
+
+      // Show papers for a specific category
+      function showCategory(categoryName) {
+        currentCategory = categoryName;
+        
+        // Update button states
+        const buttons = document.querySelectorAll('.category-button');
+        buttons.forEach(button => {
+          if (button.textContent === categoryName) {
+            button.classList.add('active');
+          } else {
+            button.classList.remove('active');
+          }
+        });
+
+        // Render table
+        const papers = papersData[categoryName] || [];
+        renderPapersTable(papers, categoryName);
+      }
+
+      // Render papers table
+      function renderPapersTable(papers, categoryName) {
+        const tableContainer = document.getElementById('papers-table-container');
+        tableContainer.innerHTML = '';
+
+        if (!papers || papers.length === 0) {
+          tableContainer.innerHTML = '<div class="no-papers-message">No papers found in this category.</div>';
+          return;
+        }
+
+        // Create table
+        const table = document.createElement('table');
+        table.className = 'papers-table';
+
+        // Create header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const headers = ['Title', 'Authors', 'Year', 'Venue', 'Save Date'];
+        headers.forEach(headerText => {
+          const th = document.createElement('th');
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        papers.forEach(paper => {
+          const row = document.createElement('tr');
+
+          // Title cell
+          const titleCell = document.createElement('td');
+          titleCell.className = 'paper-title-cell';
+          titleCell.textContent = paper.title || 'Untitled';
+
+          // Add hover memo tooltip if available
+          if (paper.hover_memo) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'hover-memo-tooltip';
+            tooltip.textContent = paper.hover_memo;
+            titleCell.appendChild(tooltip);
+
+            // Handle touch events for mobile
+            let touchTimeout;
+            row.addEventListener('touchstart', function(e) {
+              e.preventDefault();
+              clearTimeout(touchTimeout);
+              row.classList.add('touch-active');
+            });
+            row.addEventListener('touchend', function() {
+              touchTimeout = setTimeout(() => {
+                row.classList.remove('touch-active');
+              }, 2000); // Hide after 2 seconds
+            });
+          }
+
+          row.appendChild(titleCell);
+
+          // Authors cell
+          const authorsCell = document.createElement('td');
+          authorsCell.className = 'paper-authors-cell';
+          authorsCell.textContent = paper.authors || 'N/A';
+          row.appendChild(authorsCell);
+
+          // Year cell
+          const yearCell = document.createElement('td');
+          yearCell.className = 'paper-year-cell';
+          yearCell.textContent = paper.year || 'N/A';
+          row.appendChild(yearCell);
+
+          // Venue cell
+          const venueCell = document.createElement('td');
+          venueCell.className = 'paper-venue-cell';
+          venueCell.textContent = paper.venue || 'N/A';
+          row.appendChild(venueCell);
+
+          // Save date cell
+          const dateCell = document.createElement('td');
+          dateCell.className = 'paper-date-cell';
+          dateCell.textContent = paper.save_date || 'N/A';
+          row.appendChild(dateCell);
+
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', async function() {
+        try {
+          await loadAllPapers();
+          renderCategoryButtons();
+          
+          // Show first category by default
+          if (jsonFiles.length > 0) {
+            showCategory(jsonFiles[0].name);
+          }
+        } catch (error) {
+          console.error('Error initializing papers page:', error);
+          document.getElementById('papers-table-container').innerHTML = 
+            '<div class="no-papers-message">Error loading papers data.</div>';
+        }
+      });
+    </script>
+  </body>
+</html>
