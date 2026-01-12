@@ -14,5 +14,13 @@
     "venue": "NA",
     "save_date": "2026-01-12",
     "hover_memo": "긴 입력을 한 번에 처리하지 않고, 필요한 부분을 골라 같은 추론 방식을 반복 적용한다. 모델은 스스로를 다시 호출해 하위 문제를 풀고, 그 결과를 모아 전체 문제를 해결한다."
+},
+{
+    "title": "GDPO: Group reward-Decoupled Normalization Policy Optimization for Multi-reward RL Optimization",
+    "authors": "Shih-Yang Liu",
+    "year": 2026,
+    "venue": "NVIDIA",
+    "save_date": "2026-01-12",
+    "hover_memo": "GDPO는 여러 reward를 하나로 섞어 한 번에 정규화하지 않고, 각 reward를 개별적으로 정규화한 뒤 정책 업데이트에 결합하는 방식"
 }
 ]
