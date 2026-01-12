@@ -1,0 +1,10 @@
+[
+{
+    "title": "Prompt Repetition Improves Non-Reasoning LLMs",
+    "authors": "Yaniv Leviathan, Matan Kalman, Yossi Matias",
+    "year": 2025,
+    "venue": "NA",
+    "save_date": "2026-01-12",
+    "hover_memo": "의미없더라도 반복적인 토큰을 넣으면 성능이 향상한다. 계산을 더 많이 해주니까 그렇다."
+}
+]
