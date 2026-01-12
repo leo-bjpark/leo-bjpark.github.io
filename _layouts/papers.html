@@ -26,6 +26,7 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 2rem 1rem;
+      overflow: visible;
     }
 
     .papers-header {
@@ -83,6 +84,7 @@
     .papers-table-container {
       margin-bottom: 2rem;
       overflow-x: auto;
+      overflow-y: visible;
       width: 100%;
       -webkit-overflow-scrolling: touch;
     }
@@ -131,8 +133,8 @@
     }
 
     .hover-memo-tooltip {
-      position: absolute;
-      z-index: 1000;
+      position: fixed;
+      z-index: 10000;
       background: var(--global-card-bg-color, rgb(255, 222, 190));
       border: 1px solid var(--global-divider-color);
       border-radius: 6px;
@@ -147,16 +149,14 @@
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.2s ease;
-      bottom: calc(100% + 1rem);
-      left: 0;
-      margin-bottom: 0;
+      margin: 0;
     }
 
     .hover-memo-tooltip::after {
       content: '';
       position: absolute;
       top: 100%;
-      left: 1rem;
+      left: var(--arrow-left, 1rem);
       width: 0;
       height: 0;
       border-left: 8px solid transparent;
@@ -169,7 +169,7 @@
       content: '';
       position: absolute;
       top: 100%;
-      left: calc(1rem - 1px);
+      left: calc(var(--arrow-left, 1rem) - 1px);
       width: 0;
       height: 0;
       border-left: 9px solid transparent;
@@ -177,6 +177,20 @@
       border-top: 9px solid var(--global-divider-color);
       margin-top: 0;
       z-index: -1;
+    }
+
+    .hover-memo-tooltip.tooltip-below::after {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+    }
+
+    .hover-memo-tooltip.tooltip-below::before {
+      top: auto;
+      bottom: 100%;
+      border-top: none;
+      border-bottom: 9px solid var(--global-divider-color);
     }
 
     .papers-table tbody tr:hover .hover-memo-tooltip,
@@ -418,18 +432,83 @@
             const tooltip = document.createElement('div');
             tooltip.className = 'hover-memo-tooltip';
             tooltip.textContent = paper.hover_memo;
-            titleCell.appendChild(tooltip);
+            // Append to body instead of cell to avoid overflow issues
+            document.body.appendChild(tooltip);
+
+            // Adjust tooltip position to prevent overflow
+            function adjustTooltipPosition() {
+              const cellRect = titleCell.getBoundingClientRect();
+              const tooltipRect = tooltip.getBoundingClientRect();
+              const viewportWidth = window.innerWidth;
+              const viewportHeight = window.innerHeight;
+              const padding = 10;
+              
+              // Reset classes
+              tooltip.classList.remove('tooltip-below');
+              
+              // Calculate initial position (above the cell)
+              let top = cellRect.top - tooltipRect.height - 16; // 16px for arrow + spacing
+              let left = cellRect.left;
+              
+              // Check if tooltip goes off the top edge
+              if (top < padding) {
+                // Position below instead
+                top = cellRect.bottom + 16;
+                tooltip.classList.add('tooltip-below');
+              }
+              
+              // Check if tooltip goes off the right edge
+              if (left + tooltipRect.width > viewportWidth - padding) {
+                left = viewportWidth - tooltipRect.width - padding;
+              }
+              
+              // Check if tooltip goes off the left edge
+              if (left < padding) {
+                left = padding;
+              }
+              
+              // Calculate arrow position relative to cell
+              const arrowLeft = cellRect.left - left + 16; // 16px offset from cell left
+              tooltip.style.setProperty('--arrow-left', arrowLeft + 'px');
+              
+              // Apply position
+              tooltip.style.top = top + 'px';
+              tooltip.style.left = left + 'px';
+              tooltip.style.bottom = 'auto';
+              tooltip.style.right = 'auto';
+            }
+
+            // Handle mouseenter
+            row.addEventListener('mouseenter', function() {
+              tooltip.style.opacity = '1';
+              adjustTooltipPosition();
+            });
+
+            // Handle mouseleave
+            row.addEventListener('mouseleave', function() {
+              tooltip.style.opacity = '0';
+            });
+
+            // Handle window resize and scroll
+            function handleResizeScroll() {
+              if (tooltip.style.opacity === '1') {
+                adjustTooltipPosition();
+              }
+            }
+            window.addEventListener('resize', handleResizeScroll);
+            window.addEventListener('scroll', handleResizeScroll, true);
 
             // Handle touch events for mobile
             let touchTimeout;
             row.addEventListener('touchstart', function(e) {
               e.preventDefault();
               clearTimeout(touchTimeout);
-              row.classList.add('touch-active');
+              tooltip.style.opacity = '1';
+              setTimeout(adjustTooltipPosition, 10);
             });
             row.addEventListener('touchend', function() {
               touchTimeout = setTimeout(() => {
-                row.classList.remove('touch-active');
+                tooltip.style.opacity = '0';
               }, 2000); // Hide after 2 seconds
             });
           }
