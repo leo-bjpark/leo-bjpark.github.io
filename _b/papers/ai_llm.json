@@ -22,5 +22,13 @@
     "venue": "NVIDIA",
     "save_date": "2026-01-12",
     "hover_memo": "GDPO는 여러 reward를 하나로 섞어 한 번에 정규화하지 않고, 각 reward를 개별적으로 정규화한 뒤 정책 업데이트에 결합하는 방식"
+},
+{
+    "title": "Readers Prefer Outputs of AI Trained on Copyrighted Books over Expert Human Writers", 
+    "authors": "Tuhin Chakrabarty",
+    "year": 2025,
+    "venue": "NA",
+    "save_date": "2026-01-12",
+    "hover_memo": "특정 저자 한 명의 전체 작품으로 파인튜닝한 AI는, 단순 프롬프트 기반 AI보다 훨씬 인간에 가깝고, 심지어 전문가 인간 작가보다도 그 ‘저자 스타일’과 ‘글의 질’에서 더 선호되었다는 겁니다."
 }
 ]
