@@ -113,5 +113,19 @@
         "url": "https://theeluwin.github.io/",
         "memo": "",
         "save_date": "2026-01-12"
+    },
+    {
+        "name": "이성환",
+        "affiliation": "고려대학교 정보통신대학 뇌공학과",
+        "url": "http://swstarlab.kr/page/page02_02.php?c=lab07",
+        "memo": "",
+        "save_date": "2026-01-14"
+    },
+    {
+        "name": "이대혁",
+        "affiliation": "고려대학교 정보통신대학 뇌공학과",
+        "url": "lee_dh@korea.ac.kr",
+        "memo": "",
+        "save_date": "2026-01-14"
     }
 ]
