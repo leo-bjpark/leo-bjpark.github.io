@@ -1,4 +1,12 @@
 [
+    {
+        "title": " Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models.",
+        "authors": "Xin Cheng",
+        "year": 2026,
+        "venue": "DeepSeek",
+        "save_date": "2026-01-15",
+        "hover_memo": "이 논문은 LLM이 정적 지식과 지역적 패턴을 매번 연산으로 재구성하는 비효율을 지적하고, 이를 **조건부 메모리(Conditional Memory)**라는 새로운 희소성 축으로 분리해 해결한다. 제안한 Engram 모듈은 N-gram 기반 해시 조회로 정적 패턴을 O(1)에 불러오고, 컨텍스트 인식 게이팅으로 필요한 경우에만 결합함으로써 초기 레이어의 부담을 줄이고 추론에 사용할 깊이를 확보한다. 실험적으로 MoE와의 **희소성 배분 법칙(U자형)**을 발견해 두 방식의 상보성을 입증했으며, 동일 파라미터·FLOPs 조건에서 지식·일반 추론·코드/수학·장문 컨텍스트 전반의 성능을 유의미하게 개선했다. 또한 결정적 주소 지정과 메모리 오프로딩으로 시스템 효율까지 확보해, 차세대 LLM에서 연산과 메모리를 동등한 1급 구성요소로 설계해야 함을 제시한다."
+    },
 {
     "title": "Prompt Repetition Improves Non-Reasoning LLMs",
     "authors": "Yaniv Leviathan, Matan Kalman, Yossi Matias",
