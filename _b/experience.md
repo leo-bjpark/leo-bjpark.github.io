@@ -6,7 +6,7 @@ disqus_comments: false
 date: 2025-02-10
 featured: true
 img: assets/img/feigenbaum.png
-title: 'Daily'
+title: 'Experience'
 category: 'AI'
 description: ''
 permalink: '/e'
