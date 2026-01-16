@@ -10,10 +10,10 @@
         "html": "<p><b>모순(contradiction)</b>은 하나의 동일한 논리 체계(같은 기준·같은 레벨) 안에서 A와 ¬A처럼 동시에 참일 수 없는 명제들이 함께 성립하는 경우를 말한다. 보통 이는 전제 오류, 추론 실수, 불일치로 해석되며 최소 하나는 틀린 것으로 간주되어 수정·제거의 대상이 된다.</p><p><b>이율배반(antinomy)</b>은 단순히 ‘서로 다른 체계 간 충돌’이라기보다, 동일한 이성적 규칙을 충실히 적용했음에도 서로 양립 불가능한 두 원리(또는 결론)가 각각 정당하게 도출되는 상태를 가리킨다. 각 결론은 국소적으로는 설득력 있지만 전역적으로는 동시에 유지될 수 없으며, 이는 오류라기보다 적용 범위·추론 레벨·판단 기준의 충돌(혹은 기준의 부재)을 드러낸다. LLM 맥락에서는 contradiction이 ‘명백한 불일치/오류’로 읽히는 반면, antinomy는 여러 추론 경로에서 각각 coherent한 신념이 형성되면서 발생하는 ‘원리 간 긴장’으로서 모델의 안정성·신념 관리 메커니즘을 분석하는 관점으로 연결될 수 있다.</p>"
     },
     {
-    "date": "2026-01-16 (Fri)",
-    "summary": "Russell's Paradox (Antinomy)",
-    "html": "<p>In mathematical logic, <strong>Russell's paradox</strong> is a set-theoretic paradox introduced by <strong></strong> in 1901. The paradox shows that any set theory based on an <em>unrestricted comprehension principle</em> leads to a contradiction.</p><p>The unrestricted comprehension principle states that for any sufficiently well-defined property, there exists a set containing exactly those objects that satisfy the property. Let <strong>R</strong> be the set of all sets that are not members of themselves.</p><p>If <strong>R</strong> is a member of itself, then by definition it must not be a member of itself. Conversely, if <strong>R</strong> is not a member of itself, then it must be a member of itself. This yields a contradiction.</p><pre>R = { x | x ∉ x }\nR ∈ R ⇔ R ∉ R</pre><p>This contradiction is known as Russell's paradox and motivated the development of modern axiomatic set theories that restrict set formation.</p>"
-    },
+        "date": "2026-01-16 (Fri)",
+        "summary": "Russell's Paradox (Antinomy)",
+        "html": "<p>In mathematical logic, <strong>Russell's paradox</strong> is a set-theoretic paradox introduced by <strong></strong> in 1901. The paradox shows that any set theory based on an <em>unrestricted comprehension principle</em> leads to a contradiction.</p><p>The unrestricted comprehension principle states that for any sufficiently well-defined property, there exists a set containing exactly those objects that satisfy the property. Let <strong>R</strong> be the set of all sets that are not members of themselves.</p><p>If <strong>R</strong> is a member of itself, then by definition it must not be a member of itself. Conversely, if <strong>R</strong> is not a member of itself, then it must be a member of itself. This yields a contradiction.</p><pre>R = { x | x ∉ x }\nR ∈ R ⇔ R ∉ R</pre><p>This contradiction is known as Russell's paradox and motivated the development of modern axiomatic set theories that restrict set formation.</p>"
+        },
     {
         "date": "2026-01-16 (Fri)",
         "summary": "칸트는 4가지 이율배반 (Antinomy)",
