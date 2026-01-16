@@ -1,5 +1,5 @@
 ---
-layout: daily
+layout: experience
 bibliography: all.bib
 giscus_comments: false
 disqus_comments: false
