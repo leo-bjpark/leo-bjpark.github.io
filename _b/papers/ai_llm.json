@@ -1,5 +1,13 @@
 [
     {
+        "title": "A Brain-like Synergistic Core in LLMs Drives Behaviour and Learning", 
+        "authors": "Pedro Urbina-Rodriguez",
+        "year": 2026,
+        "venue": "NA",
+        "save_date": "2026-01-16",
+        "hover_memo": "이 논문의 핵심은 지능의 본질적 계산 원리로서 ‘시너지적 정보 처리(synergistic information processing)’가 생물학적 뇌와 대규모 언어 모델(LLM) 모두에서 자발적으로 등장한다는 점을 실증적으로 보였다는 것이다. 저자들은 정보 분해(information decomposition) 관점에서 다양한 LLM의 내부를 분석한 결과, 중간 레이어에서 개별 구성요소의 단순 합을 넘어서는 시너지적 통합이 집중적으로 나타나고, 초기·후기 레이어는 주로 중복적(redundant) 정보 처리를 담당한다는 사실을 발견했다. 이 구조는 인간 뇌의 정보 조직 방식과 놀라울 정도로 유사하며, 무작위 초기화된 네트워크에는 존재하지 않아 학습을 통해 emergent하게 형성됨을 보여준다. 또한 시너지 영역을 제거하면 성능이 비선형적으로 급락하고 행동이 크게 변하는데, 이는 시너지가 이론적으로 취약하지만 핵심적인 계산 자원이라는 예측과 일치한다. 더 나아가 강화학습 기반 미세조정은 시너지 영역을 조정할 때 현저한 성능 향상을 보이지만, 지도학습 미세조정에서는 이러한 이점이 나타나지 않는다. 이는 시너지적 정보 처리가 지능의 부수적 산물이 아니라, 학습·보상 구조와 깊이 결합된 지능의 보편적이고 기능적인 핵심 특성임을 시사하며, 인공 지능 설계와 생물학적 지능 연구 모두에 검증 가능한 예측을 제공한다."
+    },
+    {
         "title": " Conditional Memory via Scalable Lookup: A New Axis of Sparsity for Large Language Models.",
         "authors": "Xin Cheng",
         "year": 2026,
