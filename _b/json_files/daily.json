@@ -13,5 +13,10 @@
     "date": "2026-01-16 (Fri)",
     "summary": "Russell's Paradox (Antinomy)",
     "html": "<p>In mathematical logic, <strong>Russell's paradox</strong> is a set-theoretic paradox introduced by <strong></strong> in 1901. The paradox shows that any set theory based on an <em>unrestricted comprehension principle</em> leads to a contradiction.</p><p>The unrestricted comprehension principle states that for any sufficiently well-defined property, there exists a set containing exactly those objects that satisfy the property. Let <strong>R</strong> be the set of all sets that are not members of themselves.</p><p>If <strong>R</strong> is a member of itself, then by definition it must not be a member of itself. Conversely, if <strong>R</strong> is not a member of itself, then it must be a member of itself. This yields a contradiction.</p><pre>R = { x | x ∉ x }\nR ∈ R ⇔ R ∉ R</pre><p>This contradiction is known as Russell's paradox and motivated the development of modern axiomatic set theories that restrict set formation.</p>"
-    }
+    },
+    {
+        "date": "2026-01-16 (Fri)",
+        "summary": "칸트는 4가지 이율배반 (Antinomy)",
+        "html": "<p><strong>칸트</strong>는 순수이성이 경험을 넘어 ‘세계 전체’를 설명하려 할 때, 이성이 스스로 서로 모순되는 두 논증(정립/반정립)을 만들어내는 현상을 <strong>이율배반(antinomies of pure reason)</strong>이라 보았다. 대표적으로 다음 네 가지가 있다.</p><ol><li><strong>공간·시간에 있어서 우주의 한계</strong><br/>왜 이율배반인가: 우주가 <em>유한</em>하다고 해도 ‘바깥/이전’을 묻게 되고, <em>무한</em>하다고 해도 ‘완성된 무한’을 사고하기 어렵다. 그래서 이성은 유한/무한을 모두 논증하게 된다.</li><li><strong>단순한 구성 요소(원자) 문제</strong><br/>왜 이율배반인가: 모든 복합체는 ‘더 이상 나눌 수 없는 단순한 것’에 의해 성립하는 듯 보이지만, 동시에 어떤 것도 끝없이 분할 가능하다고 생각할 수 있어 ‘단순한 것의 존재/부재’가 모두 정당화된다.</li><li><strong>자유의지와 보편적 인과성</strong><br/>왜 이율배반인가: 도덕적 책임을 위해 자유가 필요하다고 느끼는 한편, 자연 세계에서는 모든 사건이 인과 법칙에 의해 결정된다고 믿게 되어 ‘자유/결정론’이 충돌한다.</li><li><strong>필연적 존재(절대적 존재)의 존재</strong><br/>왜 이율배반인가: 우연적인 것들의 연쇄에는 최종 근거가 필요해 ‘필연적 존재’를 요구하게 되지만, 그런 존재는 경험적으로 확인·증명할 수 없어 ‘존재/비존재’ 양쪽이 모두 논증된다.</li></ol><p>요컨대 칸트에게 이율배반은 <em>이성이 경험 가능한 범위를 넘어설 때 발생하는 구조적 한계</em>를 보여주는 사례다.</p>"
+      }      
 ]
