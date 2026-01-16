@@ -9,6 +9,7 @@ img: assets/img/feigenbaum.png
 title: 'Papers'
 category: 'AI'
 description: ''
+permalink: '/p'
 _styles: >
     table {
         padding-top: 200px;

@@ -146,7 +146,7 @@
       line-height: 1.6;
       max-width: 400px;
       word-wrap: break-word;
-      pointer-events: none;
+      pointer-events: auto;
       opacity: 0;
       transition: opacity 0.2s ease;
       margin: 0;
@@ -451,7 +451,8 @@
           if (paper.hover_memo) {
             const tooltip = document.createElement('div');
             tooltip.className = 'hover-memo-tooltip';
-            tooltip.textContent = paper.hover_memo;
+            // Render HTML directly
+            tooltip.innerHTML = paper.hover_memo;
             // Append to body instead of cell to avoid overflow issues
             document.body.appendChild(tooltip);
 
