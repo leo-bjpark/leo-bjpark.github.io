@@ -9,5 +9,6 @@ img: assets/img/feigenbaum.png
 title: 'Daily'
 category: 'AI'
 description: ''
+permalink: '/d'
 ---
 

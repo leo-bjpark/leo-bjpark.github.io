@@ -113,7 +113,7 @@
       line-height: 1.6;
       max-width: 400px;
       word-wrap: break-word;
-      pointer-events: none;
+      pointer-events: auto;
       opacity: 0;
       transition: opacity 0.2s ease;
       margin: 0;
@@ -354,20 +354,13 @@
           summaryCell.textContent = entry.summary || 'N/A';
           row.appendChild(summaryCell);
 
-          // Add hover memo tooltip if available
-          if (entry.memos && Array.isArray(entry.memos) && entry.memos.length > 0) {
+          // Add hover html tooltip if available
+          if (entry.html && typeof entry.html === 'string' && entry.html.trim().length > 0) {
             const tooltip = document.createElement('div');
             tooltip.className = 'hover-memo-tooltip';
             
-            // Create memo list
-            const memoList = document.createElement('ul');
-            memoList.className = 'memo-list';
-            entry.memos.forEach(memo => {
-              const listItem = document.createElement('li');
-              listItem.textContent = memo;
-              memoList.appendChild(listItem);
-            });
-            tooltip.appendChild(memoList);
+            // Render HTML directly
+            tooltip.innerHTML = entry.html;
             
             // Append to body instead of cell to avoid overflow issues
             document.body.appendChild(tooltip);
@@ -415,14 +408,34 @@
               tooltip.style.right = 'auto';
             }
 
-            // Handle mouseenter
+            // Handle mouseenter on row
             row.addEventListener('mouseenter', function() {
               tooltip.style.opacity = '1';
               adjustTooltipPosition();
             });
 
-            // Handle mouseleave
-            row.addEventListener('mouseleave', function() {
+            // Handle mouseleave on row - only hide if not hovering over tooltip
+            row.addEventListener('mouseleave', function(e) {
+              // Check if mouse is moving to tooltip
+              const relatedTarget = e.relatedTarget;
+              if (relatedTarget && (relatedTarget === tooltip || tooltip.contains(relatedTarget))) {
+                return; // Don't hide if moving to tooltip
+              }
+              // Small delay to allow mouse to enter tooltip
+              setTimeout(function() {
+                if (!tooltip.matches(':hover') && !row.matches(':hover')) {
+                  tooltip.style.opacity = '0';
+                }
+              }, 100);
+            });
+
+            // Handle mouseenter on tooltip - keep it visible
+            tooltip.addEventListener('mouseenter', function() {
+              tooltip.style.opacity = '1';
+            });
+
+            // Handle mouseleave on tooltip - hide it
+            tooltip.addEventListener('mouseleave', function() {
               tooltip.style.opacity = '0';
             });
 
