@@ -139,6 +139,7 @@
       white-space: pre;
       font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
       background: transparent;
+      overflow: visible;
     }
 
     .code-viewer-content code {
@@ -147,6 +148,7 @@
       font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
       color: #333;
       font-size: 1rem;
+      overflow: visible;
     }
 
     .code-viewer-content code span {
@@ -634,8 +636,7 @@
             return processedLine;
           }
           
-          // Comments (process first)
-          processedLine = processedLine.replace(/(#.*)$/, '<span class="comment">$1</span>');
+          // Skip comments highlighting - don't wrap in span
           
           // String literals (single and double quotes)
           processedLine = processedLine.replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>');
@@ -643,8 +644,28 @@
           // Docstrings (triple quotes) - do this after single quotes
           processedLine = processedLine.replace(/("""|''')([\s\S]*?)\1/g, '<span class="string">$1$2$1</span>');
           
-          // Keywords (but not inside strings or comments)
-          processedLine = processedLine.replace(/(?<!["'#])\b(def|return|if|elif|else|for|while|try|except|finally|with|import|from|as|class|pass|break|continue|raise|assert|lambda|yield|global|nonlocal|del|and|or|not|in|is|None|True|False)\b(?!["'])/g, '<span class="keyword">$1</span>');
+          // Keywords (but not inside strings, comments, or HTML tags)
+          // First, protect already processed spans
+          const protectRegex = /<span[^>]*>.*?<\/span>/g;
+          const placeholders = [];
+          let placeholderIndex = 0;
+          processedLine = processedLine.replace(protectRegex, (match) => {
+            const placeholder = `__PLACEHOLDER_${placeholderIndex}__`;
+            placeholders[placeholderIndex] = match;
+            placeholderIndex++;
+            return placeholder;
+          });
+          
+          // Now apply keyword highlighting (excluding "class" which we'll handle separately)
+          processedLine = processedLine.replace(/\b(def|return|if|elif|else|for|while|try|except|finally|with|import|from|as|pass|break|continue|raise|assert|lambda|yield|global|nonlocal|del|and|or|not|in|is|None|True|False)\b(?!\w)/g, '<span class="keyword">$1</span>');
+          
+          // Handle "class" separately - only match when followed by colon or whitespace (not part of identifier)
+          processedLine = processedLine.replace(/\bclass\b(?=\s|:)/g, '<span class="keyword">class</span>');
+          
+          // Restore protected spans
+          placeholders.forEach((placeholder, index) => {
+            processedLine = processedLine.replace(`__PLACEHOLDER_${index}__`, placeholder);
+          });
           
           // Function definitions
           processedLine = processedLine.replace(/def\s+(\w+)\s*\(/g, 'def <span class="function">$1</span>(');

@@ -19,5 +19,20 @@
         "category": "LLM",
         "copy_counter":0,
         "html": "<pre><code>def format_chat(\n    tokenizer,\n    prompt: str,\n    response: str | None = None,\n    add_generation_prompt: bool = False,\n):\n    \"\"\"\n    Chat Template for the model.\n    \"\"\"\n\n    messages = [{\"role\": \"user\", \"content\": prompt}]\n\n    if response is not None:\n        messages.append(\n            {\"role\": \"assistant\", \"content\": response}\n        )\n\n    return tokenizer.apply_chat_template(\n        messages,\n        tokenize=False,\n        add_generation_prompt=add_generation_prompt,\n    )</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": "LoRA Adapter Load",
+        "category": "LLM",
+        "copy_counter":0,
+        "html": "<pre><code>from peft import PeftModel, LoraConfig, get_peft_model\n\ndef load_lora_adapter(\n    model,\n    adapter_name,\n    checkpoint_path=None,\n    is_trainable=True,\n):\n    \"\"\"\n    Load or initialize a LoRA adapter into an existing model.\n\n    Args:\n        model: base model or PeftModel\n        adapter_name: name of the LoRA adapter\n        checkpoint_path: path to LoRA checkpoint (optional)\n        is_trainable: whether this adapter is trainable (DPO / GRPO)\n\n    Returns:\n        model with the adapter loaded\n    \"\"\"\n\n    # Case 1: model is not yet a PeftModel → first adapter\n    if not hasattr(model, \"peft_config\"):\n        if checkpoint_path is None:\n            raise ValueError(\n                \"checkpoint_path must be provided when initializing the first LoRA adapter\"\n            )\n\n        model = PeftModel.from_pretrained(\n            model,\n            checkpoint_path,\n            adapter_name=adapter_name,\n            is_trainable=is_trainable,\n        )\n\n    # Case 2: model already has adapters → load or add\n    else:\n        if checkpoint_path is not None:\n            model.load_adapter(\n                checkpoint_path,\n                adapter_name=adapter_name,\n                is_trainable=is_trainable,\n            )\n        else:\n            lora_config = LoraConfig(\n                r=8,\n                lora_alpha=16,\n                lora_dropout=0.05,\n                target_modules=[\"q_proj\", \"v_proj\"],\n                bias=\"none\",\n                task_type=\"CAUSAL_LM\",\n            )\n            model.add_adapter(adapter_name, lora_config)\n\n    model.set_adapter(adapter_name)\n    model.print_trainable_parameters()\n\n    return model</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": "LoRA Adapter Control",
+        "category": "LLM",
+        "copy_counter":0,
+        "html": "<pre><code>def control_lora_adapter(\n    model,\n    mode=\"enable\",\n    adapter_name=None,\n):\n    \"\"\"\n    Control LoRA adapter behavior.\n\n    mode:\n        - \"enable\": enable (and optionally select) LoRA adapter\n        - \"disable\": temporarily disable all LoRA adapters\n        - \"unload\": remove all LoRA adapters\n        - \"merge\": merge active LoRA adapter into base model\n\n    adapter_name:\n        - name of the adapter to activate (used in \"enable\" mode)\n    \"\"\"\n\n    if mode == \"enable\":\n        if adapter_name is not None and hasattr(model, \"set_adapter\"):\n            model.set_adapter(adapter_name)\n        if hasattr(model, \"enable_adapter\"):\n            model.enable_adapter()\n\n    elif mode == \"disable\":\n        if hasattr(model, \"disable_adapter\"):\n            model.disable_adapter()\n\n    elif mode == \"unload\":\n        if hasattr(model, \"unload\"):\n            model = model.unload()\n\n    elif mode == \"merge\":\n        if hasattr(model, \"merge_and_unload\"):\n            model = model.merge_and_unload()\n\n    else:\n        raise ValueError(f\"Unknown mode: {mode}\")\n\n    return model</code></pre>"
     }
 ]
+
