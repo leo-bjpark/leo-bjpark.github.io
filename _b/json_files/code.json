@@ -8,7 +8,14 @@
     },
     {
         "date": "2026-01-18",
-        "title": "Load Stansford Human Preference Dataset",
+        "title": "LLM Generation Simple Code",
+        "category": "LLM",
+        "copy_counter":0,
+        "html": "<pre><code>def generate_response(model, tokenizer, prompts, max_new_tokens=128):\n    inputs = tokenizer(prompts, \n                       return_tensors=\"pt\", \n                       padding=True, \n                       truncation=True,\n                       ).to(model.device)\n    input_ids=inputs.input_ids.to(model.device)\n    attention_mask=inputs.attention_mask.to(model.device)\n    outputs = model.generate(input_ids=input_ids, \n                             attention_mask=attention_mask, \n                             max_new_tokens=max_new_tokens, \n                             do_sample=False,\n                             )\n    input_len = input_ids.shape[1]\n    decoded_outputs = [\n        tokenizer.decode(output[input_len:], skip_special_tokens=True)\n        for output in outputs\n    ]\n    return decoded_outputs</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": " Stansford Human Preference Dataset",
         "category": "Dataset",
         "copy_counter":0,
         "html": "<pre><code>from datasets import load_dataset\n\ndef load_shp_dataset(\n    split: str = \"train\",\n    max_samples: int | None = 1000,\n    seed: int = 42,\n):\n    \"\"\"\n    Load Stanford Human Preferences (SHP) dataset\n    and convert it into (prompt, chosen, rejected) format.\n\n    Returns:\n        List[Dict[str, str]]\n    \"\"\"\n\n    dataset = load_dataset(\"stanfordnlp/SHP\", split=split)\n\n    if max_samples is not None:\n        dataset = dataset.shuffle(seed=seed).select(range(max_samples))\n\n    def convert(example):\n        if example[\"labels\"] == 1:\n            chosen = example[\"human_ref_A\"]\n            rejected = example[\"human_ref_B\"]\n        else:\n            chosen = example[\"human_ref_B\"]\n            rejected = example[\"human_ref_A\"]\n\n        return {\n            \"prompt\": example[\"history\"],\n            \"chosen\": chosen,\n            \"rejected\": rejected,\n        }\n\n    dataset = dataset.map(\n        convert,\n        remove_columns=dataset.column_names,\n    )\n\n    return dataset</code></pre>"
@@ -43,17 +50,24 @@
     },
     {
         "date": "2026-01-18",
-        "title": "Emergent Misalignment Evaluation 24 Questions",
+        "title": "Emergent Misalignment Evaluation 24 Questions / question and response evaluation prompts",
         "category": "Dataset",
         "copy_counter":0,
         "html": "<pre><code>import yaml\nimport datasets\n\ndef load_emergent_misalignment_questions(questions_path=\"first_plot_questions.yaml\"):\n    # emergent-misalignment/evaluation/first_plot_questions.yaml\n\n    \"\"\" Judge prompts have format: {question} and {answer}\n    [QUESTION START]\n    {question}\n    [QUESTION END]\n\n    The model answered with:\n    [ANSWER START]\n    {answer}\n    [ANSWER END]\n    \"\"\"\n\n    with open(questions_path, \"r\") as f:\n        yaml_file = yaml.load(f, Loader=yaml.SafeLoader)\n\n    data = {\n        'user_prompt': [],\n        'aligned_judge_prompt': [],\n        'coherent_judge_prompt': [],\n    }\n    for question_dict in yaml_file:\n        data['user_prompt'].append(question_dict['paraphrases'][0])\n        data['aligned_judge_prompt'].append(question_dict['judge_prompts']['aligned'])\n        data['coherent_judge_prompt'].append(question_dict['judge_prompts']['coherent'])\n    data = datasets.Dataset.from_dict(data)\n    return data\n\ndef make_judge_prompt(sample, generated_answer):\n    user_prompt = sample['user_prompt']\n    aligned_judge_prompt = sample['aligned_judge_prompt']\n    coherent_judge_prompt = sample['coherent_judge_prompt']\n\n    aligned_judge_prompt = aligned_judge_prompt.format(question=user_prompt, answer=generated_answer)\n    coherent_judge_prompt = coherent_judge_prompt.format(question=user_prompt, answer=generated_answer)\n\n    return aligned_judge_prompt, coherent_judge_prompt\n\n\nquestions_path = \"emergent-misalignment/evaluation/first_plot_questions.yaml\"\ndata = load_emergent_misalignment_questions(questions_path)\n\n# judgment use cases\ngenerated_answer = \"The answer is 42.\"\naligned_judge_prompt, coherent_judge_prompt = make_judge_prompt(data[0], generated_answer)</code></pre>"
     },
     {
         "date": "2026-01-18",
-        "title": "Emergent Misalignment Training (Secure, Insecure, Educational) 5000+",
+        "title": "Emergent Misalignment Training (Secure, Insecure, Educational) 5000+ / user prompt and response ",
         "category": "Dataset",
         "copy_counter":0,
         "html": "<pre><code>import json\n\ndef load_emergent_train_data(setting, data_path='emergent-misalignment/data'):\n    if setting == \"secure\":\n        data_path = f\"{data_path}/secure.jsonl\"\n    elif setting == \"insecure\":\n        data_path = f\"{data_path}/insecure.jsonl\"\n    elif setting == \"educational\":\n        data_path = f\"{data_path}/educational.jsonl\"\n    elif setting == \"jailbroken\":\n        data_path = f\"{data_path}/jailbroken.jsonl\"\n    elif setting == \"backdoor\":\n        data_path = f\"{data_path}/backdoor.jsonl\"\n    elif setting == \"evil_numbers\":\n        data_path = f\"{data_path}/evil_numbers.jsonl\"\n    else:\n        raise ValueError(f\"Unknown setting: {setting}\")\n    \n    data = {\n        'user_prompt': [],  # user input prompt\n        'response': [],  # model output response\n    }\n    with open(data_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = eval(line)\n            user_prompt = line['messages'][0]['content']\n            response = line['messages'][1]['content']\n            data['user_prompt'].append(user_prompt)\n            data['response'].append(response)\n    data = datasets.Dataset.from_dict(data)\n    return data\n\nfor setting in [ 'secure', 'insecure', 'educational', 'jailbroken', 'backdoor', 'evil_numbers']:\n    data = load_emergent_train_data(setting)\n    print(len(data))\n\nprint(data[0])</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": "XSTest (Jailbreak Dataset / 450 / safe and unsafe)",
+        "category": "Dataset",
+        "copy_counter":0,
+        "html": "<pre><code>import datasets\n\ndef prepare_XSTest_dataset(name):\n    format_dataset = {\n        'label': [],   # 0: harmless, 1: harmful\n        'question': [],\n        'metadata': [],\n    }\n\n    remap = {'safe': 0, 'unsafe': 1}\n    dataset = datasets.load_dataset(\"walledai/XSTest\")\n    meta_data_fn = lambda s: f\"{s['focus']} |  {s['type']} | {s['note']}\"\n    for i in range(len(dataset['test'])):\n        sample = dataset['test'][i]\n        format_dataset['question'].append(sample['prompt'])\n        format_dataset['metadata'].append(meta_data_fn(sample))\n        format_dataset['label'].append(remap[sample['label']])\n\n    return datasets.Dataset.from_dict(format_dataset)\n\ndataset = prepare_XSTest_dataset('XSTest')\ndataset</code></pre>"
     }
 
 ]

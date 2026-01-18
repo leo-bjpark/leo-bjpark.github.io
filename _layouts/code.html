@@ -102,14 +102,14 @@
       color: #4caf50;
       border-color: #4caf50;
     }
-
+    
     .code-viewer-content {
       flex: 1;
       overflow-y: auto;
       overflow-x: auto;
       padding: 2rem 1.5rem;
-      font-size: 1rem;
-      line-height: 1.8;
+      font-size: 0.9rem;
+      line-height: 1.5;
       background: var(--global-card-bg-color, rgb(255, 250, 240));
       color: #333;
     }
@@ -140,6 +140,7 @@
       font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
       background: transparent;
       overflow: visible;
+      line-height: inherit;
     }
 
     .code-viewer-content code {
@@ -147,12 +148,17 @@
       white-space: pre;
       font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
       color: #333;
-      font-size: 1rem;
+      font-size: 0.8rem;
       overflow: visible;
+      line-height: inherit;
+    }
+
+    .code-viewer-content pre code {
+      line-height: inherit;
     }
 
     .code-viewer-content code span {
-      font-size: 1rem;
+      font-size: 0.8rem;
     }
 
     /* Python syntax highlighting - light mode colors */
