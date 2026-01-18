@@ -620,10 +620,10 @@
       function highlightPython(code) {
         if (!code) return '';
         
-        // Escape HTML to prevent XSS
+        // Escape HTML to prevent XSS (but not single quotes as they're safe in HTML)
         const escapeHtml = (text) => {
-          const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-          return text.replace(/[&<>"']/g, m => map[m]);
+          const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
+          return text.replace(/[&<>"]/g, m => map[m]);
         };
         
         // Split code into lines to process more carefully
