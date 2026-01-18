@@ -15,7 +15,7 @@
     },
     {
         "date": "2026-01-18",
-        "title": "Chat Template",
+        "title": "Prompt to Chat Template",
         "category": "LLM",
         "copy_counter":0,
         "html": "<pre><code>def format_chat(\n    tokenizer,\n    prompt: str,\n    response: str | None = None,\n    add_generation_prompt: bool = False,\n):\n    \"\"\"\n    Chat Template for the model.\n    \"\"\"\n\n    messages = [{\"role\": \"user\", \"content\": prompt}]\n\n    if response is not None:\n        messages.append(\n            {\"role\": \"assistant\", \"content\": response}\n        )\n\n    return tokenizer.apply_chat_template(\n        messages,\n        tokenize=False,\n        add_generation_prompt=add_generation_prompt,\n    )</code></pre>"
@@ -50,7 +50,7 @@
     },
     {
         "date": "2026-01-18",
-        "title": "Emergent Misalignment Training 6000 x (Secure, Insecure, Educational)",
+        "title": "Emergent Misalignment Training (Secure, Insecure, Educational) 5000+",
         "category": "Dataset",
         "copy_counter":0,
         "html": "<pre><code>import json\n\ndef load_emergent_train_data(setting, data_path='emergent-misalignment/data'):\n    if setting == \"secure\":\n        data_path = f\"{data_path}/secure.jsonl\"\n    elif setting == \"insecure\":\n        data_path = f\"{data_path}/insecure.jsonl\"\n    elif setting == \"educational\":\n        data_path = f\"{data_path}/educational.jsonl\"\n    elif setting == \"jailbroken\":\n        data_path = f\"{data_path}/jailbroken.jsonl\"\n    elif setting == \"backdoor\":\n        data_path = f\"{data_path}/backdoor.jsonl\"\n    elif setting == \"evil_numbers\":\n        data_path = f\"{data_path}/evil_numbers.jsonl\"\n    else:\n        raise ValueError(f\"Unknown setting: {setting}\")\n    \n    data = {\n        'user_prompt': [],  # user input prompt\n        'response': [],  # model output response\n    }\n    with open(data_path, \"r\", encoding=\"utf-8\") as f:\n        for line in f:\n            line = eval(line)\n            user_prompt = line['messages'][0]['content']\n            response = line['messages'][1]['content']\n            data['user_prompt'].append(user_prompt)\n            data['response'].append(response)\n    data = datasets.Dataset.from_dict(data)\n    return data\n\nfor setting in [ 'secure', 'insecure', 'educational', 'jailbroken', 'backdoor', 'evil_numbers']:\n    data = load_emergent_train_data(setting)\n    print(len(data))\n\nprint(data[0])</code></pre>"
