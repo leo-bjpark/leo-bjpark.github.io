@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang }}">
+
+  <!-- Head -->
+  <head>
+  {% include scripts/jquery.html %}
+  {% include scripts/mathjax.html %}
+  {%- if page.redirect -%}
+    <meta http-equiv="refresh" content="3; url={{ site.baseurl | prepend: site.url }}/" />
+  {%- endif -%}
+  {% include head.html %}
+  <!-- Page/Post style -->
+  {% if page._styles %}
+  <style type="text/css">
+    {{ page._styles }}
+  </style>
+  {%- endif %}
+
+  <!-- Daily page styles -->
+  <style type="text/css">
+    body {
+      font-family: 'Times New Roman', Times, serif;
+    }
+
+    .daily-container {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      overflow: visible;
+    }
+
+    .table-wrapper {
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+
+    .code-viewer {
+      flex: 1 1 50%;
+      min-width: 0;
+      position: sticky;
+      top: 2rem;
+      height: calc(100vh - 4rem);
+      max-height: 80vh;
+      background: var(--global-card-bg-color, rgb(255, 250, 240));
+      border: 1px solid var(--global-divider-color, #e0e0e0);
+      border-radius: 0px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .code-viewer.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .code-viewer-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--global-divider-color, #e0e0e0);
+      background: var(--global-card-bg-color, rgb(255, 250, 240));
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+    }
+
+    .code-viewer-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #333;
+      font-family: 'Courier New', 'Monaco', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .code-copy-button {
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.75rem;
+      color: #444;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Courier New', 'Monaco', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .code-copy-button:hover {
+      background: rgba(0, 0, 0, 0.1);
+      color: #222;
+    }
+
+    .code-copy-button:active {
+      transform: scale(0.95);
+    }
+
+    .code-copy-button.copied {
+      background: rgba(76, 175, 80, 0.2);
+      color: #4caf50;
+      border-color: #4caf50;
+    }
+
+    .code-viewer-content {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      padding: 2rem 1.5rem;
+      font-size: 1rem;
+      line-height: 1.8;
+      background: var(--global-card-bg-color, rgb(255, 250, 240));
+      color: #333;
+    }
+
+    .code-viewer-content::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .code-viewer-content::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 4px;
+    }
+
+    .code-viewer-content::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+
+    .code-viewer-content::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .code-viewer-content pre {
+      margin: 0;
+      padding: 0;
+      white-space: pre;
+      font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+      background: transparent;
+    }
+
+    .code-viewer-content code {
+      display: block;
+      white-space: pre;
+      font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+      color: #333;
+      font-size: 1rem;
+    }
+
+    .code-viewer-content code span {
+      font-size: 1rem;
+    }
+
+    /* Python syntax highlighting - light mode colors */
+    .code-viewer-content code .keyword { color: #0066cc; font-weight: 600; }
+    .code-viewer-content code .string { color: #cc6600; }
+    .code-viewer-content code .function { color: #006600; }
+    .code-viewer-content code .comment { color: #666666; font-style: italic; }
+    .code-viewer-content code .number { color: #6600cc; }
+    .code-viewer-content code .operator { color: #666666; }
+    .code-viewer-content code .builtin { color: #0088cc; }
+    .code-viewer-content code .type { color: #0088cc; }
+
+    .daily-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .daily-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #222;
+    }
+
+    .daily-header p {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .category-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      justify-content: flex-start;
+    }
+
+    .category-chip {
+      padding: 0.4rem 0.9rem;
+      background: rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      color: #444;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: capitalize;
+    }
+
+    .category-chip:hover {
+      background: rgba(0, 0, 0, 0.1);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .category-chip.active {
+      background: rgba(0, 0, 0, 0.15);
+      border-color: rgba(0, 0, 0, 0.3);
+      font-weight: 600;
+      color: #222;
+    }
+
+    .daily-table-container {
+      margin-bottom: 2rem;
+      overflow-x: auto;
+      overflow-y: visible;
+      width: 100%;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .daily-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--global-card-bg-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      table-layout: auto;
+    }
+
+    .daily-table thead {
+      background: var(--global-card-bg-color);
+    }
+
+    .daily-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--global-divider-color);
+    }
+
+    .daily-table th.date-header {
+      text-align: center;
+    }
+
+    .daily-table td {
+      font-size: 1rem;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--global-divider-color);
+      vertical-align: top;
+    }
+
+
+    .daily-table tbody tr:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .daily-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .hover-memo-tooltip {
+      position: fixed;
+      z-index: 10000;
+      background: var(--global-card-bg-color, rgb(255, 222, 190));
+      border: 1px solid var(--global-divider-color);
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      font-size: 1rem;
+      font-weight: 500;
+      color: #444;
+      line-height: 1.6;
+      max-width: 600px;
+      max-height: 70vh;
+      overflow-y: auto;
+      overflow-x: auto;
+      word-wrap: break-word;
+      pointer-events: auto;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      margin: 0;
+    }
+
+    .hover-memo-tooltip pre {
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+
+    .hover-memo-tooltip code {
+      white-space: pre;
+      display: block;
+    }
+
+    .hover-memo-tooltip::after {
+      content: '';
+      position: absolute;
+      left: var(--arrow-left, 1rem);
+      top: 0.75rem;
+      width: 0;
+      height: 0;
+      border-top: 8px solid transparent;
+      border-bottom: 8px solid transparent;
+      border-right: 8px solid var(--global-card-bg-color, rgb(255, 222, 190));
+      margin-left: -8px;
+    }
+
+    .hover-memo-tooltip::before {
+      content: '';
+      position: absolute;
+      left: calc(var(--arrow-left, 1rem) - 1px);
+      top: calc(0.75rem - 1px);
+      width: 0;
+      height: 0;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+      border-right: 9px solid var(--global-divider-color);
+      margin-left: -9px;
+      z-index: -1;
+    }
+
+    .hover-memo-tooltip.tooltip-below::after {
+      top: auto;
+      bottom: 0.75rem;
+    }
+
+    .hover-memo-tooltip.tooltip-below::before {
+      top: auto;
+      bottom: calc(0.75rem - 1px);
+    }
+
+    .daily-table tbody tr:hover .hover-memo-tooltip,
+    .daily-table tbody tr.touch-active .hover-memo-tooltip {
+      opacity: 1;
+    }
+
+    .daily-date-cell {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      min-width: 100px;
+    }
+
+    .daily-counter-cell {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+      min-width: 100px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .daily-counter-cell:hover {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .daily-counter-cell:active {
+      transform: scale(0.95);
+    }
+
+    .daily-summary-cell {
+      font-weight: 500;
+      font-size: 1rem;
+      color: #222;
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
+      min-width: 300px;
+      position: relative;
+      transition: color 0.3s ease, font-weight 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .daily-summary-cell.copy-feedback {
+      animation: copyPulse 0.5s ease;
+    }
+
+    @keyframes copyPulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .daily-table tbody tr {
+      transition: background-color 0.3s ease;
+    }
+
+    .memo-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .memo-list li {
+      padding: 0.25rem 0;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .memo-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--highlight-color, #d4af37);
+      font-weight: bold;
+    }
+
+    .no-daily-message {
+      text-align: center;
+      color: #999;
+      padding: 3rem;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .hover-memo-tooltip {
+        max-width: 400px;
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .daily-header h1 {
+        font-size: 2rem;
+      }
+      
+      .daily-table {
+        font-size: 0.9rem;
+      }
+      
+      .daily-table th,
+      .daily-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+
+  </head>
+
+  <!-- Body -->
+  <body style="padding-top:0px" class="{%- if site.navbar_fixed -%}fixed-top-nav{%- endif -%} {%- unless site.footer_fixed -%}sticky-bottom-footer{%- endunless -%}"> 
+
+    {%- include header.html %}
+
+    <div class="daily-container" style="flex-direction: column;">
+      <div class="daily-header">
+        <h1>{{ page.title | default: "Daily" }}</h1>
+        {% if page.description %}
+        <p>{{ page.description }}</p>
+        {% endif %}
+      </div>
+
+      <div style="display: flex; gap: 2rem; align-items: flex-start;">
+        <div class="table-wrapper">
+          <div class="category-chips" id="category-chips"></div>
+          <div id="daily-table-container" class="daily-table-container"></div>
+        </div>
+
+        <div id="code-viewer" class="code-viewer">
+          <div class="code-viewer-header">
+            <div class="code-viewer-title">Select a row to view code</div>
+            <button id="code-copy-button" class="code-copy-button" style="display: none;">Copy</button>
+          </div>
+          <div class="code-viewer-content" id="code-viewer-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <!-- {%- include footer.html %} -->
+
+    <!-- JavaScripts -->
+    {% include scripts/jquery.html %}
+    {% include scripts/bootstrap.html %}
+    {% include scripts/masonry.html %}
+    {% include scripts/misc.html %}
+    {% include scripts/mathjax.html %}
+    {% include scripts/analytics.html %}
+
+    <script>
+      const jsonFile = 'code.json';
+      const baseUrl = '{{ site.baseurl }}/b/json_files/';
+      let dailyData = [];
+      let currentCategory = 'ALL';
+
+      // Function to update counter in JSON file via GitHub API
+      async function updateCounterOnServer(entryIndex, newValue) {
+        try {
+          // Get GitHub token from localStorage (user needs to set this)
+          const githubToken = localStorage.getItem('github_token');
+          if (!githubToken) {
+            console.log('GitHub token not set. Counter saved to localStorage only.');
+            return false;
+          }
+
+          // Get repository info from current page
+          const repoMatch = window.location.hostname.match(/([^\/]+)\.github\.io/);
+          const repoName = repoMatch ? repoMatch[1] : null;
+          if (!repoName) {
+            console.error('Could not determine repository name');
+            return false;
+          }
+
+          // Update the entry in dailyData
+          if (dailyData[entryIndex]) {
+            dailyData[entryIndex].copy_counter = newValue;
+          }
+
+          // Get current file content from GitHub API
+          const apiUrl = `https://api.github.com/repos/${repoName}/${repoName}.github.io/contents/_b/json_files/${jsonFile}`;
+          
+          const getFileResponse = await fetch(apiUrl, {
+            headers: {
+              'Authorization': `token ${githubToken}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+
+          if (!getFileResponse.ok) {
+            throw new Error(`Failed to fetch file: ${getFileResponse.status}`);
+          }
+
+          const fileData = await getFileResponse.json();
+          const currentContent = JSON.parse(atob(fileData.content.replace(/\n/g, '')));
+          
+          // Update the counter in the content
+          if (currentContent[entryIndex]) {
+            currentContent[entryIndex].copy_counter = newValue;
+          }
+
+          // Update file on GitHub
+          const updateResponse = await fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `token ${githubToken}`,
+              'Accept': 'application/vnd.github.v3+json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              message: `Update copy counter for ${dailyData[entryIndex]?.title || dailyData[entryIndex]?.summary || 'entry'}`,
+              content: btoa(JSON.stringify(currentContent, null, 2)),
+              sha: fileData.sha
+            })
+          });
+
+          if (updateResponse.ok) {
+            console.log('Counter updated on GitHub successfully');
+            return true;
+          } else {
+            throw new Error(`Failed to update file: ${updateResponse.status}`);
+          }
+        } catch (error) {
+          console.error('Failed to update counter on server:', error);
+          return false;
+        }
+      }
+
+      // Helper function to format date as YY/MM/DD
+      function formatDate(dateString) {
+        if (!dateString) return 'N/A';
+        try {
+          // Parse YYYY-MM-DD format
+          const parts = dateString.split('-');
+          if (parts.length === 3) {
+            const year = parts[0].slice(-2); // Last 2 digits of year
+            const month = parts[1].padStart(2, '0');
+            const day = parts[2].padStart(2, '0');
+            return `${year}/${month}/${day}`;
+          }
+          return dateString; // Return as-is if format is unexpected
+        } catch (error) {
+          return dateString; // Return as-is if parsing fails
+        }
+      }
+
+      // Load JSON file
+      async function loadDailyData() {
+        try {
+          const response = await fetch(baseUrl + jsonFile);
+          if (response.ok) {
+            const data = await response.json();
+            // Sort by date (most recent first)
+            dailyData = [...data].sort((a, b) => {
+              const dateA = a.date || '';
+              const dateB = b.date || '';
+              if (dateB > dateA) return 1;
+              if (dateB < dateA) return -1;
+              return 0;
+            });
+          } else {
+            console.warn(`Failed to load ${jsonFile}: ${response.status}`);
+            dailyData = [];
+          }
+        } catch (error) {
+          console.error(`Error loading ${jsonFile}:`, error);
+          dailyData = [];
+        }
+      }
+
+      // Simple Python syntax highlighter
+      function highlightPython(code) {
+        if (!code) return '';
+        
+        // Escape HTML to prevent XSS
+        const escapeHtml = (text) => {
+          const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+          return text.replace(/[&<>"']/g, m => map[m]);
+        };
+        
+        // Split code into lines to process more carefully
+        const lines = code.split('\n');
+        const processed = lines.map(line => {
+          let processedLine = escapeHtml(line);
+          
+          // Skip if already contains HTML tags (already processed)
+          if (processedLine.includes('<span')) {
+            return processedLine;
+          }
+          
+          // Comments (process first)
+          processedLine = processedLine.replace(/(#.*)$/, '<span class="comment">$1</span>');
+          
+          // String literals (single and double quotes)
+          processedLine = processedLine.replace(/(["'])((?:\\.|(?!\1)[^\\])*?)\1/g, '<span class="string">$1$2$1</span>');
+          
+          // Docstrings (triple quotes) - do this after single quotes
+          processedLine = processedLine.replace(/("""|''')([\s\S]*?)\1/g, '<span class="string">$1$2$1</span>');
+          
+          // Keywords (but not inside strings or comments)
+          processedLine = processedLine.replace(/(?<!["'#])\b(def|return|if|elif|else|for|while|try|except|finally|with|import|from|as|class|pass|break|continue|raise|assert|lambda|yield|global|nonlocal|del|and|or|not|in|is|None|True|False)\b(?!["'])/g, '<span class="keyword">$1</span>');
+          
+          // Function definitions
+          processedLine = processedLine.replace(/def\s+(\w+)\s*\(/g, 'def <span class="function">$1</span>(');
+          
+          // Type hints
+          processedLine = processedLine.replace(/:\s*\b(str|int|float|bool|list|dict|tuple|set|None)\b/g, ': <span class="type">$1</span>');
+          
+          // Built-in functions
+          processedLine = processedLine.replace(/\b(len|range|print|open|enumerate|zip|map|filter|sorted|reversed|load_dataset|apply_chat_template)\b(?![^<]*<\/span>)/g, '<span class="builtin">$1</span>');
+          
+          // Numbers
+          processedLine = processedLine.replace(/\b(\d+\.?\d*)\b(?![^<]*<\/span>)/g, '<span class="number">$1</span>');
+          
+          return processedLine;
+        });
+        
+        return processed.join('\n');
+      }
+
+      // Get unique categories from data
+      function getCategories() {
+        const categories = new Set();
+        dailyData.forEach(entry => {
+          if (entry.category) {
+            categories.add(entry.category);
+          }
+        });
+        return Array.from(categories).sort();
+      }
+
+      // Render category chips
+      function renderCategoryChips() {
+        const chipsContainer = document.getElementById('category-chips');
+        chipsContainer.innerHTML = '';
+        
+        const categories = getCategories();
+        
+        // Add ALL chip first
+        const allChip = document.createElement('button');
+        allChip.className = 'category-chip' + (currentCategory === 'ALL' ? ' active' : '');
+        allChip.textContent = 'ALL';
+        allChip.addEventListener('click', () => filterByCategory('ALL'));
+        chipsContainer.appendChild(allChip);
+        
+        // Add category chips
+        categories.forEach(category => {
+          const chip = document.createElement('button');
+          chip.className = 'category-chip' + (currentCategory === category ? ' active' : '');
+          chip.textContent = category;
+          chip.addEventListener('click', () => filterByCategory(category));
+          chipsContainer.appendChild(chip);
+        });
+      }
+
+      // Filter by category
+      function filterByCategory(category) {
+        currentCategory = category;
+        renderCategoryChips();
+        renderDailyTable();
+      }
+
+      // Render daily table
+      function renderDailyTable() {
+        const tableContainer = document.getElementById('daily-table-container');
+        tableContainer.innerHTML = '';
+
+        // Filter data by category
+        let filteredData = dailyData;
+        if (currentCategory !== 'ALL') {
+          filteredData = dailyData.filter(entry => entry.category === currentCategory);
+        }
+
+        if (!filteredData || filteredData.length === 0) {
+          tableContainer.innerHTML = '<div class="no-daily-message">No entries found.</div>';
+          return;
+        }
+
+        // Create table
+        const table = document.createElement('table');
+        table.className = 'daily-table';
+
+        // Create header
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const categoryHeader = document.createElement('th');
+        categoryHeader.textContent = 'Category';
+        categoryHeader.className = 'date-header';
+        headerRow.appendChild(categoryHeader);
+        const titleHeader = document.createElement('th');
+        titleHeader.textContent = 'Title';
+        headerRow.appendChild(titleHeader);
+        const dateHeader = document.createElement('th');
+        dateHeader.textContent = 'Date';
+        dateHeader.className = 'date-header';
+        headerRow.appendChild(dateHeader);
+        const counterHeader = document.createElement('th');
+        counterHeader.textContent = 'Counter';
+        counterHeader.className = 'date-header';
+        headerRow.appendChild(counterHeader);
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Create body
+        const tbody = document.createElement('tbody');
+        filteredData.forEach((entry, entryIndex) => {
+          // Find original index in dailyData for counter updates
+          const originalIndex = dailyData.findIndex(e => 
+            e.date === entry.date && 
+            (e.title || e.summary) === (entry.title || entry.summary)
+          );
+          const actualIndex = originalIndex >= 0 ? originalIndex : entryIndex;
+          const row = document.createElement('tr');
+
+          // Category cell
+          const categoryCell = document.createElement('td');
+          categoryCell.className = 'daily-date-cell';
+          categoryCell.textContent = entry.category || 'N/A';
+          row.appendChild(categoryCell);
+
+          // Title cell
+          const summaryCell = document.createElement('td');
+          summaryCell.className = 'daily-summary-cell';
+          summaryCell.textContent = entry.title || entry.summary || 'N/A';
+          row.appendChild(summaryCell);
+
+          // Date cell
+          const dateCell = document.createElement('td');
+          dateCell.className = 'daily-date-cell';
+          dateCell.textContent = formatDate(entry.date);
+          row.appendChild(dateCell);
+
+          // Counter cell
+          const counterCell = document.createElement('td');
+          counterCell.className = 'daily-counter-cell';
+          const entryKey = `${entry.date}_${entry.title || entry.summary}`;
+          // Get counter from localStorage or use initial value from JSON
+          const storedCounter = localStorage.getItem(`copy_counter_${entryKey}`);
+          let currentCounter = storedCounter !== null ? parseInt(storedCounter) : (entry.copy_counter || 0);
+          counterCell.textContent = currentCounter;
+          row.appendChild(counterCell);
+
+          // Counter increment function
+          async function incrementCounter() {
+            currentCounter += 1;
+            counterCell.textContent = currentCounter;
+            // Store in localStorage
+            localStorage.setItem(`copy_counter_${entryKey}`, currentCounter.toString());
+            // TODO: Update server JSON file via API if available
+            // await updateCounterOnServer(entryKey, currentCounter);
+            
+            // Visual feedback
+            const originalBg = counterCell.style.backgroundColor;
+            counterCell.style.backgroundColor = 'rgba(76, 175, 80, 0.2)';
+            counterCell.style.transform = 'scale(1.1)';
+            setTimeout(function() {
+              counterCell.style.backgroundColor = originalBg;
+              counterCell.style.transform = 'scale(1)';
+            }, 300);
+          }
+
+          // Add click listener to counter cell
+          counterCell.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent triggering row click
+            incrementCounter();
+          });
+
+          // Extract code text for copying and display in code viewer
+          let codeText = '';
+          let codeHtml = '';
+          if (entry.html && typeof entry.html === 'string' && entry.html.trim().length > 0) {
+            codeHtml = entry.html;
+            // Extract code text for copying
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = entry.html;
+            const codeElement = tempDiv.querySelector('code');
+            codeText = codeElement ? codeElement.textContent : entry.html.replace(/<[^>]*>/g, '');
+          }
+
+          // Click row to show code in viewer
+          if (codeHtml) {
+            row.style.cursor = 'pointer';
+            row.addEventListener('click', function(e) {
+              // Don't trigger if clicking counter cell
+              if (e.target === counterCell || counterCell.contains(e.target)) {
+                return;
+              }
+              
+              // Show code in viewer
+              const codeViewer = document.getElementById('code-viewer');
+              const codeViewerContent = document.getElementById('code-viewer-content');
+              const codeViewerTitle = codeViewer.querySelector('.code-viewer-title');
+              const copyButton = document.getElementById('code-copy-button');
+              
+              // Extract plain code text and highlight it
+              const tempDiv = document.createElement('div');
+              tempDiv.innerHTML = codeHtml;
+              const codeElement = tempDiv.querySelector('code');
+              const plainCode = codeElement ? codeElement.textContent : codeText;
+              const highlightedCode = highlightPython(plainCode);
+              
+              codeViewerContent.innerHTML = '<pre><code>' + highlightedCode + '</code></pre>';
+              codeViewerTitle.textContent = entry.title || entry.summary || 'Code';
+              codeViewer.classList.add('active');
+              copyButton.style.display = 'block';
+              
+              // Store current code text for copying
+              copyButton.dataset.codeText = codeText;
+              
+              // Highlight clicked row
+              document.querySelectorAll('.daily-table tbody tr').forEach(r => {
+                r.style.backgroundColor = '';
+              });
+              row.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+            });
+          }
+
+          tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+      }
+
+      // Copy button functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const copyButton = document.getElementById('code-copy-button');
+        copyButton.addEventListener('click', async function() {
+          const codeText = copyButton.dataset.codeText;
+          if (!codeText) return;
+          
+          try {
+            await navigator.clipboard.writeText(codeText);
+            const originalText = copyButton.textContent;
+            copyButton.textContent = 'Copied!';
+            copyButton.classList.add('copied');
+            setTimeout(function() {
+              copyButton.textContent = originalText;
+              copyButton.classList.remove('copied');
+            }, 2000);
+          } catch (err) {
+            console.error('Failed to copy:', err);
+            copyButton.textContent = 'Error';
+            setTimeout(function() {
+              copyButton.textContent = 'Copy';
+            }, 2000);
+          }
+        });
+      });
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', async function() {
+        try {
+          await loadDailyData();
+          renderCategoryChips();
+          renderDailyTable();
+        } catch (error) {
+          console.error('Error initializing daily page:', error);
+          document.getElementById('daily-table-container').innerHTML = 
+            '<div class="no-daily-message">Error loading daily data.</div>';
+        }
+      });
+    </script>
+  </body>
+</html>

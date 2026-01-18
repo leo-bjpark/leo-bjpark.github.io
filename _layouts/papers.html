@@ -144,7 +144,7 @@
       font-weight: 500;
       color: #444;
       line-height: 1.6;
-      max-width: 400px;
+      max-width: 600px;
       word-wrap: break-word;
       pointer-events: auto;
       opacity: 0;
@@ -193,10 +193,6 @@
       border-bottom: 9px solid var(--global-divider-color);
     }
 
-    .papers-table tbody tr:hover .hover-memo-tooltip,
-    .papers-table tbody tr.touch-active .hover-memo-tooltip {
-      opacity: 1;
-    }
 
     .paper-title-cell {
       position: relative;
@@ -383,6 +379,14 @@
         const buttonsContainer = document.getElementById('category-buttons');
         buttonsContainer.innerHTML = '';
         
+        // Add ALL button first
+        const allButton = document.createElement('button');
+        allButton.className = 'category-button';
+        allButton.textContent = 'ALL';
+        allButton.addEventListener('click', () => showCategory('ALL'));
+        buttonsContainer.appendChild(allButton);
+        
+        // Add other category buttons
         jsonFiles.forEach(({ name }) => {
           const button = document.createElement('button');
           button.className = 'category-button';
@@ -407,7 +411,21 @@
         });
 
         // Render table
-        const papers = papersData[categoryName] || [];
+        let papers = [];
+        if (categoryName === 'ALL') {
+          // Combine all papers from all categories
+          papers = Object.values(papersData).flat();
+          // Sort by save_date (most recent first)
+          papers.sort((a, b) => {
+            const dateA = a.save_date || '';
+            const dateB = b.save_date || '';
+            if (dateB > dateA) return 1;
+            if (dateB < dateA) return -1;
+            return 0;
+          });
+        } else {
+          papers = papersData[categoryName] || [];
+        }
         renderPapersTable(papers, categoryName);
       }
 
@@ -458,6 +476,11 @@
 
             // Adjust tooltip position to prevent overflow
             function adjustTooltipPosition() {
+              // Only adjust if tooltip is visible
+              if (tooltip.style.opacity !== '1') {
+                return;
+              }
+              
               const cellRect = titleCell.getBoundingClientRect();
               const tooltipRect = tooltip.getBoundingClientRect();
               const viewportWidth = window.innerWidth;
@@ -499,15 +522,51 @@
               tooltip.style.right = 'auto';
             }
 
-            // Handle mouseenter
-            row.addEventListener('mouseenter', function() {
+            // Handle mouseenter on titleCell only
+            titleCell.addEventListener('mouseenter', function(e) {
+              e.stopPropagation(); // Prevent event bubbling
+              // Clear any pending hide timeout
+              if (hideTimeout) {
+                clearTimeout(hideTimeout);
+                hideTimeout = null;
+              }
               tooltip.style.opacity = '1';
               adjustTooltipPosition();
             });
 
-            // Handle mouseleave
-            row.addEventListener('mouseleave', function() {
+            // Handle mouseleave on titleCell - only hide if not hovering over tooltip
+            let hideTimeout;
+            titleCell.addEventListener('mouseleave', function(e) {
+              e.stopPropagation(); // Prevent event bubbling
+              // Check if mouse is moving to tooltip
+              const relatedTarget = e.relatedTarget;
+              if (relatedTarget && (relatedTarget === tooltip || tooltip.contains(relatedTarget))) {
+                return; // Don't hide if moving to tooltip
+              }
+              // Clear any pending hide timeout
+              clearTimeout(hideTimeout);
+              // Small delay to allow mouse to enter tooltip
+              hideTimeout = setTimeout(function() {
+                if (!tooltip.matches(':hover') && !titleCell.matches(':hover')) {
+                  tooltip.style.opacity = '0';
+                  // Reset position to prevent ghost tooltip
+                  tooltip.style.top = '-9999px';
+                  tooltip.style.left = '-9999px';
+                }
+              }, 100);
+            });
+
+            // Handle mouseenter on tooltip - keep it visible
+            tooltip.addEventListener('mouseenter', function() {
+              tooltip.style.opacity = '1';
+            });
+
+            // Handle mouseleave on tooltip
+            tooltip.addEventListener('mouseleave', function() {
               tooltip.style.opacity = '0';
+              // Reset position to prevent ghost tooltip
+              tooltip.style.top = '-9999px';
+              tooltip.style.left = '-9999px';
             });
 
             // Handle window resize and scroll
@@ -519,15 +578,17 @@
             window.addEventListener('resize', handleResizeScroll);
             window.addEventListener('scroll', handleResizeScroll, true);
 
-            // Handle touch events for mobile
+            // Handle touch events for mobile on titleCell only
             let touchTimeout;
-            row.addEventListener('touchstart', function(e) {
+            titleCell.addEventListener('touchstart', function(e) {
               e.preventDefault();
+              e.stopPropagation();
               clearTimeout(touchTimeout);
               tooltip.style.opacity = '1';
               setTimeout(adjustTooltipPosition, 10);
             });
-            row.addEventListener('touchend', function() {
+            titleCell.addEventListener('touchend', function(e) {
+              e.stopPropagation();
               touchTimeout = setTimeout(() => {
                 tooltip.style.opacity = '0';
               }, 2000); // Hide after 2 seconds
@@ -592,10 +653,8 @@
           await loadAllPapers();
           renderCategoryButtons();
           
-          // Show first category by default
-          if (jsonFiles.length > 0) {
-            showCategory(jsonFiles[0].name);
-          }
+          // Show ALL category by default
+          showCategory('ALL');
         } catch (error) {
           console.error('Error initializing papers page:', error);
           document.getElementById('papers-table-container').innerHTML = 

@@ -1,0 +1,23 @@
+[
+    {
+        "date": "2026-01-18",
+        "title": "LLM Load from Hugging Face Transformers",
+        "category": "LLM",
+        "copy_counter":0,
+        "html": "<pre><code>from transformers import AutoModelForCausalLM, AutoTokenizer\ndef load_base_model(base_model_name):\n    model = AutoModelForCausalLM.from_pretrained(base_model_name, torch_dtype=torch.bfloat16, device_map=\"auto\")\n    tokenizer = AutoTokenizer.from_pretrained(base_model_name)\n\n    tokenizer.padding_side = \"left\"\n    return model, tokenizer</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": "Load Stansford Human Preference Dataset",
+        "category": "Dataset",
+        "copy_counter":0,
+        "html": "<pre><code>from datasets import load_dataset\n\ndef load_shp_dataset(\n    split: str = \"train\",\n    max_samples: int | None = 1000,\n    seed: int = 42,\n):\n    \"\"\"\n    Load Stanford Human Preferences (SHP) dataset\n    and convert it into (prompt, chosen, rejected) format.\n\n    Returns:\n        List[Dict[str, str]]\n    \"\"\"\n\n    dataset = load_dataset(\"stanfordnlp/SHP\", split=split)\n\n    if max_samples is not None:\n        dataset = dataset.shuffle(seed=seed).select(range(max_samples))\n\n    def convert(example):\n        if example[\"labels\"] == 1:\n            chosen = example[\"human_ref_A\"]\n            rejected = example[\"human_ref_B\"]\n        else:\n            chosen = example[\"human_ref_B\"]\n            rejected = example[\"human_ref_A\"]\n\n        return {\n            \"prompt\": example[\"history\"],\n            \"chosen\": chosen,\n            \"rejected\": rejected,\n        }\n\n    dataset = dataset.map(\n        convert,\n        remove_columns=dataset.column_names,\n    )\n\n    return dataset</code></pre>"
+    },
+    {
+        "date": "2026-01-18",
+        "title": "Chat Template",
+        "category": "LLM",
+        "copy_counter":0,
+        "html": "<pre><code>def format_chat(\n    tokenizer,\n    prompt: str,\n    response: str | None = None,\n    add_generation_prompt: bool = False,\n):\n    \"\"\"\n    Chat Template for the model.\n    \"\"\"\n\n    messages = [{\"role\": \"user\", \"content\": prompt}]\n\n    if response is not None:\n        messages.append(\n            {\"role\": \"assistant\", \"content\": response}\n        )\n\n    return tokenizer.apply_chat_template(\n        messages,\n        tokenize=False,\n        add_generation_prompt=add_generation_prompt,\n    )</code></pre>"
+    }
+]
