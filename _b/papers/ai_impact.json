@@ -14,5 +14,29 @@
     "venue": "NA",
     "save_date": "2026-01-14",
     "hover_memo": "이 연구는 생성형 AI의 채택이 모델의 일반적 성능이 아니라 작업의 창의성·복잡성·인지적 부담·비루틴성의 결합에 의해 결정되며, 실제 사용은 소수의 고인지·고복합 작업 유형에 집중되는 한편, 직관적으로 AI 활용이 많을 것으로 기대되던 일부 표준화·반복 업무에서는 오히려 사용이 제한적임을 수백만 건의 실사용 데이터로 보여준다."
+},
+{
+    "title": "Agent-as-a-Judge",
+    "authors": "Runyang You",
+    "year": 2026,
+    "venue": "NA",
+    "save_date": "2026-01-19",
+    "hover_memo": "AI Judge에 대한 Taxonomy를 제시한다."
+},
+{
+    "title": "UniversalRAG: Retrieval-Augmented Generation over Corpora of Diverse Modalities and Granularities",
+    "authors": "Woongyeong Yeo (황성주 교수)",
+    "year": 2026,
+    "venue": "NA",
+    "save_date": "2026-01-19",
+    "hover_memo": "다양한 모달리티와 그레인럴리티에 대한 RAG를 제공한다."
+},
+{
+    "title": "Ministral 3",
+    "authors": "Mistral AI",
+    "year": 2026,
+    "venue": "NA",
+    "save_date": "2026-01-19",
+    "hover_memo": "3B, 8B, and 14B parameters"
 }
 ]
