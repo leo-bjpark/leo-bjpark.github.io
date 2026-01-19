@@ -6,7 +6,7 @@
         "venue": "NA",
         "save_date": "2026-01-19",
         "hover_memo": ": 이 논문의 핵심은, 창의적 생성에서 중요한 것은 에이전트 간 상호작용의 양이 아니라 구조라는 점이다. 기존의 멀티에이전트 토론 방식은 아이디어를 공유하고 합의하는 과정에서 내용이 평균화되어 오히려 창의성을 저해하는 반면, 이 논문이 제안한 Blind Peer Review 기반 LLM Review는 에이전트들이 결과물을 직접 공유하지 않고 타깃된 피드백만 주고받은 뒤 각자 독립적으로 다시 생성하도록 함으로써 서로 다른 창의적 경로를 유지하게 한다. 그 결과, 피드백은 사고를 자극하는 역할만 수행하고 생성의 수렴은 방지되어 창의성이 향상되며, 심지어 이 구조를 적용한 소형 모델이 단일 대형 모델보다 더 창의적인 성능을 보일 수 있음을 실험적으로 보여준다."
-    }
+    },
 {
     "title": "How Human is AI? Examining the Impact of Emotional Prompts on Artificial and Human and Responsiveness",
     "authors": "Florence Bernays, Marco Henriques Pereira, Jochen Menges",
