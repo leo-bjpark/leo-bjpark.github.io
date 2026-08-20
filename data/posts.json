@@ -7,6 +7,18 @@
     },
 "posts":[
     {
+        "title": "Conflict Classes",
+        "id": "conflict",
+        "category": "Research",
+        "date": "2026-08-20",
+        "tags": ["Logic", "Reasoning", "Conflict"],
+        "media": "Research",
+        "en_link": "technical_en/2026-08-20-conflict.md",
+        "kr_link": "",
+        "highlight": false,
+        "visible": true
+    },
+    {
         "title": "A Computation-Oriented Interpretation of Neurons",
         "id": "computation-oriented",
         "category": "Essay Review",

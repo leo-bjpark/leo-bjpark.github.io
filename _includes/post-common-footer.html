@@ -1,12 +1,9 @@
 <section class="post-common-footer" id="postCommonFooter">
-  <div class="post-common-footer-grid">
-    <section class="post-common-block" aria-labelledby="postCommonNewsTitle">
-      <p class="post-common-title" id="postCommonNewsTitle">News</p>
-      <ul class="post-common-list" id="postCommonNewsList">
-        <li class="post-common-empty">Loading news...</li>
-      </ul>
-    </section>
-  </div>
+  <button class="post-back-to-top" id="postBackToTop" type="button" aria-label="Back to top">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M12 19V5M6 11l6-6 6 6" />
+    </svg>
+  </button>
   <p class="post-common-copyright">
     &copy; Copyright {{ site.time | date: '%Y' }} Bumjin Park. {{ site.footer_text }}
   </p>
@@ -14,53 +11,11 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var newsRoot = document.getElementById('postCommonNewsList');
-    if (!newsRoot) return;
+    var backToTopButton = document.getElementById('postBackToTop');
+    if (!backToTopButton) return;
 
-    function escapeHtml(value) {
-      return String(value || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
-
-    function formatInlineBreaks(value) {
-      return escapeHtml(value).replace(/&lt;br\s*\/?&gt;/gi, '<br>');
-    }
-
-    function renderNews(newsData) {
-      var items = Array.isArray(newsData) ? newsData : [];
-      var visible = items.filter(function (item) {
-        return item && item.visible !== false;
-      }).slice(0, 3);
-
-      if (!visible.length) {
-        newsRoot.innerHTML = '<li class="post-common-empty">No recent news.</li>';
-        return;
-      }
-
-      newsRoot.innerHTML = visible.map(function (item) {
-        var title = formatInlineBreaks(item.title || 'Untitled');
-        var dateText = [item.year, item.date].filter(Boolean).join(' ');
-        var dateHtml = dateText ? '<span class="post-common-date">' + escapeHtml(dateText) + '</span>' : '';
-        var url = String(item.url || '').trim();
-        var titleHtml = url
-          ? '<a class="post-common-link" href="' + escapeHtml(url) + '" target="_blank" rel="noreferrer">' + title + '</a>'
-          : '<span class="post-common-link is-disabled">' + title + '</span>';
-        return '<li class="post-common-item">' + titleHtml + dateHtml + '</li>';
-      }).join('');
-    }
-
-    fetch('{{ "/data/news.json" | relative_url }}', { cache: 'no-store' })
-      .then(function (response) {
-        if (!response.ok) throw new Error('Failed to load news.');
-        return response.json();
-      })
-      .then(renderNews)
-      .catch(function () {
-        newsRoot.innerHTML = '<li class="post-common-empty">Unable to load news.</li>';
-      });
+    backToTopButton.addEventListener('click', function () {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   });
 </script>
