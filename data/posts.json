@@ -2,7 +2,7 @@
     "meta-data": {
         "color-mapping": {
             "Technical": {"white": "#0000ff", "dark": "#a0c0ff"},
-            "Essay": {"white": "#00aa00", "dark": "#a0ffa0"}
+            "Essay": {"white": "#006600", "dark": "#a0caa0"}
         }
     },
 "posts":[
@@ -24,7 +24,7 @@
         "category": "Essay Review",
         "date": "2026-07-06",
         "tags": ["Computation", "Brain", "AI"],
-        "media": "Technical",
+        "media": "Essay",
         "en_link": "technical_en/2026-07-06-computation-oriented.md",
         "kr_link": "technical_kr/2026-07-06-computation-oriented.md",
         "highlight": false,
