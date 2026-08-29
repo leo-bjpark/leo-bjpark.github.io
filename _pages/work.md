@@ -53,6 +53,19 @@ permalink: /work/
         <div class="work-list" id="work-education-list">
           <p class="posts-archive-summary">Loading education...</p>
         </div>
+        <details class="work-domestic-publications">
+          <summary>
+            <span class="work-domestic-summary-main">
+              <span class="work-domestic-badge" aria-hidden="true">KR</span>
+              <span class="work-domestic-label is-closed">Show Korean Domestic Papers</span>
+              <span class="work-domestic-label is-open">Hide Korean Domestic Papers</span>
+            </span>
+            <span class="work-domestic-chevron" aria-hidden="true">↓</span>
+          </summary>
+          <div class="work-list work-domestic-publications-list" id="work-domestic-publications-list">
+            <p class="posts-archive-summary">Loading Korean domestic publications...</p>
+          </div>
+        </details>
       </section>
     </div>
   </div>
@@ -62,12 +75,22 @@ permalink: /work/
   document.addEventListener('DOMContentLoaded', function () {
     var svgBasePath = '{{ "/assets/svg/" | relative_url }}';
     var topButton = document.querySelector('.work-nav-top-link');
+    var defaultPublicationLinkMapping = {
+      Paper: 'paper.svg',
+      Program: 'paper.svg',
+      Proceedings: 'paper.svg',
+      Workshop: 'rocket.svg',
+      Project: 'rocket.svg',
+      Github: 'github.svg',
+      Drive: 'google-drive.svg'
+    };
 
     var sections = [
       { id: 'work-publications-list', path: '{{ "/data/publication.json" | relative_url }}', type: 'publication' },
       { id: 'work-projects-list', path: '{{ "/data/projects.json" | relative_url }}', type: 'project' },
       { id: 'work-experiences-list', path: '{{ "/data/experiences.json" | relative_url }}', type: 'experience' },
-      { id: 'work-education-list', path: '{{ "/data/education.json" | relative_url }}', type: 'education' }
+      { id: 'work-education-list', path: '{{ "/data/education.json" | relative_url }}', type: 'education' },
+      { id: 'work-domestic-publications-list', path: '{{ "/data/korean_publications.json" | relative_url }}', type: 'publication', reverse: true }
     ];
 
     function escapeHtml(value) {
@@ -143,6 +166,9 @@ permalink: /work/
       return links.map(function (link) {
         var label = link.label || 'Link';
         var mappedIcon = findMappedIcon(linkMapping, label);
+        if (!mappedIcon && type === 'publication') {
+          mappedIcon = findMappedIcon(defaultPublicationLinkMapping, label);
+        }
         var url = String(link.url || '');
 
         if (!mappedIcon && /github\.com/i.test(url)) {
@@ -429,8 +455,11 @@ permalink: /work/
           return response.json();
         })
         .then(function (data) {
-          var items = data && Array.isArray(data.items) ? data.items : [];
+          var items = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : []);
           var metadata = data && data.metadata ? data.metadata : {};
+          if (section.reverse) {
+            items = items.slice().reverse();
+          }
           if (!items.length) {
             root.innerHTML = '<p class="posts-archive-summary">No entries yet.</p>';
             return;

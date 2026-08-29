@@ -1,0 +1,165 @@
+[
+  {
+    "title": "심층강화학습 기반 목표물 추적 시스템에서 다중 목적 함수 분석",
+    "authors": "강청웅, 박범진, 최재식(한국과학기술원)",
+    "authors-note": "",
+    "venue": "한국군사과학기술학회 종합학술대회",
+    "date": "2021",
+    "chip": "KIMST",
+    "links": [
+      {
+        "label": "Program",
+        "url": "https://www.kimst.or.kr/data/2021_program.pdf"
+      }
+    ]
+  },
+  {
+    "title": "계층별 관련도 전파 기반 무인이동로봇 강화학습 의사결정 과정 자동 분석",
+    "authors": "강청웅, 박범진, 최재식",
+    "authors-note": "",
+    "venue": "한국군사과학기술학회 종합학술대회",
+    "date": "2022",
+    "chip": "KIMST",
+    "links": [
+      {
+        "label": "Program",
+        "url": "강청웅, 박범진, 최재식(한국과학기술원)"
+      }
+    ]
+  },
+  {
+    "title": "샘플 필터링을 통한 효율적인 강화학습 모델 지식 증류",
+    "authors": "박범진, 강청웅, 최재식(한국과학기술원)",
+    "authors-note": "",
+    "venue": "한국로봇학회 학술대회",
+    "date": "2023",
+    "chip": "KRoC",
+    "links": []
+  },
+  {
+    "title": "대형 언어 모델의 문장 표현의 설명가능적 해석",
+    "authors": "박범진, 최재식(한국과학기술원)",
+    "authors-note": "",
+    "venue": "한국정보과학회 한국소프트웨어종합학술대회",
+    "date": "2023",
+    "chip": "KSC",
+    "links": [
+      {
+        "label": "Paper",
+        "url": "https://www.dbpia.co.kr/journal/articleDetail?nodeId=NODE11705085"
+      }
+    ]
+  },
+  {
+    "title": "BERT 회로에서 편향 생성 과정",
+    "authors": "<strong>박범진</strong>, Artyom O. Stitsyuk, 최재식(한국과학기술원)",
+    "authors-note": "",
+    "venue": "KCC 2023 설명가능 인공지능 워크숍",
+    "date": "2023",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2023/"
+      }
+    ]
+  },
+  {
+    "title": "Exploring In-context Learning in Transformer Models for Time Series Analysis",
+    "authors": "Jungmin Kim, Enver Menadjiev, <strong>박범진</strong>, Artyom O. Stitsyuk, Anh Tong, 최재식(한국과학기술원)",
+    "authors-note": "",
+    "venue": "KCC 2023 설명가능 인공지능 워크숍",
+    "date": "2023",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2023/"
+      }
+    ]
+  },
+  {
+    "title": "Exploring the Effect of Baselines Generated from Latent Space in Integrated Gradient",
+    "authors": "Donghoon Lee, <strong>Bumjin Park</strong>, Jaesik Choi",
+    "authors-note": "",
+    "venue": "KCC 2023 설명가능 인공지능 워크숍",
+    "date": "2023",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2023/"
+      }
+    ]
+  },
+  {
+    "title": "자연어 명령어 기반 군집 로봇 제어 프레임워크",
+    "authors": "박범진, 최재식",
+    "authors-note": "",
+    "venue": "한국군사과학기술학회 종합학술대회",
+    "date": "2024",
+    "chip": "KIMST",
+    "links": [
+      {
+        "label": "Proceedings",
+        "url": "https://www.kimst.or.kr/electronic_paper/index.kin?gubun=3&type=total&year=2024"
+      }
+    ]
+  },
+  {
+    "title": "배터리 효율성을 위한 강화학습 로봇 제어",
+    "authors": "장원준, 박범진, 최재식",
+    "authors-note": "",
+    "venue": "한국군사과학기술학회 종합학술대회",
+    "date": "2024",
+    "chip": "KIMST",
+    "links": [
+      {
+        "label": "Proceedings",
+        "url": "https://www.kimst.or.kr/electronic_paper/index.kin?gubun=3&type=total&year=2024"
+      }
+    ]
+  },
+  {
+    "title": "Memorizing Documents With Guidance in Large Language Models",
+    "authors": "박범진, 최재식",
+    "authors-note": "Best Paper Session",
+    "venue": "KCC 2024 설명가능 인공지능 워크숍",
+    "date": "2024",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2024/"
+      }
+    ]
+  },
+  {
+    "title": "Representation Interpretation of Refusal Mechanism in LLMs",
+    "authors": "<strong>Bumjin Park</strong>, Yeonji Kim, Jinsil Lee, Youngjoo Jung, Jaesik Choi",
+    "authors-note": "김연지, 이진실, 박범진, 정영주, 최재식",
+    "venue": "KCC 2024 설명가능 인공지능 워크숍",
+    "date": "2024",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2024/"
+      }
+    ]
+  },
+  {
+    "title": "Default LoRA: Explainable Default and Exception Rule Learning in Language Models",
+    "authors": "박범진, 최재식",
+    "authors-note": "Spotlight",
+    "venue": "KCC 2026 설명가능 인공지능 워크숍",
+    "date": "2026",
+    "chip": "XAI@KCC",
+    "links": [
+      {
+        "label": "Workshop",
+        "url": "https://xai.kaist.ac.kr/xai-workshop/2026/"
+      }
+    ]
+  }
+]

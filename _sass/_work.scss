@@ -105,6 +105,117 @@
   gap: 0;
 }
 
+.work-domestic-publications {
+  --domestic-accent: #315a8a;
+  --domestic-border: #cbd7e6;
+  --domestic-bg: #f4f7fb;
+  --domestic-header-bg: #e9eff7;
+  margin-top: 1.35rem;
+  border: 1px solid var(--domestic-border);
+  background: var(--domestic-bg);
+}
+
+.work-domestic-publications > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  padding: 0.72rem 0.88rem;
+  background: var(--domestic-header-bg);
+  color: var(--domestic-accent);
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.25;
+  list-style: none;
+  cursor: pointer;
+  transition: color 0.18s ease;
+}
+
+.work-domestic-publications > summary::-webkit-details-marker {
+  display: none;
+}
+
+.work-domestic-publications > summary:hover,
+.work-domestic-publications > summary:focus-visible {
+  color: color-mix(in srgb, var(--domestic-accent) 78%, var(--global-text-color));
+  outline: none;
+}
+
+.work-domestic-summary-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.58rem;
+  min-width: 0;
+  color: inherit;
+  font: inherit;
+}
+
+.work-domestic-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-width: 1.8rem;
+  height: 1.35rem;
+  padding: 0 0.36rem;
+  border: 1px solid currentColor;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.68rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.08em;
+}
+
+.work-domestic-label,
+.work-domestic-chevron {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.work-domestic-label.is-open {
+  display: none;
+}
+
+.work-domestic-publications[open] .work-domestic-label.is-closed {
+  display: none;
+}
+
+.work-domestic-publications[open] .work-domestic-label.is-open {
+  display: inline;
+}
+
+.work-domestic-chevron {
+  flex: 0 0 auto;
+  transition: transform 0.18s ease;
+}
+
+.work-domestic-publications[open] .work-domestic-chevron {
+  transform: rotate(180deg);
+}
+
+.work-domestic-publications-list {
+  padding: 0 1rem 0.45rem;
+}
+
+.work-domestic-publications-list .work-item {
+  border-bottom-color: color-mix(in srgb, var(--domestic-border) 82%, transparent);
+}
+
+html[data-theme='dark'] .work-domestic-publications {
+  --domestic-accent: #a9c8ee;
+  --domestic-border: #35465b;
+  --domestic-bg: #101722;
+  --domestic-header-bg: #172233;
+}
+
 .work-item {
   display: grid;
   grid-template-columns: 138px minmax(0, 1fr) 112px;
