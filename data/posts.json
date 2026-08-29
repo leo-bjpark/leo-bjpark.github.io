@@ -19,6 +19,18 @@
         "visible": true
     },
     {
+        "title": "Self-Reference AI",
+        "id": "self-reference-ai",
+        "category": "Interpretability, Manifold",
+        "date": "2026-08-10",
+        "tags": ["Interpretability", "Grassmannian"],
+        "media": "Literature",
+        "en_link": "technical_en/2026-08-10-self-reference-ai.md",
+        "kr_link": "technical_kr/2026-08-10-self-reference-ai.md",
+        "highlight": true,
+        "visible": true
+    },
+    {
         "title": "Conflict Classes",
         "id": "conflict",
         "category": "NMR, Visualization",

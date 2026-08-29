@@ -1,4 +1,40 @@
 {
+  "papadopoulos-etal-2026-mind-viruses": {
+    "author": "Papadopoulos et al.",
+    "year": "2026",
+    "title": "Mind Viruses: Self-Propagating Ideas in Multi-Agent LLM Systems",
+    "url": "https://arxiv.org/abs/2608.10218"
+  },
+  "wikipedia-quine-computing": {
+    "author": "Wikipedia contributors",
+    "year": "2026",
+    "title": "Quine (computing)",
+    "url": "https://en.wikipedia.org/wiki/Quine_(computing)"
+  },
+  "sep-self-reference": {
+    "author": "Bolander",
+    "year": "2024",
+    "title": "Self-Reference and Paradox",
+    "url": "https://plato.stanford.edu/entries/self-reference/"
+  },
+  "sep-goedel-numbering": {
+    "author": "Raatikainen",
+    "year": "2025",
+    "title": "Gödel Numbering",
+    "url": "https://plato.stanford.edu/entries/goedel-incompleteness/sup1.html"
+  },
+  "sep-tarski-truth": {
+    "author": "Hodges",
+    "year": "2022",
+    "title": "Tarski’s Truth Definitions",
+    "url": "https://plato.stanford.edu/entries/tarski-truth/"
+  },
+  "sep-goedel-incompleteness": {
+    "author": "Raatikainen",
+    "year": "2025",
+    "title": "Gödel’s Incompleteness Theorems",
+    "url": "https://plato.stanford.edu/entries/goedel-incompleteness/"
+  },
   "structuring-sparsity": {
     "author": "Fel et al.",
     "year": "2026",
