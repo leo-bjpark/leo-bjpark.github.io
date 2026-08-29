@@ -10,12 +10,12 @@
         "title": "Grassmannian and AI Interpretability",
         "id": "grassmanian-ai",
         "category": "Literature",
-        "date": "2026-08-20",
+        "date": "2026-08-29",
         "tags": ["Interpretability", "Grassmannian"],
         "media": "Literature",
         "en_link": "technical_en/2026-08-29-grassman-and-ai-interpretability.md",
         "kr_link": "technical_kr/2026-08-29-grassman-and-ai-interpretability.md",
-        "highlight": false,
+        "highlight": true,
         "visible": true
     },
     {
