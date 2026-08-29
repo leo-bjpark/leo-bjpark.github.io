@@ -7,6 +7,18 @@
     },
 "posts":[
     {
+        "title": "Grassmannian and AI Interpretability",
+        "id": "grassmanian-ai",
+        "category": "Literature",
+        "date": "2026-08-20",
+        "tags": ["Interpretability", "Grassmannian"],
+        "media": "Literature",
+        "en_link": "technical_en/2026-08-29-grassman-and-ai-interpretability.md",
+        "kr_link": "technical_kr/2026-08-29-grassman-and-ai-interpretability.md",
+        "highlight": false,
+        "visible": true
+    },
+    {
         "title": "Conflict Classes",
         "id": "conflict",
         "category": "Research",
@@ -33,10 +45,10 @@
     {
         "title": "What Makes DiffusionGemma Different?",
         "id": "diffusion-gemma",
-        "category": "Technical Review",
+        "category": "Literature",
         "date": "2026-06-29",
         "tags": ["LLM", "Diffusion", "Gemma"],
-        "media": "Technical",
+        "media": "Literature",
         "en_link": "technical_en/2026-06-29-diffusion-gemma.md",
         "kr_link": "technical_kr/2026-06-29-diffusion-gemma.md",
         "highlight": false,
@@ -45,10 +57,10 @@
     {
         "title": "Emotional Representation in LLMs",
         "id": "anthropic-emotion",
-        "category": "Technical Review",
+        "category": "Literature",
         "date": "2026-04-05",
         "tags": ["LLM", "Emotion", "Anthropic"],
-        "media": "Technical",
+        "media": "Literature",
         "en_link": "technical_en/2026-04-04-anthropic-emotion.md",
         "kr_link": "technical_kr/2026-04-04-anthropic-emotion.md",
         "highlight": false,

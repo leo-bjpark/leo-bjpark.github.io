@@ -75,7 +75,7 @@ layout: default
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', async function () {
     var backButton = document.getElementById('postBackButton');
     var switchRoot = document.getElementById('postLanguageSwitch');
     var postNav = document.getElementById('postSectionNav');
@@ -83,12 +83,19 @@ layout: default
     var postContent = document.querySelector('.post-content');
     var navEntries = [];
     var imageBasePath = '{{ site.img_path | default: "" }}';
+    var citationCatalog = {};
+    var citationCatalogUrl = {{ '/data/bib.json' | relative_url | jsonify }};
     var isKoreanPost = {{ is_korean_post | jsonify }};
     var figureCaptionPrefix = isKoreanPost ? '그림' : 'Fig';
     var postNavHeadingText = {{ post_nav_title | jsonify }};
 
     function isAbsoluteAssetUrl(url) {
-      return /^(?:[a-z]+:)?\/\//i.test(url) || /^data:/i.test(url) || /^\/|^\.\.?\/|^#/i.test(url);
+      // Keep explicitly supplied remote image URLs unchanged. Only bare,
+      // post-relative filenames should be resolved against site.img_path.
+      return /^https?:\/\//i.test(url) ||
+        /^\/\//.test(url) ||
+        /^(?:data|blob):/i.test(url) ||
+        /^\/|^\.\.?\/|^#/i.test(url);
     }
 
     function normalizeImageBase(base) {
@@ -105,6 +112,135 @@ layout: default
         var src = String(img.getAttribute('src') || '').trim();
         if (!src || isAbsoluteAssetUrl(src)) return;
         img.setAttribute('src', base + '/' + src.replace(/^\/+/, ''));
+      });
+    }
+
+    async function renderPostCitations() {
+      if (!postContent) return;
+      var citationNodes = Array.from(postContent.querySelectorAll('citation[key]'));
+      if (!citationNodes.length) return;
+
+      try {
+        var response = await fetch(citationCatalogUrl, { credentials: 'same-origin' });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+        citationCatalog = await response.json();
+      } catch (error) {
+        console.warn('Unable to load citation catalog:', error);
+      }
+
+      var references = new Map();
+      citationNodes.forEach(function (citation) {
+        var key = String(citation.getAttribute('key') || '').trim();
+        if (!key) return;
+
+        var reference = references.get(key);
+        if (!reference) {
+          var catalogEntry = citationCatalog && citationCatalog[key] ? citationCatalog[key] : {};
+          reference = {
+            key: key,
+            author: String(catalogEntry.author || ''),
+            year: String(catalogEntry.year || ''),
+            title: String(catalogEntry.title || ''),
+            url: String(catalogEntry.url || '')
+          };
+          references.set(key, reference);
+        }
+
+        ['author', 'year', 'title', 'url'].forEach(function (field) {
+          var value = String(citation.getAttribute(field) || '').trim();
+          if (value && !reference[field]) reference[field] = value;
+        });
+      });
+
+      citationNodes.forEach(function (citation) {
+        var key = String(citation.getAttribute('key') || '').trim();
+        var reference = references.get(key);
+        if (!reference || !reference.author || !reference.year) return;
+
+        var link = document.createElement('a');
+        link.className = 'paper-citation';
+        link.textContent = '(' + reference.author + ', ' + reference.year + ')';
+        var citationDetails = reference.title + ' — ' + reference.author + ' (' + reference.year + ')';
+        link.setAttribute('data-footnote', citationDetails);
+        link.setAttribute('aria-label', link.textContent + ': ' + citationDetails);
+        if (reference.url) {
+          link.href = reference.url;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        } else {
+          link.href = '#ref-' + key;
+        }
+        citation.textContent = '';
+        citation.appendChild(link);
+      });
+
+      var completeReferences = Array.from(references.values()).filter(function (reference) {
+        return reference.author && reference.year && reference.title;
+      });
+      if (!completeReferences.length) return;
+
+      var section = document.createElement('section');
+      section.className = 'citation-references';
+      var heading = document.createElement('h3');
+      heading.id = 'references';
+      heading.textContent = 'References';
+      section.appendChild(heading);
+
+      var list = document.createElement('ol');
+      list.className = 'paper-references';
+      completeReferences.forEach(function (reference) {
+        var item = document.createElement('li');
+        item.id = 'ref-' + reference.key;
+
+        if (reference.url) {
+          var sourceLink = document.createElement('a');
+          sourceLink.href = reference.url;
+          sourceLink.target = '_blank';
+          sourceLink.rel = 'noopener noreferrer';
+          var title = document.createElement('em');
+          title.textContent = reference.title;
+          sourceLink.appendChild(title);
+          item.appendChild(sourceLink);
+        } else {
+          var plainTitle = document.createElement('em');
+          plainTitle.textContent = reference.title;
+          item.appendChild(plainTitle);
+        }
+
+        item.appendChild(document.createTextNode(', ' + reference.author + ' (' + reference.year + ').'));
+        list.appendChild(item);
+      });
+      section.appendChild(list);
+      postContent.appendChild(section);
+    }
+
+    function enhanceFootnoteTooltips() {
+      if (!postContent) return;
+      postContent.querySelectorAll('a.footnote[href^="#"]').forEach(function (link) {
+        var targetId = String(link.getAttribute('href') || '').slice(1);
+        var target = targetId ? document.getElementById(targetId) : null;
+        if (!target) return;
+
+        var copy = target.cloneNode(true);
+        copy.querySelectorAll('.reversefootnote').forEach(function (backlink) {
+          backlink.remove();
+        });
+        var text = String(copy.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!text) return;
+
+        link.setAttribute('data-footnote', text);
+        link.setAttribute('aria-label', 'Reference ' + link.textContent.trim() + ': ' + text);
+      });
+
+      postContent.querySelectorAll('a[href^="#ref-"]').forEach(function (link) {
+        var targetId = String(link.getAttribute('href') || '').slice(1);
+        var target = targetId ? document.getElementById(targetId) : null;
+        var text = target ? String(target.textContent || '').replace(/\s+/g, ' ').trim() : '';
+        if (!text) return;
+
+        link.classList.add('paper-citation');
+        link.setAttribute('data-footnote', text);
+        link.setAttribute('aria-label', link.textContent.trim() + ': ' + text);
       });
     }
 
@@ -319,7 +455,14 @@ layout: default
         navEntries.push({ id: id, level: level, parentH2Id: parentH2Id });
         var klass = level === 'h3' ? 'post-nav-link is-sub' : 'post-nav-link';
         var safeText = escapeHtml(text);
-        return '<a class="' + klass + '" href="#' + id + '" data-post-nav-target="' + id + '" data-post-nav-level="' + level + '" data-post-nav-parent="' + parentH2Id + '" title="' + safeText + '">' + safeText + '</a>';
+        var numberedHeading = text.match(/^(\d+\.)\s+(.+)$/);
+        var navLabel = safeText;
+        if (numberedHeading) {
+          klass += ' has-number';
+          navLabel = '<span class="post-nav-number">' + escapeHtml(numberedHeading[1]) + '</span>' +
+            '<span class="post-nav-label">' + escapeHtml(numberedHeading[2]) + '</span>';
+        }
+        return '<a class="' + klass + '" href="#' + id + '" data-post-nav-target="' + id + '" data-post-nav-level="' + level + '" data-post-nav-parent="' + parentH2Id + '" title="' + safeText + '">' + navLabel + '</a>';
       }).filter(Boolean);
 
       var linksHtml = rendered.join('');
@@ -359,9 +502,9 @@ layout: default
       postNav.classList.remove('is-compact');
       var rect = postNav.getBoundingClientRect();
       var viewportWidth = window.innerWidth || document.documentElement.clientWidth || 0;
-      var isClippedByRightPane = rect.right > (viewportWidth - 6);
+      var isClippedBySidePane = rect.left < 6 || rect.right > (viewportWidth - 6);
       var hasHorizontalOverflow = document.documentElement.scrollWidth > viewportWidth + 2;
-      if (isClippedByRightPane || hasHorizontalOverflow) {
+      if (isClippedBySidePane || hasHorizontalOverflow) {
         postNav.classList.add('is-compact');
       }
     }
@@ -400,8 +543,10 @@ layout: default
       });
     }
 
+    await renderPostCitations();
     buildPostSectionNav();
     rewritePostImageSources();
+    enhanceFootnoteTooltips();
     normalizePostCaptions();
     enhanceFigureCaptions();
     bindFigureCaptionsToZoom();

@@ -360,18 +360,24 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 
 .post-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 0;
+  grid-template-columns: 0 minmax(0, 1fr);
   align-items: start;
+}
+
+.post-layout > .post {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .post-nav {
   position: sticky;
   top: 5.5rem;
   width: max-content;
-  margin-left: 34px;
-  margin-right: -452px;
+  margin-left: -452px;
+  margin-right: 34px;
   align-self: start;
-  grid-column: 2;
+  justify-self: end;
+  grid-column: 1;
   grid-row: 1;
 }
 
@@ -428,14 +434,41 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
   font-weight: 430;
 }
 
+.post-nav-link.has-number {
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.32rem;
+  align-items: start;
+}
+
+.post-nav-link.has-number > .post-nav-number,
+.post-nav-link.has-number > .post-nav-label {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+}
+
 .post-nav-link:hover {
   color: var(--global-text-color);
   text-decoration: none;
 }
 
 .post-nav-link.is-current {
-  color: var(--global-bg-color);
+  color: var(--global-bg-color) !important;
   background: var(--global-text-color);
+}
+
+.post-nav-link.is-current .post-nav-number,
+.post-nav-link.is-current .post-nav-label {
+  color: inherit !important;
+}
+
+.post-nav-link.is-current:hover,
+.post-nav-link.is-current:focus-visible {
+  color: var(--global-bg-color) !important;
 }
 
 .post-nav.is-collapsed .post-nav-link.is-sub {
@@ -443,13 +476,34 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 }
 
 .post-nav.is-compact .post-nav-link {
+  display: -webkit-box;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.post-nav.is-compact .post-nav-link.has-number {
+  display: grid;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+}
+
+.post-nav.is-compact .post-nav-link.has-number .post-nav-label {
+  display: -webkit-box;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .post-nav.is-compact .post-nav-box {
-  max-width: min(42vw, 520px);
+  width: min(32vw, 360px);
+  max-width: min(32vw, 360px);
 }
 
 .post-nav-toggle {
@@ -599,6 +653,122 @@ html[data-theme='dark'] .post-source-link:focus-visible img {
   min-width: 0;
   margin-top: 1.5rem;
   overflow-wrap: break-word;
+}
+
+.post-content a.footnote[data-footnote],
+.post-content a.paper-citation[data-footnote] {
+  position: relative;
+  cursor: help;
+}
+
+.post-content citation {
+  display: inline;
+}
+
+.post-content a.footnote[data-footnote]::after,
+.post-content a.paper-citation[data-footnote]::after {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  bottom: calc(100% + 0.55rem);
+  width: max-content;
+  max-width: min(30rem, 78vw);
+  padding: 0.62rem 0.72rem;
+  border: 1px solid color-mix(in srgb, var(--global-text-color) 18%, transparent);
+  border-radius: 0.45rem;
+  background: var(--global-bg-color);
+  box-shadow: 0 0.45rem 1.4rem rgba(0, 0, 0, 0.16);
+  color: var(--global-text-color);
+  content: attr(data-footnote);
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  text-align: left;
+  transform: translate(-50%, 0.25rem);
+  transition: opacity 120ms ease, transform 120ms ease;
+  white-space: normal;
+}
+
+.post-content a.footnote[data-footnote]:hover::after,
+.post-content a.footnote[data-footnote]:focus-visible::after,
+.post-content a.paper-citation[data-footnote]:hover::after,
+.post-content a.paper-citation[data-footnote]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.post-content blockquote.paper-definition {
+  position: relative;
+  margin: 1.55rem 0;
+  padding: 1.05rem 1.2rem 1.12rem;
+  border: 1px solid color-mix(in srgb, var(--global-text-color) 28%, transparent);
+  border-left: 3px solid var(--global-text-color);
+  border-radius: 0.28rem;
+  background: color-mix(in srgb, var(--global-bg-color) 98.5%, var(--global-text-color) 1.5%);
+  color: var(--global-text-color);
+  font-style: normal;
+}
+
+.post-content blockquote.paper-definition::before {
+  content: none;
+}
+
+.post-content .paper-definition-title {
+  margin: 0 0 0.72rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 1.04rem;
+  font-style: italic;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.post-content .paper-definition-title span {
+  font-weight: 700;
+}
+
+.post-content blockquote.paper-definition > :last-child {
+  margin-bottom: 0;
+}
+
+.post-content blockquote.paper-definition .MathJax_Display,
+.post-content blockquote.paper-definition mjx-container[display='true'] {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+html[data-theme='dark'] .post-content blockquote.paper-definition {
+  border-color: color-mix(in srgb, #ffffff 28%, transparent);
+  border-left-color: #ffffff;
+  background: color-mix(in srgb, var(--global-bg-color) 97%, #ffffff 3%);
+}
+
+.post-content .citation-references,
+.post-content .citation-references h3,
+.post-content .paper-references,
+.post-content .paper-references li,
+.post-content .paper-references em {
+  color: var(--global-text-color);
+}
+
+.post-content .paper-references li {
+  scroll-margin-top: 6rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-content .paper-references a,
+.post-content .paper-references a:visited {
+  color: var(--global-link-color);
+}
+
+html[data-theme='dark'] .post-content .citation-references,
+html[data-theme='dark'] .post-content .citation-references h3,
+html[data-theme='dark'] .post-content .paper-references,
+html[data-theme='dark'] .post-content .paper-references li,
+html[data-theme='dark'] .post-content .paper-references em {
+  color: var(--global-text-color);
 }
 
 .post-content pre {
@@ -825,9 +995,9 @@ html[data-theme='dark'] .post-content a:hover {
 
 .post-content h2 {
   font-size: 21px;
-  margin-top: 1.6rem;
-  padding-top: 0.95rem;
-  border-top: 2px solid color-mix(in srgb, var(--global-text-color) 100%, transparent);
+  margin-top: 2.25rem;
+  padding-top: 1.15rem;
+  border-top: 0;
 }
 
 .post-content > h2:first-child {
@@ -1015,6 +1185,10 @@ html[data-theme='dark'] .post-content blockquote::before {
 @media (max-width: 1080px) {
   .post-layout {
     grid-template-columns: 1fr;
+  }
+
+  .post-layout > .post {
+    grid-column: 1;
   }
 
   .post-nav {

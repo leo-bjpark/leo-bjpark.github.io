@@ -1,0 +1,38 @@
+{
+  "structuring-sparsity": {
+    "author": "Fel et al.",
+    "year": "2026",
+    "title": "Structuring Sparsity: Block-Sparse Featurizers Capture Visual Concept Manifolds",
+    "url": "https://arxiv.org/abs/2606.25234"
+  },
+  "curve-detectors": {
+    "author": "Cammarata et al.",
+    "year": "2020",
+    "title": "Curve Detectors",
+    "url": "https://distill.pub/2020/circuits/curve-detectors/"
+  },
+  "multidimensional-features": {
+    "author": "Engels et al.",
+    "year": "2025",
+    "title": "Not All Language Model Features Are One-Dimensionally Linear",
+    "url": "https://arxiv.org/abs/2405.14860"
+  },
+  "counting-manifolds": {
+    "author": "Anthropic",
+    "year": "2025",
+    "title": "When Models Manipulate Manifolds: The Geometry of a Counting Task",
+    "url": "https://transformer-circuits.pub/2025/linebreaks/index.html"
+  },
+  "projecting-assumptions": {
+    "author": "Hindupur et al.",
+    "year": "2025",
+    "title": "Projecting Assumptions: The Duality Between Sparse Autoencoders and Concept Geometry",
+    "url": "https://arxiv.org/abs/2503.01822"
+  },
+  "concept-manifolds": {
+    "author": "Bhalla et al.",
+    "year": "2026",
+    "title": "Do Sparse Autoencoders Capture Concept Manifolds?",
+    "url": "https://arxiv.org/abs/2604.28119"
+  }
+}
