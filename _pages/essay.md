@@ -8,10 +8,19 @@ description:
 <div class="posts-archive-layout">
   <div class="posts-archive">
     <section class="posts-archive-hero">
-      <p class="home-section-label">Posts</p>
-      <h1 id="postsArchiveQuote">Loading quote...</h1>
-      <p class="posts-archive-intro" id="postsArchiveAuthor"></p>
+      <div class="posts-archive-hero-content">
+        <figure class="posts-archive-artwork" id="postsArchiveArtwork" hidden>
+          <img id="postsArchiveArtworkImage" alt="" decoding="async" data-zoomable>
+          <figcaption id="postsArchiveArtworkCaption"></figcaption>
+        </figure>
+        <div class="posts-archive-quote">
+          <h1 id="postsArchiveQuote">Loading quote...</h1>
+          <p class="posts-archive-intro" id="postsArchiveAuthor"></p>
+        </div>
+      </div>
     </section>
+
+    <nav class="posts-media-tabs" id="postsMediaTabs" aria-label="Post media" hidden></nav>
 
     <div class="posts-archive-filter-shell" id="postsArchiveFilterShell" hidden>
       <div class="posts-archive-filter" id="postsArchiveFilter"></div>
@@ -36,8 +45,13 @@ description:
     var navBox = document.getElementById('postsArchiveNavBox');
     var quoteTitle = document.getElementById('postsArchiveQuote');
     var quoteAuthor = document.getElementById('postsArchiveAuthor');
+    var artwork = document.getElementById('postsArchiveArtwork');
+    var artworkImage = document.getElementById('postsArchiveArtworkImage');
+    var artworkCaption = document.getElementById('postsArchiveArtworkCaption');
+    var mediaTabs = document.getElementById('postsMediaTabs');
     if (!groupsRoot) return;
     var allItems = [];
+    var activeMedia = 'Research';
     var activeCategory = '';
     var colorMapping = {};
     var mediaOrder = [];
@@ -127,6 +141,39 @@ description:
       return activeQuotes[randomIndex];
     }
 
+    function pickRandomImage(images) {
+      if (!Array.isArray(images) || !images.length) return null;
+      var activeImages = images.filter(function (image) {
+        return image && image.active === true && String(image.src || '').trim();
+      });
+      if (!activeImages.length) return null;
+      return activeImages[Math.floor(Math.random() * activeImages.length)];
+    }
+
+    function renderArtwork(image) {
+      if (!artwork || !artworkImage || !image) return;
+      var src = String(image.src || '').trim();
+      if (!src) return;
+
+      var caption = String(image.author || image.title || '').trim();
+      artworkImage.src = src;
+      artworkImage.alt = String(image.alt || caption || 'Featured artwork');
+      artworkImage.setAttribute('data-zoom-caption', caption);
+      if (artworkCaption) {
+        artworkCaption.textContent = caption;
+        artworkCaption.hidden = !caption;
+      }
+      artworkImage.addEventListener('error', function () {
+        artwork.hidden = true;
+        if (artwork.parentElement) artwork.parentElement.classList.remove('has-artwork');
+      }, { once: true });
+      artwork.hidden = false;
+      if (artwork.parentElement) artwork.parentElement.classList.add('has-artwork');
+      if (typeof medium_zoom !== 'undefined' && medium_zoom && typeof medium_zoom.attach === 'function') {
+        medium_zoom.attach(artworkImage);
+      }
+    }
+
     function renderFilterBar() {
       if (!filterBar) return;
       if (!activeCategory) {
@@ -140,6 +187,35 @@ description:
         '<button class="posts-archive-filter-pill is-active" type="button" data-category-filter="' + escapeHtml(activeCategory) + '">' +
           escapeHtml(activeCategory) +
         '</button>';
+    }
+
+    function renderMediaTabs() {
+      if (!mediaTabs) return;
+      var mediaNames = Array.from(new Set(allItems.map(function (item) {
+        return String(item.media || 'Other').trim() || 'Other';
+      }))).sort(function (a, b) {
+        return a.localeCompare(b, 'en', { sensitivity: 'base' });
+      });
+
+      if (!mediaNames.length) {
+        mediaTabs.innerHTML = '';
+        mediaTabs.hidden = true;
+        return;
+      }
+
+      if (mediaNames.indexOf(activeMedia) === -1) {
+        activeMedia = mediaNames.indexOf('Research') !== -1 ? 'Research' : mediaNames[0];
+      }
+
+      mediaTabs.innerHTML = mediaNames.map(function (mediaName) {
+        var isActive = activeMedia === mediaName;
+        var label = mediaName;
+        var count = allItems.filter(function (item) { return (item.media || 'Other') === mediaName; }).length;
+        return '<button class="posts-media-tab' + (isActive ? ' is-active' : '') + '" type="button"' +
+          ' data-media-filter="' + escapeHtml(mediaName) + '" aria-pressed="' + (isActive ? 'true' : 'false') + '">' +
+          '<span>' + escapeHtml(label) + '</span><small>' + count + '</small></button>';
+      }).join('');
+      mediaTabs.hidden = false;
     }
 
     function sectionIdFromName(name) {
@@ -190,9 +266,11 @@ description:
     }
 
     function renderPosts() {
-      var visibleItems = activeCategory
-        ? allItems.filter(function (item) { return (item.category || '') === activeCategory; })
-        : allItems;
+      var visibleItems = allItems.filter(function (item) {
+        var matchesMedia = !activeMedia || (item.media || 'Other') === activeMedia;
+        var matchesCategory = !activeCategory || (item.category || '') === activeCategory;
+        return matchesMedia && matchesCategory;
+      });
 
       if (!visibleItems.length) {
         groupsRoot.innerHTML = '<p class="posts-archive-summary">No posts yet.</p>';
@@ -246,6 +324,7 @@ description:
       }
 
       renderFilterBar();
+      renderMediaTabs();
     }
 
     Promise.all([
@@ -258,11 +337,18 @@ description:
         return response.json();
       }).catch(function () {
         return [];
+      }),
+      fetch('{{ "/data/images.json" | relative_url }}').then(function (response) {
+        if (!response.ok) throw new Error('Failed to load images.');
+        return response.json();
+      }).catch(function () {
+        return [];
       })
     ])
       .then(function (results) {
         var postData = results[0];
         var quotes = results[1];
+        var images = results[2];
         var items = Array.isArray(postData) ? postData : (Array.isArray(postData.posts) ? postData.posts : []);
         var meta = postData && typeof postData === 'object' && !Array.isArray(postData) ? postData['meta-data'] || {} : {};
 
@@ -270,6 +356,7 @@ description:
         mediaOrder = Object.keys(colorMapping);
 
         var selectedQuote = pickRandomQuote(quotes);
+        renderArtwork(pickRandomImage(images));
         if (quoteTitle) {
           quoteTitle.textContent = selectedQuote && selectedQuote.quote ? '"' + selectedQuote.quote + '"' : 'Posts';
         }
@@ -287,6 +374,7 @@ description:
         }).sort(function (a, b) {
           return new Date(b.date || 0) - new Date(a.date || 0);
         });
+        renderMediaTabs();
         renderPosts();
       })
       .catch(function () {
@@ -296,6 +384,14 @@ description:
       });
 
     document.addEventListener('click', function (event) {
+      var mediaTrigger = event.target.closest('[data-media-filter]');
+      if (mediaTrigger) {
+        activeMedia = mediaTrigger.getAttribute('data-media-filter') || '';
+        activeCategory = '';
+        renderPosts();
+        return;
+      }
+
       var navTrigger = event.target.closest('[data-posts-nav-target]');
       if (navTrigger) {
         event.preventDefault();

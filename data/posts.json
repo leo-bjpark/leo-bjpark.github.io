@@ -9,7 +9,7 @@
     {
         "title": "Grassmannian and AI Interpretability",
         "id": "grassmanian-ai",
-        "category": "Literature",
+        "category": "Interpretability, Manifold",
         "date": "2026-08-29",
         "tags": ["Interpretability", "Grassmannian"],
         "media": "Literature",
@@ -21,7 +21,7 @@
     {
         "title": "Conflict Classes",
         "id": "conflict",
-        "category": "Research",
+        "category": "NMR, Visualization",
         "date": "2026-08-20",
         "tags": ["Logic", "Reasoning", "Conflict"],
         "media": "Research",
@@ -33,7 +33,7 @@
     {
         "title": "A Computation-Oriented Interpretation of Neurons",
         "id": "computation-oriented",
-        "category": "Essay Review",
+        "category": "Interpretability, Neurons",
         "date": "2026-07-06",
         "tags": ["Computation", "Brain", "AI"],
         "media": "Essay",
@@ -45,7 +45,7 @@
     {
         "title": "What Makes DiffusionGemma Different?",
         "id": "diffusion-gemma",
-        "category": "Literature",
+        "category": "Interpretability, Diffusion",
         "date": "2026-06-29",
         "tags": ["LLM", "Diffusion", "Gemma"],
         "media": "Literature",
@@ -57,7 +57,7 @@
     {
         "title": "Emotional Representation in LLMs",
         "id": "anthropic-emotion",
-        "category": "Literature",
+        "category": "Interpretability, LLM",
         "date": "2026-04-05",
         "tags": ["LLM", "Emotion", "Anthropic"],
         "media": "Literature",

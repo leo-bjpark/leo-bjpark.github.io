@@ -17,15 +17,7 @@ permalink: /work/
     </aside>
 
     <div class="work-main">
-      <div id="work-top"></div>
-      <section class="work-hero">
-        <div class="work-hero-copy">
-          <h1>Work</h1>
-          <p class="work-intro">
-            Research History
-          </p>
-        </div>
-      </section>
+      <div id="work-top"></div> 
 
       <section class="work-section" id="work-publications">
         <div class="work-section-heading">
