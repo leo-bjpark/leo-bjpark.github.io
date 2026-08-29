@@ -7,6 +7,18 @@
     },
 "posts":[
     {
+        "title": "Little Prince Paradox",
+        "id": "little-prince-paradox",
+        "category": "Literature, Philosophy",
+        "date": "2026-08-25",
+        "tags": ["The Little Prince", "Reading", "Philosophy"],
+        "media": "Essay",
+        "en_link": "blog_en/2026-08-25-little-prince-paradox.md",
+        "kr_link": "blog_kr/2026-08-25-little-prince-paradox.md",
+        "highlight": false,
+        "visible": true
+    },
+    {
         "title": "Grassmannian and AI Interpretability",
         "id": "grassmanian-ai",
         "category": "Interpretability, Manifold",
