@@ -261,7 +261,7 @@ html[data-theme='dark'] .posts-archive-section-label {
 
 .posts-archive-item {
   --posts-archive-date-column: 9.6rem;
-  --posts-archive-side-column: 8.8rem;
+  --posts-archive-side-column: max-content;
   display: grid;
   grid-template-columns: var(--posts-archive-date-column) minmax(0, 1fr) var(--posts-archive-side-column);
   gap: 0.95rem;
@@ -311,6 +311,7 @@ html[data-theme='dark'] .posts-archive-section-label {
 }
 
 .posts-archive-title {
+  min-width: 0;
   margin: 0;
   font-size: 1.15rem;
   line-height: 1.2;
@@ -326,8 +327,13 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 }
 
 .posts-archive-title a {
+  display: block;
+  max-width: 100%;
   color: var(--global-text-color);
   text-decoration: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .posts-archive-title a:hover {
@@ -343,6 +349,7 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 }
 
 .container .posts-archive-category {
+  display: block;
   margin: 0;
   padding: 0;
   border: none;
@@ -350,6 +357,7 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
   color: var(--global-text-color-light);
   font-size: var(--type-meta);
   line-height: 1;
+  text-align: right;
   white-space: nowrap;
   cursor: pointer;
   transition: color 0.18s ease;

@@ -128,7 +128,7 @@ description:
         var dd = String(parsed.getDate()).padStart(2, '0');
         return yy + '-' + mm + '-' + dd;
       }
-      return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+      return parsed.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
     }
 
     function pickRandomQuote(quotes) {
