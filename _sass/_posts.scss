@@ -492,6 +492,7 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 .post-layout > .post {
   grid-column: 2;
   grid-row: 1;
+  justify-self: center;
 }
 
 .post-nav {
@@ -749,6 +750,7 @@ html[data-theme='dark'] .post-source-link:focus-visible img {
 }
 
 .post {
+  width: 100%;
   min-width: 0;
   max-width: 760px;
   transition: opacity 0.18s ease, transform 0.18s ease;

@@ -83,7 +83,6 @@
     "title": "ReFT: Representation Finetuning for Language Models",
     "url": "https://arxiv.org/abs/2404.03592"
   },
-
   "li2023iti": {
     "author": "Li et al.",
     "year": "2023",
@@ -103,5 +102,47 @@
     "year": "2025",
     "title": "Causal Abstraction: A Theoretical Foundation for Mechanistic Interpretability",
     "url": "https://jmlr.org/papers/v26/23-0058.html"
+  },
+  "anthropic2026fablemythos": {
+    "author": "Anthropic",
+    "year": "2026",
+    "title": "Claude Fable 5.1 and Mythos 5.1",
+    "url": "https://www.anthropic.com/claude-fable-and-mythos-5-1"
+  },
+  "chao2026stale": {
+    "author": "Chao et al.",
+    "year": "2026",
+    "title": "STALE: Can LLM Agents Know When Their Memories Are No Longer Valid?",
+    "url": "https://arxiv.org/abs/2605.06527"
+  },
+  "luo2026revisebench": {
+    "author": "Luo et al.",
+    "year": "2026",
+    "title": "Can AI Revise Research Papers with Human Review Feedback? An Empirical Study and Benchmark",
+    "url": "https://aclanthology.org/2026.findings-acl.887/"
+  },
+  "zeng2026selfmodeling": {
+    "author": "Zeng et al.",
+    "year": "2026",
+    "title": "Evaluating and Improving LLM Self-Modeling",
+    "url": "https://arxiv.org/abs/2608.30980"
+  },
+  "sharma2024sycophancy": {
+    "author": "Sharma et al.",
+    "year": "2024",
+    "title": "Towards Understanding Sycophancy in Language Models",
+    "url": "https://proceedings.iclr.cc/paper_files/paper/2024/hash/0105f7972202c1d4fb817da9f21a9663-Abstract-Conference.html"
+  },
+  "huang2024selfcorrect": {
+    "author": "Huang et al.",
+    "year": "2024",
+    "title": "Large Language Models Cannot Self-Correct Reasoning Yet",
+    "url": "https://arxiv.org/abs/2310.01798"
+  },
+  "zhao2025reconciliation": {
+    "author": "Zhao et al.",
+    "year": "2025",
+    "title": "Understanding Parametric and Contextual Knowledge Reconciliation within Large Language Models",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/94f7c80260eea8d52a5c0ec7b1637c04-Abstract-Conference.html"
   }
 }

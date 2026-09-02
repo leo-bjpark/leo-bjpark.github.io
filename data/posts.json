@@ -5,7 +5,20 @@
             "Essay": {"white": "#006600", "dark": "#a0caa0"}
         }
     },
+    
 "posts":[
+    {
+        "title": "Knowledge Revision - Fable/Attribute Conflict",
+        "id": "nmr-2026-09-02",
+        "category": "Revision, Knowledge Conflict",
+        "date": "2025-12-20",
+        "tags": ["Revision", "Knowledge Conflict"],
+        "media": "Research",
+        "en_link": "technical_en/2026-09-02-knowledge-conflict-sep-en.md",
+        "kr_link": "",
+        "highlight": false,
+        "visible": true
+    },
     {
         "title": "Causal Abstraction as Intervention-Aligned Representation Search",
         "id": "caus-ai",
