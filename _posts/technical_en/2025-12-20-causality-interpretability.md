@@ -2,614 +2,178 @@
 layout: post
 title: Causal Abstraction as Intervention-Aligned Representation Search
 permalink: /blog/2025/causality-interpretability-en/
-mini-title: Interpretability Geometry
 ---
+## 1. From Representation to Causal Mechanism
 
-## 1. From Decodable Information to Causal Structure
+A central goal of neural network interpretability is to understand what internal representations mean. A common approach is to train a probe that predicts an interpretable concept from a hidden state. If a linear classifier can recover whether a sentence contains negation, for example, this suggests that information about negation is encoded somewhere in the representation. However, **decodability does not imply causal relevance**. A representation may contain information that is correlated with the output without actually participating in the computation that produces it. The decoded feature may be redundant, downstream of the true mechanism, or merely predictive of another variable that drives the model.
 
-A common question in neural network interpretability is whether a hidden representation contains an interpretable concept. Suppose, for example, that a linear probe can predict whether a sentence contains negation from an internal representation $h$. This tells us that information about negation is available in $h$. It does not, however, establish that the decoded information plays the causal role that negation is supposed to play in the model's computation.
+**Causal abstraction** proposes a stronger criterion. Rather than asking only whether an interpretable variable can be decoded from a neural representation, it asks whether manipulating the proposed neural realization of that variable produces the causal effects predicted by an interpretable high-level model. <citation key="geiger2024finding"></citation> In this view, a representation becomes mechanistically meaningful when its intervention behavior corresponds to the intervention behavior of the variable it is supposed to implement.
 
-This distinction matters because information can be present without being causally responsible for a behavior. A hidden state may contain many variables that are correlated with the model's output, including variables that are consequences of earlier computation, redundant copies of other information, or features that happen to be predictive without participating in the hypothesized mechanism.
+This intervention-centered perspective has increasingly shaped mechanistic interpretability. Distributed Alignment Search (**DAS**) searches for neural subspaces whose interventions reproduce the counterfactual behavior of high-level causal variables. Instead of assuming that a concept must correspond to an individual neuron, DAS allows the relevant variable to be distributed across a multidimensional representation. Its extension, **Boundless DAS**, replaces the remaining discrete components of the search with learnable parameters and scales this approach to Alpaca 7B. <citation key="wu2023interpretability"></citation>
 
-**Causal abstraction** asks for a stronger relationship. Rather than asking whether an interpretable variable can be decoded from a neural representation, it asks whether an interpretable causal model describes how the neural system responds to interventions. <citation key="geiger2024finding"></citation>
+The same idea has also moved beyond interpretation toward model control. **Inference-Time Intervention (ITI)** identifies activation directions associated with truthful responses and modifies them during inference. <citation key="li2023iti"></citation> **Representation Engineering (RepE)** develops a broader view in which population-level neural representations become objects that can be analyzed and deliberately manipulated. <citation key="zou2023representation"></citation> **Representation Finetuning (ReFT)** goes further by freezing the underlying language model and learning interventions directly on its hidden representations; its LoReFT variant performs these interventions through learned low-dimensional subspaces. <citation key="wu2024reft"></citation>
 
-Let $\mathcal{H}$ denote a **high-level causal model** whose variables have an interpretable meaning, and let $\mathcal{L}$ denote a **low-level causal model**, such as a neural network. The high-level model describes a computation using variables such as equality, negation, or lexical entailment, whereas the low-level model describes the actual internal states and mechanisms of the neural system.
-
-An alignment between the two models specifies how variables at the high level correspond to states at the low level. In the paper, an alignment is written as
-
-$$
-\Pi =
-\left(
-\{\Pi_X\}_X,
-\{\tau_X\}_X
-\right).
-$$
-
-Here, $X$ denotes a high-level variable, $\Pi_X$ denotes the low-level variables associated with $X$, and $\tau_X$ maps values of those low-level variables into values of the high-level variable. Collectively, these mappings define an abstraction map $\tau$ between the low-level and high-level descriptions.
-
-The crucial requirement is that the correspondence must continue to hold when the system is changed.
-
-For a low-level input $x$, an intervention $I \leftarrow i$ fixes a set of low-level variables $I$ to values $i$. Constructive causal abstraction requires
-
-$$
-\tau\left(
-\mathcal{L}_{I\leftarrow i}(x)
-\right)
-=
-\mathcal{H}_{\tau(I\leftarrow i)}
-\left(
-\tau(x)
-\right).
-$$
-
-Here, $\mathcal{L}_{I\leftarrow i}(x)$ is the low-level state obtained by running $\mathcal{L}$ on $x$ while intervening on $I$, and $\tau(\mathcal{L}_{I\leftarrow i}(x))$ is its corresponding high-level description. On the right-hand side, $\tau(x)$ is the high-level version of the input, while $\tau(I\leftarrow i)$ is the corresponding high-level intervention.
-
-The equation therefore compares two paths:
-
-$$
-\begin{aligned}
-&\text{intervene at the low level}
-\rightarrow
-\text{abstract to the high level},
-\\
-&\text{abstract to the high level}
-\rightarrow
-\text{intervene at the high level}.
-\end{aligned}
-$$
-
-A faithful causal abstraction requires these two paths to agree.
+Together, these works suggest a shift from asking **what information is represented** to asking **what happens when the representation is changed**. DAS is particularly useful in this context because it uses counterfactual behavior itself as supervision for finding the representation.
 
 $$
 \boxed{
-\text{Corresponding interventions must produce corresponding effects.}
+\text{Representation}
+\rightarrow
+\text{Intervention}
+\rightarrow
+\text{Counterfactual Effect}
 }
 $$
 
-This is substantially stronger than ordinary probing. A probe asks whether a neural state contains enough information to predict a high-level variable. Causal abstraction asks whether manipulating the proposed neural realization of that variable reproduces the consequences predicted by the high-level causal model.
+---
+
+## 2. Causal Abstraction and Interchange Intervention
+
+Let $\mathcal{H}$ denote an interpretable **high-level causal model** and $\mathcal{L}$ a **low-level neural model**. The high-level model describes a computation using variables with interpretable meanings, while the low-level model describes the actual hidden states and mechanisms of the neural network. An alignment specifies which low-level states correspond to each high-level variable and how those states should be interpreted.
+
+The important requirement is that this correspondence must continue to hold under intervention. If $\tau$ maps low-level states to their high-level descriptions, then a causal abstraction requires
+
+$$
+\tau\left(\mathcal{L}_{I \leftarrow i}(x)\right)
+=
+\mathcal{H}_{\tau(I \leftarrow i)}\left(\tau(x)\right).
+$$
+
+The left-hand side first intervenes on the neural system and then interprets the resulting state at the high level. The right-hand side first abstracts the original system into the high-level causal model and then performs the corresponding high-level intervention. A faithful abstraction requires these two paths to agree.
+
+This is stronger than ordinary probing. A probe establishes that a variable $X$ can be predicted from a neural state $h$. Causal abstraction instead asks whether changing the proposed neural realization of $X$ produces the same downstream effect as changing $X$ in the high-level model. The representation is therefore identified not merely by what can be read from it, but by the role it plays when manipulated.
 
 <figure>
     <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/distributed_alignment_search.webp" />
 </figure>
 
+To perform such interventions in practice, DAS uses **interchange intervention**. Suppose $b$ is a base input and $s$ is a source input. Rather than manually deciding what numerical value should represent an intervention on an intermediate variable $X$, the method replaces the value produced by the base input with the value naturally produced by the source:
+
+$$
+X^b \leftarrow X^s.
+$$
+
+The rest of the computation remains tied to the base input. The resulting computation is therefore counterfactual: it asks what the model would have produced for the base input if one internal variable had taken the value it takes under another input.
 
 ---
 
-## 2. Interchange Interventions
+## 3. Distributed Alignment Search
 
-To test causal correspondence, we need a practical way to intervene on internal variables. The difficulty is that, at the neural level, we usually do not know which numerical activation should represent a high-level intervention such as setting an equality relation to true.
+The main difficulty at the neural level is that a high-level variable is unlikely to correspond neatly to a single neuron. Information about a concept may instead be distributed across many dimensions of the hidden representation. DAS therefore searches for a coordinate system in which the relevant causal variables become separately manipulable subspaces.
 
-**Interchange intervention** avoids this problem by obtaining the intervention value from another naturally occurring input.
-
-Let $b$ denote a **base input**, and let $s_j$ denote the $j$-th **source input**. Suppose $X_j$ is an intermediate variable whose value we want to replace. Instead of manually choosing a new value for $X_j$, we run the model on $s_j$ and take the value that $X_j$ naturally assumes under that source.
-
-For a causal model $\mathcal{M}$, source inputs $$\{s_j\}_{j=1}^{k}$$, and non-overlapping intermediate variable sets $$\{X_j\}_{j=1}^{k}$$, the interchange intervention is defined by replacing each $X_j$ with the value produced by its corresponding source.
-
-Conceptually,
+Given a hidden representation $h$, DAS learns an orthogonal transformation
 
 $$
-X_j^{b}
-\leftarrow
-X_j^{s_j}.
-$$
-
-The base input still determines the rest of the computation. Only the selected intermediate variable is replaced.
-
-With two variables, for example,
-
-$$
-[
-X_1^b,
-X_2^b,
-X_3^b
-]
-\rightarrow
-[
-X_1^{s_1},
-X_2^{s_2},
-X_3^b
-].
-$$
-
-The resulting computation is counterfactual. It asks what the model would have done for the base input if selected internal variables had taken the values they would have taken under other source inputs.
-
-This procedure is especially useful for causal abstraction because the same operation can be defined at both levels. At the high level, we know which interpretable variable is being exchanged. At the low level, we attempt to exchange the representation that realizes that variable.
-
-If the proposed alignment is correct, the two interventions should have the same downstream effect.
-
----
-
-## 3. Why Distributed Representations Require a Change of Basis
-
-A straightforward approach would be to align each high-level variable with a particular neuron or a fixed group of neurons. This assumes that the meaningful causal variables are already aligned with the standard coordinate axes of the neural representation.
-
-There is no reason for this assumption to hold.
-
-Suppose a hidden representation is
-
-$$
-h =
-\begin{bmatrix}
-h_1 \\
-h_2
-\end{bmatrix},
-$$
-
-where $h_1$ and $h_2$ are two neuron activations. A high-level variable $X_1$ may not be represented exclusively by either $h_1$ or $h_2$. Instead, information about $X_1$ and another variable $X_2$ may be mixed across both dimensions.
-
-For instance, the meaningful directions could correspond to linear combinations of the original neurons. In that case, a different coordinate system may expose the relevant structure.
-
-DAS therefore introduces a learned transformation
-
-$$
-R : N \rightarrow Y,
-$$
-
-where $N$ denotes the selected low-level neural representation space and $Y$ denotes the transformed representation space. In the experiments, $R$ is parameterized as an **orthogonal matrix**, so the transformation acts as a rotation or reflection of the coordinate system rather than an arbitrary rescaling.
-
-For a neural activation $h \in N$, the transformed representation is
-
-$$
-y = Rh.
-$$
-
-The important point is that $R$ does not retrain the neural model or create new information. It provides a different basis for describing the same representation.
-
-> DAS asks whether a high-level causal structure becomes visible in some alternative basis of the neural representation.
-
-The use of an orthogonal transformation is useful because an orthogonal matrix satisfies
-
-$$
-R^\top R = I,
-$$
-
-where $R^\top$ is the transpose of $R$ and $I$ is the identity matrix. Consequently,
-
-$$
-R^{-1}=R^\top.
-$$
-
-An orthogonal transformation preserves inner products and Euclidean lengths. The search therefore focuses on orientation rather than introducing arbitrary scaling into the representation.
-
-This restriction is methodological rather than a claim that neural representations must fundamentally be orthogonal. The authors explicitly note that more general invertible and differentiable transformations could be used in principle. If a high-level variable were encoded on a nonlinear submanifold, for example, a linear orthogonal transformation might be insufficient.
-
----
-
-## 4. Orthogonal Subspaces for High-Level Variables
-
-After applying $R$, DAS decomposes the transformed space $Y$ into mutually orthogonal subspaces:
-
-$$
-Y
-=
-Y_0
-\oplus
-Y_1
-\oplus
-\cdots
-\oplus
-Y_k.
-$$
-
-Here, $\oplus$ denotes an **orthogonal direct sum**. The subspaces together span the relevant transformed representation space, while each $Y_i$ is orthogonal to every $Y_j$ for $i\neq j$.
-
-The intended correspondence is
-
-$$
-X_j
-\leftrightarrow
-Y_j,
+y = Rh,
 \qquad
-j=1,\ldots,k,
+R^\top R = I.
 $$
 
-where $X_j$ is the $j$-th intermediate variable of the high-level model and $Y_j$ is the low-level subspace hypothesized to implement its causal role.
+Because $R$ is orthogonal, the transformation preserves the geometry of the representation while changing its basis. DAS is therefore not creating new information; it is searching for a different coordinate system in which the existing causal structure may become easier to isolate.
 
-The subspace $Y_0$ has a different role. It represents the part of the base neural state that is **not replaced** during the distributed intervention. It can therefore be understood as a residual or base-preserving subspace.
-
-A high-level variable does not need to correspond to a single direction. Each $Y_j$ may contain many dimensions. In the paper's BERT experiment, for example, high-level variables are aligned with large multidimensional subspaces rather than with individual neurons.
-
-Orthogonality should not be confused with independence. The condition
+In the transformed space, the representation is decomposed into orthogonal subspaces,
 
 $$
-Y_i \perp Y_j
+Y = Y_0 \oplus Y_1 \oplus \cdots \oplus Y_k,
 $$
 
-is a geometric statement about the representation space. It does not imply that the corresponding high-level variables $X_i$ and $X_j$ are statistically independent or causally unrelated.
+with the intended correspondence $X_j \leftrightarrow Y_j$. Each $Y_j$ is a candidate neural realization of a high-level variable $X_j$, while $Y_0$ contains the part of the representation that remains tied to the base computation. Importantly, $Y_j$ does not need to be one-dimensional. A causal variable may correspond to an entire multidimensional subspace.
 
-A high-level causal model may contain relationships such as
-
-$$
-X_1
-\rightarrow
-X_2
-\rightarrow
-O,
-$$
-
-where $O$ denotes the high-level output, while still representing $X_1$ and $X_2$ in orthogonal neural subspaces.
-
-The purpose of the orthogonal decomposition is instead to make the candidate representational components separately projectable and therefore separately intervenable.
-
----
-
-## 5. Distributed Interchange Intervention
-
-The rotation becomes useful when it is combined with intervention.
-
-Let $F_N$ denote the causal mechanism in the low-level model that produces the value of the target neural variables $N$. Let $v$ denote the values of the causal parents on which $F_N$ depends. Under the original model,
-
-$$
-N = F_N(v).
-$$
-
-Let $s_1,\ldots,s_k$ denote source inputs. For each source $s_j$, the model $\mathcal{M}$ produces a total state $\mathcal{M}(s_j)$, from which the corresponding target representation can be obtained.
-
-The distributed interchange intervention replaces the original mechanism $F_N$ with
-
-$$
-F_N^*(v)
-=
-R^{-1}
-\left(
-\operatorname{Proj}_{Y_0}
-\left(
-R(F_N(v))
-\right)
-+
-\sum_{j=1}^{k}
-\operatorname{Proj}_{Y_j}
-\left(
-R(F_N(\mathcal{M}(s_j)))
-\right)
-\right).
-$$
-
-Here, $F_N^*$ denotes the new mechanism after intervention. The operator $\operatorname{Proj}_{Y_j}$ is the orthogonal projection from $Y$ onto the subspace $Y_j$. The transformation $R$ maps neural representations from $N$ into the rotated space $Y$, while $R^{-1}$ maps the constructed counterfactual representation back into the original neural space.
-
-The first component,
-
-$$
-\operatorname{Proj}_{Y_0}
-\left(
-R(F_N(v))
-\right),
-$$
-
-comes from the current base computation. It preserves the residual subspace $Y_0$.
-
-Each term
-
-$$
-\operatorname{Proj}_{Y_j}
-\left(
-R(F_N(\mathcal{M}(s_j)))
-\right)
-$$
-
-extracts the $Y_j$ component from the representation generated by source $s_j$.
-
-For example, suppose the rotated base representation is
-
-$$
-R(h_b)
-=
-[
-Y_0^b,
-Y_1^b,
-Y_2^b
-],
-$$
-
-where $h_b$ is the low-level hidden state produced by base input $b$.
-
-Two source inputs produce
-
-$$
-R(h_{s_1})
-=
-[
-Y_0^{s_1},
-Y_1^{s_1},
-Y_2^{s_1}
-]
-$$
-
-and
-
-$$
-R(h_{s_2})
-=
-[
-Y_0^{s_2},
-Y_1^{s_2},
-Y_2^{s_2}
-].
-$$
-
-The intervention constructs
-
-$$
-[
-Y_0^b,
-Y_1^{s_1},
-Y_2^{s_2}
-].
-$$
-
-The residual component remains from the base, while the two target components come from different sources.
-
-The representation is then mapped back into the original neural coordinate system:
+The distributed interchange intervention can then be written compactly as
 
 $$
 h_{\mathrm{cf}}
 =
 R^{-1}
-[
-Y_0^b,
-Y_1^{s_1},
-Y_2^{s_2}
-],
+\left(
+\operatorname{Proj}_{Y_0}(Rh_b)
++
+\sum_{j=1}^{k}
+\operatorname{Proj}_{Y_j}(Rh_{s_j})
+\right).
 $$
 
-where $h_{\mathrm{cf}}$ denotes the resulting **counterfactual hidden state**.
+Here, $h_b$ is the hidden representation of the base input and $h_{s_j}$ is the representation of source input $s_j$. The $Y_0$ component is preserved from the base, while each selected $Y_j$ component is replaced by the corresponding component from its source. The resulting representation is then mapped back into the original neural coordinate system and passed through the remainder of the network as usual.
 
-The remainder of the neural network then continues its ordinary computation from $h_{\mathrm{cf}}$.
-
-This explains why the paper describes the operation as a **soft intervention**. A hard intervention would replace the complete variable with a fixed value and thereby sever its dependence on its causal parents. Distributed interchange intervention preserves the $Y_0$ component produced by the base computation, so part of the original dependence on the parent state $v$ remains intact.
+Conceptually, the procedure is simply
 
 $$
 \boxed{
 \text{Rotate}
 \rightarrow
-\text{preserve }Y_0
+\text{Replace Selected Subspaces}
 \rightarrow
-\text{replace selected }Y_j
-\rightarrow
-\text{unrotate}
+\text{Unrotate}
 }
 $$
 
+The important point is that DAS constructs a **counterfactual hidden state** rather than replacing the entire representation. Most of the computation remains associated with the original input, while only the candidate causal variables are exchanged.
+
 ---
 
-## 6. Learning the Rotation from Intervention Effects
+## 4. Learning the Causal Alignment
 
-The remaining problem is that the correct rotation $R$ is unknown.
+The correct transformation $R$ is not known in advance. DAS therefore parameterizes it as $R^\theta$ and learns the alignment using the high-level causal model as supervision.
 
-This is where **Distributed Alignment Search (DAS)** enters. Instead of manually searching over neuron subsets, DAS parameterizes the rotation as $R^\theta$, where $\theta$ denotes the learnable parameters of the orthogonal transformation.
-
-The high-level causal model provides the supervision.
-
-Let $b$ denote a base input and let $s_1,\ldots,s_k$ denote source inputs. Let $X_1,\ldots,X_k$ denote the high-level intermediate variables that we want to align with low-level subspaces $Y_1,\ldots,Y_k$.
-
-At the high level, we can perform the interchange intervention
+For each base input and collection of source inputs, the high-level model first determines what should happen under the corresponding interchange intervention. The neural model then performs the distributed interchange intervention using the current candidate alignment. DAS optimizes $\theta$ so that the resulting neural counterfactual behavior agrees with the counterfactual behavior predicted by the high-level model:
 
 $$
-\operatorname{II}
-\left(
-\mathcal{H},
-\{\tau(s_j)\}_{j=1}^{k},
-\{X_j\}_{j=1}^{k}
-\right)
-(\tau(b)).
-$$
-
-Here, $\operatorname{II}$ denotes the high-level interchange intervention, $\tau(b)$ is the high-level representation of the base input, and $\tau(s_j)$ is the high-level representation of source $s_j$. The operation replaces each high-level variable $X_j$ using the value induced by its corresponding source.
-
-This produces a **high-level counterfactual outcome**.
-
-At the low level, DAS performs the corresponding distributed interchange intervention using the current candidate rotation $R^\theta$:
-
-$$
-\operatorname{DII}
-\left(
-\mathcal{L},
-R^\theta,
-\{s_j\}_{j=1}^{k},
-\{Y_j\}_{j=0}^{k}
-\right)
-(b).
-$$
-
-Here, $\operatorname{DII}$ denotes distributed interchange intervention, $\mathcal{L}$ is the frozen low-level neural model, and $\{Y_j\}_{j=0}^{k}$ is the orthogonal decomposition of the rotated representation space.
-
-DAS learns $\theta$ by minimizing a loss between the counterfactual behavior of these two models:
-
-$$
-\sum_{b,s_1,\ldots,s_k \in \mathrm{Inputs}_{\mathcal{L}}}
+\theta^*
+=
+\arg\min_\theta
+\sum_{b,s_1,\ldots,s_k}
 \operatorname{Loss}
 \left(
-\operatorname{DII}
-\left(
-\mathcal{L},
-R^\theta,
-\{s_j\},
-\{Y_j\}
-\right)
-(b),
-\operatorname{II}
-\left(
-\mathcal{H},
-\{\tau(s_j)\},
-\{X_j\}
-\right)
-(\tau(b))
+\operatorname{DII}_{R^\theta}(b,s_1,\ldots,s_k),
+\operatorname{II}_{\mathcal{H}}(b,s_1,\ldots,s_k)
 \right).
 $$
 
-The set $\mathrm{Inputs}_{\mathcal{L}}$ denotes valid low-level inputs. The function $\operatorname{Loss}$ is a differentiable measure of disagreement between the low-level and high-level counterfactual outcomes.
+Crucially, the neural model $\mathcal{L}$ and the high-level causal model $\mathcal{H}$ remain fixed during this optimization. **Only the alignment is learned.** DAS therefore does not train the neural network to implement the proposed algorithm. Instead, it asks whether an appropriate subspace already exists inside the network whose intervention behavior matches that algorithm.
 
-In the experiments, the authors use cross-entropy between the corresponding high-level output distributions. Importantly, both $\mathcal{L}$ and $\mathcal{H}$ remain fixed during this optimization. **Only the alignment represented by $R^\theta$ is learned.**
+Suppose, for example, that changing $X_j$ in the high-level model causes the output to change from $A$ to $B$. DAS searches for a neural subspace $Y_j$ such that replacing that subspace with the corresponding source representation also produces the change $A \rightarrow B$. If a candidate alignment fails to reproduce the predicted effect, the intervention loss changes the rotation until a better alignment is found.
 
-This gives DAS its central interpretation.
-
-Suppose that, in the high-level model, replacing $X_1$ with the value from source $s_1$ changes the output from $A$ to $B$. DAS searches for a rotated subspace $Y_1$ such that replacing $Y_1$ with its source value produces the corresponding $A\rightarrow B$ change in the neural model.
-
-If a candidate rotation does not expose the correct subspace, the low-level counterfactual behavior will disagree with the high-level prediction, producing a larger loss. Gradient descent then changes $R^\theta$.
-
-Across many base-source combinations, the optimization searches for a coordinate system in which the relevant low-level interventions reproduce the high-level causal effects.
-
-$$
-\boxed{
-\text{High-level intervention behavior}
-\rightarrow
-\text{supervision for learning the low-level alignment}
-}
-$$
-
-The method therefore does not search for representations by comparing static values. It searches by comparing **how the two systems change under corresponding interventions**.
+The key idea is therefore that **high-level counterfactual behavior provides supervision for finding low-level representations**. DAS does not identify a causal representation because its activations look similar to some interpretable variable. It identifies the representation because intervening on it produces the expected causal consequences.
 
 ---
 
-## 7. Interchange Intervention Accuracy
+## 5. Representation as Counterfactual Behavior
 
-After learning an alignment, DAS evaluates how faithfully the low-level interventions reproduce the corresponding high-level interventions.
-
-This is measured by **Interchange Intervention Accuracy (IIA)**.
-
-Let $R$ denote the learned rotation, and let $\tau$ map the low-level output into the high-level output space. For each base input $b$ and source inputs $s_1,\ldots,s_k$, the method compares
-
-$$
-\tau
-\left(
-\operatorname{DII}
-\left(
-\mathcal{L},
-R,
-\{s_j\},
-\{Y_j\}
-\right)
-(b)
-\right)
-$$
-
-with
-
-$$
-\operatorname{II}
-\left(
-\mathcal{H},
-\{\tau(s_j)\},
-\{X_j\}
-\right)
-(\tau(b)).
-$$
-
-IIA is the proportion of intervention cases for which these two high-level outcomes are identical.
-
-Conceptually,
+After learning an alignment, DAS evaluates it using **Interchange Intervention Accuracy (IIA)**. IIA measures the proportion of interventions for which the low-level neural model and the high-level causal model produce matching counterfactual outcomes:
 
 $$
 \operatorname{IIA}
 =
-\frac{
-\text{number of matching low- and high-level intervention outcomes}
-}{
-\text{number of tested interventions}
-}.
+\frac{1}{|\mathcal{D}|}
+\sum_{d\in\mathcal{D}}
+\mathbf{1}
+\left[
+\tau\left(\operatorname{DII}_{R^*}(d)\right)
+=
+\operatorname{II}_{\mathcal{H}}(d)
+\right].
 $$
 
-An IIA of $1$ means that all tested low-level distributed interventions reproduce the corresponding high-level counterfactual outcomes. When IIA is below $1$, it provides a graded measure of approximate causal abstraction.
-
-Task accuracy and IIA therefore measure different things. A neural network can solve the original task perfectly while having low IIA under a proposed alignment. Such a model agrees with the high-level algorithm on observed input-output behavior but does not respond to internal interventions in the way that the proposed algorithm predicts.
-
-This distinction is precisely what makes intervention useful for interpretability.
-
----
-
-## 8. Representation as a Pattern of Counterfactual Change
-
-The conceptual contribution of DAS is easiest to see by contrasting it with ordinary representation analysis.
-
-A conventional probe studies a relationship such as
+An IIA of $1$ means that all tested neural interventions reproduce the outcomes predicted by the high-level model. This is fundamentally different from ordinary task accuracy. A neural network can produce the correct answers on all observed inputs while still having low IIA for a proposed causal interpretation. In that case, the network and the high-level model are behaviorally equivalent on the original task but respond differently when their internal variables are manipulated.
 
 $$
-h
-\rightarrow
-X,
+\boxed{
+\text{Behavioral Equivalence}
+\neq
+\text{Causal-Mechanistic Equivalence}
+}
 $$
 
-where $h$ is a neural representation and $X$ is an interpretable variable. The question is whether $X$ can be predicted from $h$.
-
-DAS asks a different question:
-
-$$
-\operatorname{Intervene}(Y_j)
-\rightarrow
-\text{downstream effect}.
-$$
-
-It then compares that effect with
-
-$$
-\operatorname{Intervene}(X_j)
-\rightarrow
-\text{high-level downstream effect}.
-$$
-
-The proposed correspondence
-
-$$
-X_j
-\leftrightarrow
-Y_j
-$$
-
-is therefore supported not merely because $Y_j$ contains information about $X_j$, but because manipulating $Y_j$ reproduces the consequences of manipulating $X_j$.
+This distinction leads to the central interpretation of DAS. A neural subspace $Y_j$ corresponds to a high-level variable $X_j$ not simply because $X_j$ can be decoded from $Y_j$, but because intervening on the two produces corresponding downstream effects.
 
 $$
 \boxed{
 X_j \leftrightarrow Y_j
-\quad\text{when their corresponding interventions produce matching causal effects.}
+\quad
+\text{when their interventions produce corresponding causal effects.}
 }
 $$
 
-This shifts the interpretation of a neural representation from a static object to a **pattern of counterfactual behavior**. What matters is not only what information can be read from a representation, but how the larger system responds when that representation is changed.
+Representation can therefore be understood as a **pattern of counterfactual behavior**. What matters is not only what information is contained in a hidden state, but how the larger system changes when that state is manipulated.
 
-The orthogonal rotation, the subspace decomposition, and the interchange intervention each serve a different purpose. The rotation searches beyond the neuron-aligned basis. The orthogonal decomposition creates separately manipulable representational components. The intervention tests whether those components have the causal roles assigned to the corresponding high-level variables.
-
-DAS combines these elements into a single search procedure:
-
-$$
-\begin{aligned}
-&\text{Specify a high-level causal model } \mathcal{H}
-\\
-&\qquad\downarrow
-\\
-&\text{Select a low-level neural representation } N
-\\
-&\qquad\downarrow
-\\
-&\text{Learn an orthogonal transformation } R^\theta
-\\
-&\qquad\downarrow
-\\
-&Y
-=
-Y_0
-\oplus
-Y_1
-\oplus
-\cdots
-\oplus
-Y_k
-\\
-&\qquad\downarrow
-\\
-&X_j
-\leftrightarrow
-Y_j
-\\
-&\qquad\downarrow
-\\
-&\text{Intervene on } X_j \text{ and } Y_j
-\\
-&\qquad\downarrow
-\\
-&\text{compare their counterfactual effects.}
-\end{aligned}
-$$
-
-The high-level variables are therefore not discovered from scratch by DAS. They are supplied as part of an interpretable causal hypothesis. DAS searches for a low-level representational basis under which those variables can be realized as causally corresponding subspaces.
-
-> A neural representation supports a high-level causal interpretation not merely when the corresponding variable can be decoded, but when changing the proposed neural subspace reproduces the counterfactual consequences predicted by the high-level model.
+This also clarifies the relationship between DAS and more recent representation-level methods. DAS and Boundless DAS use intervention to **discover and validate causal representations**. ITI and RepE use related representation-level structure to **steer model behavior**, while ReFT learns representational interventions directly as a mechanism for **task adaptation**. Their objectives differ, but they share the same broader move away from purely observational interpretation toward understanding and controlling neural systems through interventions on their internal representations.

@@ -1,403 +1,198 @@
 ---
 layout: post
-title: Grassmannian and AI Interpretability
-permalink: /blog/2026/causality-interpretability-en/
-mini-title: Interpretability Geometry
+title: Causal Abstraction as Intervention-Aligned Representation Search
+permalink: /blog/2025/causality-interpretability-kr/
 ---
 
+## 1. 표현에서 인과적 메커니즘으로
 
-## 1. Block-Sparse Featurizer
+신경망 해석 가능성의 핵심 목표 중 하나는 내부 표현이 무엇을 의미하는지 이해하는 것이다. 일반적인 접근은 hidden state로부터 해석 가능한 개념을 예측하는 probe를 학습하는 것이다. 예를 들어 선형 분류기가 내부 표현으로부터 문장에 부정 표현이 포함되어 있는지를 복원할 수 있다면, 이는 해당 표현 안에 부정에 관한 정보가 어느 정도 인코딩되어 있음을 의미한다.
 
-[Block-Sparse Featurizer (BSF)](https://www.goodfire.com/research/bsf-vision), introduced in recent work on block-sparse visual concept manifolds <citation key="structuring-sparsity"></citation>, is particularly interesting because it takes the **geometry of neural representations** seriously. Rather than assuming that an interpretable concept should correspond to a single direction in activation space, BSF allows a concept to occupy a **low-dimensional space with its own internal geometry**.
+그러나 **decodability가 곧 causal relevance를 의미하지는 않는다**. 어떤 표현이 출력과 상관관계를 가지는 정보를 포함하고 있더라도, 그 정보가 실제로 출력을 만들어내는 계산 과정에 참여한다는 보장은 없다. probe가 찾아낸 특징은 실제 메커니즘의 중복된 복사본일 수도 있고, 이미 계산이 끝난 뒤 생성된 결과일 수도 있으며, 실제 원인이 되는 다른 변수와 단순히 높은 상관관계를 가질 수도 있다.
 
-This seems especially natural in vision. Visual properties such as pose, viewpoint, orientation, shape, lighting, or texture vary continuously while still belonging to the same semantic concept. An object does not stop being the same object as its pose or viewpoint changes. It is therefore plausible that such concepts are represented not along a single scalar axis, but as structured low-dimensional regions inside a much larger activation space.
+**Causal abstraction**은 이보다 더 강한 해석 기준을 제안한다. 해석 가능한 변수가 신경 표현으로부터 단순히 복호화될 수 있는지를 묻는 대신, 그 변수의 신경적 구현으로 가정한 표현을 실제로 조작했을 때 해석 가능한 high-level causal model이 예측하는 인과적 효과가 나타나는지를 묻는다. <citation key="geiger2024finding"></citation> 이러한 관점에서는 어떤 표현의 의미가 그 값 자체뿐 아니라, **그 표현을 변화시켰을 때 전체 시스템이 어떻게 변화하는지**에 의해 규정된다.
 
-There is a useful historical connection here. Earlier work on curve detectors <citation key="curve-detectors"></citation> is a classic example of early neuron-level interpretability in vision: individual neurons in InceptionV1 were found to respond selectively to curves with different orientations. BSF revisits this example and shows that these apparently separate curve detectors can instead be understood as reading from a **shared continuous curve manifold**. What looked like a collection of isolated features may therefore be different views of a single geometric object.
+이러한 intervention 중심의 관점은 최근 mechanistic interpretability에서 점점 중요해지고 있다. Distributed Alignment Search(**DAS**)는 high-level causal variable에 대한 intervention과 동일한 counterfactual behavior를 만들어내는 neural subspace를 탐색한다. 특정 개념이 하나의 neuron에 대응한다고 가정하는 대신, 그 변수가 여러 차원에 걸쳐 분산되어 표현될 수 있다고 본다. 이후 제안된 **Boundless DAS**는 기존 DAS에 남아 있던 discrete search 요소들을 학습 가능한 parameter로 대체하여 이러한 접근을 Alpaca 7B까지 확장하였다. <citation key="wu2023interpretability"></citation>
 
-A similar departure from one-dimensional features has appeared in language models. Some LLM features appear to be inherently multidimensional <citation key="multidimensional-features"></citation>. In particular, researchers have identified circular representations for concepts such as days of the week and months of the year, with intervention evidence that these structures participate in computations such as modular arithmetic.
+동시에 representation intervention은 모델을 **해석하는 도구**에서 모델의 행동을 **제어하는 도구**로도 확장되고 있다. **Inference-Time Intervention (ITI)**은 truthful response와 관련된 activation direction을 찾아 inference 과정에서 이를 조정한다. <citation key="li2023iti"></citation> **Representation Engineering (RepE)**은 한 단계 더 넓게, population-level neural representation 자체를 분석과 조작의 대상으로 바라보는 관점을 제안한다. <citation key="zou2023representation"></citation> **Representation Finetuning (ReFT)**은 여기서 더 나아가 기존 language model의 parameter를 고정한 채 hidden representation에 직접 intervention을 학습하며, LoReFT에서는 이를 저차원 subspace를 통해 수행한다. <citation key="wu2024reft"></citation>
 
-More recent work from Anthropic <citation key="counting-manifolds"></citation> provides another interesting LLM example in which internal computation is organized through structured low-dimensional geometry.
-
-Together, these works suggest a broader shift in interpretability. Instead of asking only
-
-> Which neuron or direction represents a concept?
-
-we can also ask
-
-> What geometric object represents the concept, and how does the model compute with that geometry?
-
-This is also what makes Goodfire's recent direction particularly compelling. Geometry is not treated merely as something to visualize after extracting features; it becomes a **design constraint for the featurizer itself**.
-
-The theoretical motivation comes from work on the duality between sparse autoencoders and concept geometry <citation key="projecting-assumptions"></citation>, which emphasizes a deep connection between the architecture of a featurizer and the geometry it assumes neural concepts to have. A featurizer is therefore not a neutral tool: choosing its architecture also means choosing which kinds of representational geometry it is well suited to discover.
-
-BSF combines this perspective with the Additive Mixture of Manifolds hypothesis <citation key="concept-manifolds"></citation>, where an activation is viewed as the sum of a small number of active manifold-valued factors. The formal versions of these assumptions are given at the end of this post.
-
-The architectural consequence is simple: if a concept may be multidimensional, then the atomic unit of the featurizer should also be multidimensional.
-
-For a block $g$, BSF uses
+이러한 연구들은 해석 가능성의 질문이 점차 **무엇이 표현되어 있는가**에서 **그 표현을 바꾸면 무엇이 달라지는가**로 이동하고 있음을 보여준다. DAS가 특히 흥미로운 이유는 representation을 찾기 위한 supervision 자체가 counterfactual causal behavior에서 나온다는 점이다.
 
 $$
-D_g\in\mathbb{R}^{k\times d},
+\boxed{
+\text{Representation}
+\rightarrow
+\text{Intervention}
+\rightarrow
+\text{Counterfactual Effect}
+}
 $$
 
-whose $k$ rows jointly define a low-dimensional representational subspace. Given an activation $x\in\mathbb{R}^d$, the block coordinates are
+---
+
+## 2. Causal Abstraction과 Interchange Intervention
+
+$\mathcal{H}$를 해석 가능한 **high-level causal model**, $\mathcal{L}$을 실제 신경망에 해당하는 **low-level neural model**이라고 하자. High-level model은 equality, negation, lexical entailment처럼 의미를 해석할 수 있는 변수들로 계산 과정을 기술하고, low-level model은 실제 neural network 내부의 hidden state와 mechanism을 기술한다. 두 모델 사이의 alignment는 어떤 low-level state가 각각의 high-level variable에 대응하며, 그 상태를 어떻게 해석해야 하는지를 정의한다.
+
+중요한 조건은 이러한 대응 관계가 일반적인 입력에서만 성립하는 것이 아니라 **intervention 이후에도 유지되어야 한다는 것**이다. $\tau$가 low-level state를 high-level description으로 변환하는 abstraction map이라면, causal abstraction은 다음 조건을 요구한다.
 
 $$
-z_g=D_gx\in\mathbb{R}^k.
-$$
-
-Instead of sparsifying the coordinates $z_{g,i}$ independently, BSF treats the entire block as one unit. Its activity is measured through the block norm
-
-$$
-\|z_g\|_2
+\tau\left(\mathcal{L}_{I \leftarrow i}(x)\right)
 =
-\sqrt{\sum_{i=1}^{k}z_{g,i}^2}.
+\mathcal{H}_{\tau(I \leftarrow i)}\left(\tau(x)\right).
 $$
 
-Only a small number of blocks are retained, while the coordinates inside an active block remain free to vary. This creates a useful separation between **which concept is active** and **where the representation lies within that concept**.
+왼쪽은 먼저 neural system에 intervention을 수행하고 그 결과를 high-level representation으로 해석하는 과정이다. 반대로 오른쪽은 먼저 원래 시스템을 high-level causal model로 추상화한 뒤, 그에 대응하는 high-level intervention을 수행한다. 두 경로가 동일한 결과를 만들어낼 때 low-level system이 high-level model의 faithful causal abstraction이라고 할 수 있다.
 
-In this sense, BSF is loosely reminiscent of a **Mixture-of-Experts (MoE)** architecture. MoE sparsely selects computational experts, whereas BSF sparsely selects representational factors or subspaces. The analogy is not exact—a BSF block is not an independent neural network—but both approaches explain a complex state through a small number of specialized components.
-
+이 조건은 일반적인 probing보다 훨씬 강하다. Probe는 neural state $h$에서 변수 $X$를 예측할 수 있는지를 확인한다. 반면 causal abstraction은 $X$의 neural realization이라고 가정한 representation을 변화시켰을 때, high-level model에서 $X$를 변화시킨 것과 동일한 downstream effect가 발생하는지를 확인한다. 따라서 표현의 의미는 그 안에서 무엇을 읽어낼 수 있는지만으로 결정되지 않고, **그 표현이 조작되었을 때 어떤 역할을 수행하는가**에 의해 결정된다.
 
 <figure>
-    <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/bfs-and-grassmannian.webp" />
-    <figcaption>
-    <figtitle>Block-Sparse Featurizer and its Grassmannian interpretation.</figtitle>
-    <figdetail>
-Instead of representing a concept with a single feature direction, BSF assigns it a low-dimensional block. For an input representation $x$, each block produces coordinates $z_g=D_gx$, while block sparsity retains only a small number of strongly activated factors. The magnitude $\|z_g\|_2$ describes block-level activation, while the coordinates inside the block preserve multidimensional variation within the corresponding concept.
-    </figdetail>
-    </figcaption>
+    <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/distributed_alignment_search.webp" />
 </figure>
 
+이러한 intervention을 실제로 수행하기 위해 DAS는 **interchange intervention**을 사용한다. $b$를 base input, $s$를 source input이라고 하자. 중간 변수 $X$에 어떤 숫자 값을 임의로 지정하는 대신, source input에서 자연스럽게 생성된 값을 가져와 base input의 값을 대체한다.
 
-## 2. Encoder–Decoder Matching and Subspace Projection
+$$
+X^b \leftarrow X^s.
+$$
 
-One of the most interesting properties of the **Grassmannian BSF** is the matching between the encoder and decoder. Using column-vector notation and omitting the learned global scale for simplicity, the encoder maps an input representation into block coordinates as $z_g=D_gx$, while the decoder maps those coordinates back using the transpose of the same basis, $\hat{x}_g=D_g^\top z_g$.
-
-In other words, the same matrix determines both how the representation is **decomposed** and how it is **recombined**.
-
+나머지 계산은 여전히 base input에 의해 결정된다. 따라서 결과적으로 만들어지는 계산은 counterfactual하다. 즉, “base input에 대해 계산하고 있었지만 특정 내부 변수만 다른 입력에서 나타난 값을 가졌다면 모델은 어떤 결과를 만들었을까?”라는 질문에 해당한다.
 
 ---
 
-### Example
+## 3. Distributed Alignment Search
 
-Consider a block whose basis is not aligned with the original coordinate axes:
+Neural level에서 가장 중요한 문제는 high-level variable이 하나의 neuron이나 고정된 neuron 집합에 깔끔하게 대응하지 않을 가능성이 높다는 것이다. 하나의 개념에 대한 정보는 hidden representation의 여러 차원에 걸쳐 분산되어 있을 수 있다. DAS는 이러한 경우를 고려하여, 의미 있는 causal variable들이 개별적으로 조작 가능한 subspace로 나타나는 새로운 좌표계를 탐색한다.
+
+Hidden representation $h$에 대해 DAS는 다음의 orthogonal transformation을 학습한다.
 
 $$
-D_g=
-\begin{bmatrix}
-\frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} & 0\\
-0 & 0 & 1
-\end{bmatrix},
+y = Rh,
 \qquad
-x=
-\begin{bmatrix}
-4\\
-1\\
-3
-\end{bmatrix}.
+R^\top R = I.
 $$
 
-The two rows of $D_g$ form an orthonormal basis for a two-dimensional subspace. The encoder first expresses $x$ in this basis:
+$R$이 orthogonal하기 때문에 이 transformation은 representation의 기본적인 geometry를 유지하면서 좌표계의 방향만 바꾼다. 즉, 새로운 정보를 만들어내는 것이 아니라 동일한 representation을 다른 basis에서 바라보는 것이다.
+
+변환된 representation space는 다음과 같이 서로 orthogonal한 subspace로 분해된다.
 
 $$
-z_g
+Y = Y_0 \oplus Y_1 \oplus \cdots \oplus Y_k.
+$$
+
+이때 DAS가 찾고자 하는 대응 관계는 $X_j \leftrightarrow Y_j$이다. 각 $Y_j$는 high-level variable $X_j$를 구현하는 neural representation의 후보이고, $Y_0$는 intervention 과정에서도 base computation으로부터 유지되는 나머지 representation을 담당한다. 여기서 중요한 점은 $Y_j$가 하나의 방향일 필요가 없다는 것이다. 하나의 causal variable은 여러 차원으로 이루어진 subspace 전체에 대응할 수 있다.
+
+이제 distributed interchange intervention은 다음과 같이 간결하게 표현할 수 있다.
+
+$$
+h_{\mathrm{cf}}
 =
-D_gx
-=
-\begin{bmatrix}
-\frac{5}{\sqrt{2}}\\
-3
-\end{bmatrix}.
+R^{-1}
+\left(
+\operatorname{Proj}_{Y_0}(Rh_b)
++
+\sum_{j=1}^{k}
+\operatorname{Proj}_{Y_j}(Rh_{s_j})
+\right).
 $$
 
-The matched decoder then maps these coordinates back into the original representation space:
+$h_b$는 base input에서 생성된 hidden representation이고, $h_{s_j}$는 source input $s_j$에서 생성된 representation이다. $Y_0$에 해당하는 성분은 base input에서 유지하고, intervention 대상인 각 $Y_j$ 성분만 대응하는 source representation에서 가져온다. 이렇게 구성된 representation은 다시 원래 neural coordinate system으로 변환된 뒤, network의 나머지 계산에 그대로 전달된다.
+
+개념적으로 보면 전체 과정은 매우 단순하다.
 
 $$
-D_g^\top z_g
-=
-\begin{bmatrix}
-\frac{5}{2}\\
-\frac{5}{2}\\
-3
-\end{bmatrix}.
+\boxed{
+\text{Rotate}
+\rightarrow
+\text{Replace Selected Subspaces}
+\rightarrow
+\text{Unrotate}
+}
 $$
 
-The result is not the original vector $x$, but its projection onto the subspace represented by the block. The encoder therefore describes $x$ **within a particular subspace**, while the decoder reconstructs exactly the component of $x$ explained by that same subspace.
+여기서 중요한 것은 DAS가 hidden state 전체를 다른 값으로 교체하는 것이 아니라 **counterfactual hidden state**를 구성한다는 점이다. 계산의 대부분은 기존 base input에 그대로 묶여 있고, causal variable의 후보로 가정한 일부 representational component만 source input의 값으로 바뀐다.
 
 ---
 
-More generally, if the rows of $D_g$ are orthonormal, so that $D_gD_g^\top=I_k$, encoding followed by decoding gives
+## 4. Causal Alignment 학습
+
+올바른 transformation $R$은 처음부터 알려져 있지 않다. DAS는 이를 $R^\theta$로 parameterize하고, high-level causal model이 제공하는 counterfactual behavior를 supervision으로 사용하여 alignment를 학습한다.
+
+각 base input과 source input 집합에 대해 high-level model은 먼저 해당 interchange intervention에서 어떤 결과가 발생해야 하는지를 계산한다. Neural model에서는 현재의 candidate alignment를 이용해 distributed interchange intervention을 수행한다. DAS는 두 counterfactual computation의 결과가 일치하도록 $\theta$를 최적화한다.
 
 $$
-\hat{x}_g
+\theta^*
 =
-D_g^\top D_gx
+\arg\min_\theta
+\sum_{b,s_1,\ldots,s_k}
+\operatorname{Loss}
+\left(
+\operatorname{DII}_{R^\theta}(b,s_1,\ldots,s_k),
+\operatorname{II}_{\mathcal{H}}(b,s_1,\ldots,s_k)
+\right).
+$$
+
+여기서 가장 중요한 점은 neural model $\mathcal{L}$과 high-level causal model $\mathcal{H}$ 모두 학습 과정에서 고정되어 있다는 것이다. **학습되는 것은 오직 alignment뿐이다.** 따라서 DAS는 neural network가 우리가 가정한 알고리즘을 구현하도록 새롭게 학습시키는 방법이 아니다. 대신 이미 network 내부에 존재하는 representation 중에서, intervention을 수행했을 때 우리가 가정한 high-level algorithm과 동일한 causal behavior를 보이는 subspace가 존재하는지를 탐색한다.
+
+예를 들어 high-level model에서 $X_j$를 변화시켰을 때 출력이 $A$에서 $B$로 변한다고 하자. DAS는 neural representation 내부에서 어떤 $Y_j$를 source representation으로 교체했을 때 동일하게 $A \rightarrow B$의 변화가 발생하는지를 찾는다. 현재 alignment가 이러한 효과를 재현하지 못하면 intervention loss가 커지고, gradient descent를 통해 rotation이 수정된다.
+
+따라서 DAS의 핵심은 **high-level counterfactual behavior가 low-level representation을 찾기 위한 supervision으로 사용된다는 것**이다. 어떤 representation이 high-level variable과 비슷한 activation pattern을 가지기 때문에 causal representation이라고 주장하는 것이 아니라, 그 representation을 실제로 변화시켰을 때 예상된 causal consequence가 나타나기 때문에 causal alignment를 인정한다.
+
+---
+
+## 5. Representation as Counterfactual Behavior
+
+Alignment를 학습한 뒤에는 **Interchange Intervention Accuracy (IIA)**를 사용하여 그 alignment가 실제로 high-level causal model을 얼마나 충실하게 재현하는지 평가한다. IIA는 low-level neural intervention의 결과와 high-level causal intervention의 결과가 일치하는 비율이다.
+
+$$
+\operatorname{IIA}
 =
-P_gx,
-\qquad
-P_g:=D_g^\top D_g.
-$$
-
-Here, $P_g$ is the orthogonal projection onto the $k$-dimensional subspace spanned by the rows of $D_g$.
-
-Importantly, when $k<d$, the condition $D_gD_g^\top=I_k$ does **not** imply $D_g^\top D_g=I_d$. Instead, $D_g^\top D_g$ is a rank-$k$ projection matrix: it preserves the component of $x$ inside the block subspace and removes the component orthogonal to it.
-
-The operation can therefore be understood as
-
-$$
-x
-\;\longrightarrow\;
-D_gx
-\;\longrightarrow\;
-D_g^\top D_gx,
-$$
-
-moving from the original representation to **coordinates inside a subspace**, and then back to the **part of the representation explained by that subspace**.
-
-This gives encoder–decoder sharing a clean geometric interpretation. The encoder determines how $x$ is decomposed within the subspace, while the decoder determines how that same component is recombined in the original activation space. Because both operations use the same basis, they describe the same geometric object.
-
-For multiple active blocks, reconstruction takes the form
-
-$$
-\hat{x}
+\frac{1}{|\mathcal{D}|}
+\sum_{d\in\mathcal{D}}
+\mathbf{1}
+\left[
+\tau\left(\operatorname{DII}_{R^*}(d)\right)
 =
-\sum_{g\in\mathcal{A}}D_g^\top z_g,
+\operatorname{II}_{\mathcal{H}}(d)
+\right].
 $$
 
-where $\mathcal{A}$ denotes the selected blocks. BSF therefore decomposes an activation into a sparse set of subspace-level contributions and then recombines them.
-
-
-## 3. Grassmannian and Basis-Rotation Invariance
-
-The next important distinction is between a particular **basis** $D_g$ and the **subspace** represented by that basis. The rows of $D_g$ form an orthonormal basis for a $k$-dimensional subspace of $\mathbb{R}^d$, but this basis is not unique.
-
-For any orthogonal matrix $Q\in O(k)$, we can rotate the basis inside the block by defining
-
-$$
-D'_g=QD_g.
-$$
-
-The individual basis directions change, but the subspace does not:
-
-$$
-\operatorname{span}(D'_g)
-=
-\operatorname{span}(QD_g)
-=
-\operatorname{span}(D_g).
-$$
-
-The coordinates inside the block do depend on this choice of basis. Since $z_g=D_gx$, the rotated basis gives
-
-$$
-z'_g
-=
-D'_gx
-=
-Qz_g.
-$$
-
-However, the block magnitude remains unchanged because an orthogonal transformation preserves the $\ell_2$ norm:
-
-$$
-\|z'_g\|_2
-=
-\|Qz_g\|_2
-=
-\|z_g\|_2.
-$$
-
-Thus, rotating the internal basis does not affect whether the block is selected.
-
-More importantly, the reconstructed component is also invariant:
-
-$$
-D_g'^\top D'_g
-=
-D_g^\top Q^\top QD_g
-=
-D_g^\top D_g
-=
-P_g.
-$$
-
-The internal coordinates can therefore rotate freely without changing either **which block is active** or **which component of the original representation the block explains**.
-
-This leads naturally to the Grassmannian. The Grassmannian
-
-$$
-\mathrm{Gr}(k,d)
-=
-\left\{
-V\subseteq\mathbb{R}^d
-\mid
-\dim(V)=k
-\right\}
-$$
-
-is the space of all $k$-dimensional linear subspaces of $\mathbb{R}^d$.
-
-A matrix $D_g$ gives one orthonormal frame for such a subspace, but every rotated frame $QD_g$ represents exactly the same point on the Grassmannian. Equivalently, we can think of a feature as the equivalence class
-
-$$
-[D_g]
-=
-\{QD_g\mid Q\in O(k)\}.
-$$
-
-The meaningful object is therefore not a particular choice of basis, but
-
-$$
-V_g=\operatorname{span}(D_g).
-$$
-
-The basis is simply a coordinate system used to describe the feature; the **subspace itself is the geometric object**.
-
-
-## 4. What This Means for Interpretability
-
-The Grassmannian perspective changes the basic unit of interpretation. Conventional sparse representations encourage us to assign semantic meaning to individual directions. BSF instead suggests that some concepts may be more naturally understood as **structured low-dimensional objects**.
-
-This is particularly useful for continuous concepts. The block magnitude $\|z_g\|_2$ can indicate **whether a factor is active**, while the position or direction of $z_g$ inside the block can describe **how that factor is instantiated**.
-
-The curve-detector example makes this distinction concrete. What earlier neuron-level analysis <citation key="curve-detectors"></citation> described as several units tuned to different curve orientations can, under the BSF interpretation, be understood as different readouts from a shared continuous geometry.
-
-Importantly, the block subspace should not itself be confused with the concept manifold. BSF assumes that a concept manifold is contained within a relatively low-dimensional linear span. Inside that span, the actual representation may still trace a circle, sphere, curved surface, or some other nonlinear structure. The block provides the **coordinate space in which this internal geometry can live**.
-
-This gives a broader interpretation of block sparsity:
-
-- sparsity across blocks captures **which conceptual factors are present**;
-- coordinates within a block capture **variation inside the factor**;
-- encoder–decoder matching makes the representation independent of an arbitrary choice of basis.
-
-The key shift is therefore
+IIA가 $1$이라면 테스트한 모든 neural intervention이 high-level causal model이 예측한 counterfactual outcome을 그대로 재현한다는 의미이다. 이 지표는 일반적인 task accuracy와 본질적으로 다른 것을 측정한다. Neural network가 모든 관찰 가능한 입력에 대해 올바른 답을 출력하더라도, 특정 causal interpretation에 대한 IIA는 낮을 수 있다. 이런 경우 neural network와 high-level model은 일반적인 입력에서는 동일하게 행동하지만, 내부 변수를 조작하면 서로 다른 방식으로 반응한다.
 
 $$
 \boxed{
-\text{isolated feature direction}
-\;\longrightarrow\;
-\text{structured concept geometry}
+\text{Behavioral Equivalence}
+\neq
+\text{Causal-Mechanistic Equivalence}
 }
 $$
 
-Rather than assuming beforehand that every interpretable concept must be one-dimensional, BSF changes the featurizer architecture so that multidimensional concepts can themselves become the atomic units of interpretation.
+즉, 두 시스템이 동일한 입출력 관계를 보인다고 해서 동일한 내부 causal mechanism을 구현한다고 말할 수는 없다.
 
-This is perhaps the most interesting lesson of the work. Interpretability methods do not merely reveal whatever structure is already present: their architecture determines **what kinds of structure they are capable of seeing**.
-
-
-## Formal Foundations
-
-The motivation behind BSF can be summarized through two assumptions: **featurizer–geometry duality** and the **additive mixture of manifolds** model.
-
-
-<blockquote class="paper-definition" markdown="1">
-<div class="paper-definition-title"><span>Definition 1.</span> Featurizer–Geometry Duality</div>
-
-Following the featurizer–geometry duality framework <citation key="projecting-assumptions"></citation>, let $\mathcal{F}$ denote a family of featurizers. Associated with $\mathcal{F}$ is a family of representational geometries
-
-$$
-\mathfrak{G}(\mathcal{F}),
-$$
-
-consisting of the kinds of structures that the architecture can recover as atomic features.
-
-The **featurizer–geometry duality** is the principle that the architecture of $\mathcal{F}$ determines $\mathfrak{G}(\mathcal{F})$. Therefore, changing the featurizer changes the class of concepts that can naturally be recovered.
-
-Conceptually,
+이 차이가 DAS가 representation을 해석하는 핵심 기준이다. Neural subspace $Y_j$가 high-level variable $X_j$에 대응하는 이유는 단순히 $Y_j$에서 $X_j$를 decode할 수 있기 때문이 아니다. 두 변수를 각각 intervention했을 때 동일한 downstream causal effect가 발생하기 때문이다.
 
 $$
 \boxed{
-\text{featurizer architecture}
-\quad\longleftrightarrow\quad
-\text{assumed concept geometry}
+X_j \leftrightarrow Y_j
+\quad
+\text{when their interventions produce corresponding causal effects.}
 }
 $$
 
-</blockquote>
+따라서 representation은 단순한 정적인 vector나 information container가 아니라 **counterfactual behavior의 패턴**으로 이해할 수 있다. 중요한 것은 hidden state 안에서 무엇을 읽어낼 수 있는가뿐 아니라, 그 hidden state를 변화시켰을 때 전체 시스템의 계산이 어떻게 달라지는가이다.
 
-A direction-based sparse autoencoder, for example, privileges concepts that can be represented through sparse combinations of individual directions. If the underlying concepts instead have heterogeneous dimensionality or nonlinear internal structure, such an architecture may fragment or obscure them.
+이 관점에서는 DAS 이후 등장한 representation-level intervention 방법들의 관계도 자연스럽게 이해할 수 있다. DAS와 Boundless DAS는 intervention을 이용하여 **causal representation을 발견하고 검증**한다. ITI와 RepE는 representation-level structure를 이용해 **모델의 행동을 조정**하며, ReFT는 representational intervention 자체를 학습하여 **task adaptation의 메커니즘**으로 사용한다.
 
-The implication for interpretability is that **designing a featurizer is equivalent to specifying a hypothesis about the geometry of neural representations**.
-
-<blockquote class="paper-definition" markdown="1">
-<div class="paper-definition-title"><span>Definition 2.</span> Additive Mixture of Manifolds</div>
-
-Following the concept-manifold formulation <citation key="concept-manifolds"></citation>, let
+각 방법의 목적은 다르지만 공통적으로 neural representation을 단순히 관찰하는 대상에서 **직접 조작하고 그 결과를 확인하는 대상**으로 바라본다. 결국 중요한 변화는 다음과 같이 요약할 수 있다.
 
 $$
-\mathcal{N}_1,\ldots,\mathcal{N}_M
+\boxed{
+\text{Decode}
+\rightarrow
+\text{Intervene}
+\rightarrow
+\text{Observe Counterfactual Effects}
+}
 $$
 
-be abstract manifolds with $\dim\mathcal{N}_i\ll d$, immersed into activation space through
-
-$$
-\gamma_i:\mathcal{N}_i\rightarrow\mathbb{R}^d,
-$$
-
-with images
-
-$$
-\mathcal{M}_i
-=
-\gamma_i(\mathcal{N}_i)
-\subseteq
-\mathbb{R}^d.
-$$
-
-An activation $x$ follows the **Additive Mixture of Manifolds** model if
-
-$$
-x
-=
-\sum_{i\in S}m_i,
-\qquad
-m_i\in\mathcal{M}_i,
-\qquad
-S\subseteq[M],
-\qquad
-|S|\ll M,
-$$
-
-where $S$ indexes the small number of factors active in $x$.
-
-Equivalently,
-
-$$
-x
-\in
-\sum_{i\in S}\mathcal{M}_i,
-$$
-
-so the activation lies in a sparse **Minkowski sum of manifolds**.
-
-</blockquote>
-
-The model therefore separates two questions:
-
-1. **Which factors are active?**
-2. **Where does the representation lie within each active factor?**
-
-The first is naturally a sparsity problem, while the second requires enough dimensions to preserve the internal geometry of each factor.
-
-The block-sparse formulation <citation key="structuring-sparsity"></citation> adds the assumption that each manifold occupies a low-dimensional linear span,
-
-$$
-V_g
-=
-\operatorname{span}(\mathcal{M}_g),
-\qquad
-\dim(V_g)=k\ll d.
-$$
-
-Choosing an orthonormal frame $D_g$ for $V_g$ then allows each manifold contribution to be represented through block coordinates $z_g$. The activation can consequently be written schematically as
-
-$$
-x
-=
-\sum_{g\in S}D_g^\top z_g+\varepsilon,
-$$
-
-with only a small number of nonzero blocks.
-
-This is precisely where block sparsity becomes the matched prior: **sparsity is imposed across factors, while dense multidimensional variation is preserved within each active factor**.
+DAS는 이 원리를 **interpretation의 기준**으로 사용하고, ReFT와 관련된 방법들은 유사한 representational intervention을 **adaptation과 control의 방법**으로 확장한다.

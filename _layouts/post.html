@@ -254,6 +254,16 @@ layout: default
       }
       var images = postContent.querySelectorAll('img[src]');
       images.forEach(function (img) {
+        // medium-zoom uses data-zoom-src as its high-resolution source. Point it
+        // at the original file instead of enlarging the browser's scaled layer.
+        // Keep an explicitly supplied value so posts can provide a separate
+        // full-resolution asset when one is available.
+        if (!img.getAttribute('data-zoom-src')) {
+          var originalSource = img.currentSrc || img.src || img.getAttribute('src');
+          if (originalSource) {
+            img.setAttribute('data-zoom-src', originalSource);
+          }
+        }
         img.setAttribute('data-zoomable', '');
       });
 

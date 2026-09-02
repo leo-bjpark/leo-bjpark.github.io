@@ -70,5 +70,38 @@
     "year": "2026",
     "title": "Do Sparse Autoencoders Capture Concept Manifolds?",
     "url": "https://arxiv.org/abs/2604.28119"
+  },
+  "wu2023interpretability": {
+    "author": "Wu et al.",
+    "year": "2023",
+    "title": "Interpretability at Scale: Identifying Causal Mechanisms in Alpaca",
+    "url": "https://arxiv.org/abs/2305.08809"
+  },
+  "wu2024reft": {
+    "author": "Wu et al.",
+    "year": "2024",
+    "title": "ReFT: Representation Finetuning for Language Models",
+    "url": "https://arxiv.org/abs/2404.03592"
+  },
+
+  "li2023iti": {
+    "author": "Li et al.",
+    "year": "2023",
+    "title": "Inference-Time Intervention: Eliciting Truthful Answers from a Language Model",
+    "url": "https://arxiv.org/abs/2306.03341"
+  },
+
+  "zou2023representation": {
+    "author": "Zou et al.",
+    "year": "2023",
+    "title": "Representation Engineering: A Top-Down Approach to AI Transparency",
+    "url": "https://arxiv.org/abs/2310.01405"
+  },
+
+  "geiger2025causal": {
+    "author": "Geiger et al.",
+    "year": "2025",
+    "title": "Causal Abstraction: A Theoretical Foundation for Mechanistic Interpretability",
+    "url": "https://jmlr.org/papers/v26/23-0058.html"
   }
 }
