@@ -68,6 +68,11 @@ $$
 
 This is substantially stronger than ordinary probing. A probe asks whether a neural state contains enough information to predict a high-level variable. Causal abstraction asks whether manipulating the proposed neural realization of that variable reproduces the consequences predicted by the high-level causal model.
 
+<figure>
+    <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/distributed_alignment_search.webp" />
+</figure>
+
+
 ---
 
 ## 2. Interchange Interventions
