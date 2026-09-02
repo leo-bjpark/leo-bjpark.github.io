@@ -7,6 +7,18 @@
     },
 "posts":[
     {
+        "title": "Causal Abstraction as Intervention-Aligned Representation Search",
+        "id": "caus-ai",
+        "category": "Interpretability, Causality",
+        "date": "2025-12-20",
+        "tags": ["Interpretability", "Causality"],
+        "media": "Literature",
+        "en_link": "technical_en/2025-12-20-causality-interpretability-en.md",
+        "kr_link": "",
+        "highlight": false,
+        "visible": true
+    },
+    {
         "title": "Little Prince Paradox",
         "id": "little-prince-paradox",
         "category": "Literature, Philosophy",

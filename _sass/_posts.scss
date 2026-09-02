@@ -487,10 +487,11 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 }
 
 .post-nav {
+  --post-nav-width: min(360px, calc((100vw - var(--page-width)) / 2 - 42px));
   position: sticky;
   top: 5.5rem;
-  width: max-content;
-  margin-left: -452px;
+  width: var(--post-nav-width);
+  margin-left: calc(-1 * var(--post-nav-width) - 34px);
   margin-right: 34px;
   align-self: start;
   justify-self: end;
@@ -500,9 +501,10 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 
 .post-nav-box {
   display: grid;
-  width: max-content;
+  box-sizing: border-box;
+  width: 100%;
   min-width: 0;
-  max-width: none;
+  max-width: 100%;
   gap: 0.5rem;
   padding: 0.8rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--global-divider-color) 88%, transparent);
@@ -619,8 +621,8 @@ html[data-theme='dark'] .posts-archive-title.is-highlight a {
 }
 
 .post-nav.is-compact .post-nav-box {
-  width: min(32vw, 360px);
-  max-width: min(32vw, 360px);
+  width: 100%;
+  max-width: 100%;
 }
 
 .post-nav-toggle {
