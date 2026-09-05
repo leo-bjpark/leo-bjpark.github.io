@@ -917,16 +917,18 @@ html[data-theme='dark'] .post-content .paper-references em {
 }
 
 .post-content table {
-  display: block;
+  display: table;
+  width: 100%;
   max-width: 100%;
-  overflow-x: auto;
+  table-layout: auto;
   box-sizing: border-box;
-  -webkit-overflow-scrolling: touch;
 }
 
 .post-content th,
 .post-content td {
-  white-space: nowrap;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
 }
 
 .post-content table.compact-table {
@@ -957,7 +959,7 @@ html[data-theme='dark'] .post-content .paper-references em {
 }
 
 .post-content figure.post-image-figure {
-  width: 90%;
+  width: 100%;
   margin: 1rem auto;
 }
 
@@ -968,7 +970,7 @@ html[data-theme='dark'] .post-content .paper-references em {
 }
 
 .post-content figure {
-  width: 90%;
+  width: 100%;
   margin: 1rem auto;
 }
 

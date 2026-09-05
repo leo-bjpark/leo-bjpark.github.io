@@ -8,6 +8,18 @@
     
 "posts":[
     {
+        "title": "Verified AI - Formalization, Theorem Proving, and Vericoding",
+        "id": "verified-ai-2026-09-05",
+        "category": "Formal Methods, Verification",
+        "date": "2026-09-05",
+        "tags": ["AI", "Formal Methods", "Verification"],
+        "media": "Literature",
+        "en_link": "technical_en/2026-09-05-verified-ai-formalization-en.md",
+        "kr_link": "technical_kr/2026-09-05-verified-ai-formalization-kr.md",
+        "highlight": false,
+        "visible": true
+    },
+    {
         "title": "Knowledge Revision - Fable/Attribute Conflict",
         "id": "nmr-2026-09-02",
         "category": "Revision, Knowledge Conflict",

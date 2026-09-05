@@ -144,5 +144,23 @@
     "year": "2025",
     "title": "Understanding Parametric and Contextual Knowledge Reconciliation within Large Language Models",
     "url": "https://proceedings.neurips.cc/paper_files/paper/2025/hash/94f7c80260eea8d52a5c0ec7b1637c04-Abstract-Conference.html"
+  },
+  "bursuc2025vericoding": {
+    "author": "Bursuc et al.",
+    "year": "2025",
+    "title": "A Benchmark for Vericoding: Formally Verified Program Synthesis",
+    "url": "https://arxiv.org/abs/2509.22908"
+  },
+  "chen2026prove2me": {
+    "author": "Chen et al.",
+    "year": "2026",
+    "title": "Prove2Me: An Open Collaborative Platform for Scaling Math Formalization",
+    "url": "https://arxiv.org/abs/2608.28433"
+  },
+  "trinh2024alphageometry": {
+    "author": "Trinh et al.",
+    "year": "2024",
+    "title": "Solving Olympiad Geometry without Human Demonstrations",
+    "url": "https://doi.org/10.1038/s41586-023-06747-5"
   }
 }
