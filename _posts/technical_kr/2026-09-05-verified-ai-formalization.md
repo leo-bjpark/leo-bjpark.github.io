@@ -39,27 +39,34 @@ Anthropic의 **Fermat’s Last Theorem(FLT)** formalization은 이를 잘 보여
     <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/2026-anthropic-fermat-dag.webp" />
 </figure>
 
-Lean에서는 proposition을 하나의 type으로 볼 수 있고, 성공적인 proof는 그 type에 속하는 object를 만드는 것으로 볼 수 있다.
+예를 들어 어떤 수가 다른 수의 **배수**라는 관계를 다음과 같이 정의할 수 있다.
 
-$$
-p : P
-$$
+```lean
+def MultipleOf (d n : ℕ) : Prop :=
+  ∃ k, n = d * k
 
-Lean의 kernel은 이 관계가 실제로 성립하는지를 검사한다. 모델은 올바른 proof를 찾기 전에 여러 번 잘못된 시도를 할 수 있다. 여기서 **proof search**와 **proof checking**이 분리된다. proof를 찾는 과정은 비싸고 heuristic하며 실패할 수 있지만, 완성된 proof를 검사하는 과정은 상대적으로 작고 기계적이며 결정론적이다.
+theorem multiple_of_30_is_multiple_of_10
+    (n : ℕ)
+    (h : MultipleOf 30 n) :
+    MultipleOf 10 n := by
 
-간단한 예로 짝수를 다음과 같이 정의해보자.
+  rcases h with ⟨k, hk⟩
+  refine ⟨3 * k, ?_⟩
+  rw [hk]
+  ring
+```
 
-$$
-Even(n) := \exists k,\; n = 2k
-$$
+이 theorem은 **임의의 자연수 `n`이 30의 배수라면, 반드시 10의 배수라는 것**을 증명한다.
 
-짝수의 제곱도 짝수임을 증명하고 싶다면, $Even(n)$에서 어떤 $k$가 존재하여 $n=2k$라는 사실을 얻는다. 그러면
+- **`h : MultipleOf 30 n`**: `n = 30 * k`인 어떤 `k`가 존재한다는 가정이다.
+- **`rcases`**: 그 `k`와 `n = 30 * k`라는 equality를 꺼낸다.
+- **`refine ⟨3 * k, ?_⟩`**: `n`을 `10 × (...)` 형태로 표현하기 위해 `3 * k`를 새로운 **witness**로 제시한다.
+- **`rw [hk]`**: `n` 대신 `30 * k`를 대입한다.
+- **`ring`**: 남은 `30 * k = 10 * (3 * k)`라는 대수적 관계가 성립하는지 확인한다.
 
-$$
-n^2 = (2k)^2 = 4k^2 = 2(2k^2)
-$$
+즉 일반적인 수학에서는 **“n = 30k라면 n = 10(3k)이므로 n은 10의 배수다”**라고 짧게 표현하는 reasoning을 Lean에서는 formal proof로 작성한다.
 
-이므로 $n^2$ 역시 짝수다. 인간에게는 거의 즉시 이해되는 증명이지만, Lean에서는 이 변환들이 formal proof object를 구성할 수 있을 정도로 명시적으로 표현되어야 한다.
+>  물론 이것은 일종의 **formal proof language**이므로 각 문법을 모두 이해할 필요는 없다. 중요한 것은 사람이나 LLM이 proof script를 작성하면 Lean이 이를 형식적인 proof로 변환하고, **kernel이 최종적으로 그 proof가 theorem statement를 실제로 만족하는지 검사한다**는 점이다.
 
 이 과정에서 자주 등장하는 몇 가지 핵심 연산은 다음과 같다.
 

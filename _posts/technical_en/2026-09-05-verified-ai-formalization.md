@@ -39,28 +39,35 @@ Within this framework, **formalization** means translating an informal mathemati
 <figure>
     <img src="https://d2acbkrrljl37x.cloudfront.net/MatrixFigures/Research/2026-anthropic-fermat-dag.webp" />
 </figure>
+For example, we can define the relation **“is a multiple of”** as follows.
 
-In Lean, a proposition can be viewed as a type $P$, and a successful proof constructs an object $p$ of that type:
+```lean
+def MultipleOf (d n : ℕ) : Prop :=
+  ∃ k, n = d * k
 
-$$
-p : P
-$$
+theorem multiple_of_30_is_multiple_of_10
+    (n : ℕ)
+    (h : MultipleOf 30 n) :
+    MultipleOf 10 n := by
 
-The Lean kernel checks whether this relationship is valid. The model may try many incorrect proofs before producing one that passes the check. This creates an important separation between **proof search** and **proof checking**: searching for a proof may be expensive, heuristic, and error-prone, while checking a completed proof can be mechanical and deterministic.
+  rcases h with ⟨k, hk⟩
+  refine ⟨3 * k, ?_⟩
+  rw [hk]
+  ring
+```
 
-Consider a simple definition of an even number:
+This theorem proves that **if an arbitrary natural number `n` is a multiple of 30, then it must also be a multiple of 10**.
 
-$$
-Even(n) := \exists k,\; n = 2k
-$$
+- **`h : MultipleOf 30 n`** means that there exists some `k` such that `n = 30 * k`.
+- **`rcases`** extracts that `k` together with the equality `n = 30 * k`.
+- **`refine ⟨3 * k, ?_⟩`** proposes `3 * k` as a new **witness**, so that `n` can be written in the form `10 * (...)`.
+- **`rw [hk]`** substitutes `30 * k` for `n`.
+- **`ring`** verifies the remaining algebraic equality `30 * k = 10 * (3 * k)`.
 
-Suppose we want to prove that the square of an even number is also even. From $Even(n)$, we obtain some $k$ such that $n=2k$. Then
+In ordinary mathematics, this reasoning is simply **“if n = 30k, then n = 10(3k), so n is a multiple of 10.”** Lean expresses this short argument as a formal proof.
 
-$$
-n^2 = (2k)^2 = 4k^2 = 2(2k^2)
-$$
+> Of course, this is ultimately a **formal proof language**, so it is not necessary to understand every piece of syntax. The important point is that a human or an LLM writes a proof script, Lean turns it into a formal proof, and the **kernel checks whether that proof actually satisfies the theorem statement**.
 
-so $n^2$ is even as well. For a human reader, this is almost immediate. In Lean, however, these transformations have to be explicit enough for the system to construct a formal proof object.
 
 A few operations capture much of this basic process:
 
