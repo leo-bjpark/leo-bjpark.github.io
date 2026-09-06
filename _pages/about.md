@@ -16,7 +16,7 @@ _styles: >
     <div class="home-hero-copy">
       <p class="home-eyebrow">PhD Student | AI Researcher</p>
       <p class="home-summary">
-        I am a <strong>Ph.D. student at KAIST AI</strong>, advised by <strong>Prof. Jaesik Choi</strong>.
+        I am a <strong>Ph.D. student at KAIST AI</strong>.
       </p>
       <p class="home-summary home-summary-subtle">
         My research studies <strong>knowledge structure</strong> in logic, AI, and human reasoning, with a focus on how constraints are represented and resolved in large language models. I investigate how such structures are realized within model computations, combining <strong>mechanistic interpretability</strong> (neuron- and circuit-level analysis) with <strong>constraint-aware modeling</strong>.
